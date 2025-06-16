@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Payment Gateway</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --error-color: #ef233c;
+            --border-color: #e0e0e0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .payment-container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .payment-left {
+            flex: 1;
+            padding: 3rem;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .payment-right {
+            width: 400px;
+            background-color: #f9fafb;
+            padding: 3rem 2rem;
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        .payment-header {
+            margin-bottom: 2.5rem;
+        }
+        
+        .payment-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .payment-header p {
+            color: #666;
+        }
+        
+        .payment-form {
+            max-width: 500px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .payment-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .summary-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+        
+        .summary-total {
+            font-weight: 600;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .payment-methods {
+            margin-bottom: 2rem;
+        }
+        
+        .payment-methods h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .method {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .method:hover {
+            border-color: var(--accent-color);
+        }
+        
+        .method i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .method.active {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .balance-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .balance-card.show {
+            display: block;
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            font-weight: 500;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-weight: 500;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .payment-security {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .payment-security i {
+            color: var(--success-color);
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 992px) {
+            .payment-container {
+                flex-direction: column;
+            }
+            
+            .payment-right {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-left">
+            <div class="logo">
+                <i class="fas fa-wallet"></i>
+                <span>PremiumPay</span>
+            </div>
+            
+            <div class="payment-header">
+                <h1>Complete Your Payment</h1>
+                <p>Enter the amount you want to add to your wallet</p>
+            </div>
+            
+            <div class="payment-form">
+                <div class="form-group">
+                    <label for="amount">Amount to Pay (INR)</label>
+                    <input type="number" id="amount" class="form-control" placeholder="e.g. 500" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <button id="payButton" class="btn" onclick="makePayment()">
+                        <i class="fas fa-lock"></i> Proceed to Secure Payment
+                    </button>
+                </div>
+                
+                <div id="balanceDisplay" class="balance-card">
+                    <h3>Your New Wallet Balance</h3>
+                    <div class="balance-amount">₹<span id="balanceAmount">0</span></div>
+                    <p>This amount is now available for your purchases</p>
+                    <div id="successMessage" class="success-message"></div>
+                </div>
+                
+                <div id="errorMessage" class="error-message"></div>
+            </div>
+        </div>
+        
+        <div class="payment-right">
+            <div>
+                <div class="payment-summary">
+                    <div class="summary-header">
+                        <h3>Order Summary</h3>
+                        <span>#ORDER12345</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Wallet Top-up</span>
+                        <span id="orderAmount">₹0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Convenience Fee</span>
+                        <span>₹0</span>
+                    </div>
+                    <div class="summary-item summary-total">
+                        <span>Total Amount</span>
+                        <span id="totalAmount">₹0</span>
+                    </div>
+                </div>
+                
+                <div class="payment-methods">
+                    <h3>Payment Methods</h3>
+                    <div class="method active">
+                        <i class="fas fa-credit-card"></i>
+                        <div>
+                            <div>Credit/Debit Card</div>
+                            <small>Visa, Mastercard, Rupay, etc.</small>
+                        </div>
+                    </div>
+                    <div class="method">
+                        <i class="fas fa-university"></i>
+                        <div>
+                            <div>Net Banking</div>
+                            <small>All major banks supported</small>
+                        </div>
+                    </div>
+                    <div class="method">
+                        <i class="fas fa-wallet"></i>
+                        <div>
+                            <div>UPI/Wallets</div>
+                            <small>Google Pay, PhonePe, Paytm, etc.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-security">
+                <p><i class="fas fa-shield-alt"></i> Your payment is securely encrypted</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check for existing balance on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const storedBalance = localStorage.getItem('razorpayBalance');
+            if (storedBalance) {
+                document.getElementById('balanceAmount').textContent = storedBalance;
+                document.getElementById('balanceDisplay').classList.add('show');
+            }
+            
+            // Update order summary when amount changes
+            document.getElementById('amount').addEventListener('input', function() {
+                const amount = this.value || 0;
+                document.getElementById('orderAmount').textContent = `₹${amount}`;
+                document.getElementById('totalAmount').textContent = `₹${amount}`;
+            });
+        });
+
+        function makePayment() {
+            const amountInput = document.getElementById('amount');
+            const amount = parseInt(amountInput.value) * 100; // Convert to paise
+            
+            if (!amount || amount < 100) {
+                document.getElementById('errorMessage').textContent = 'Please enter a valid amount (minimum ₹1)';
+                setTimeout(() => {
+                    document.getElementById('errorMessage').textContent = '';
+                }, 3000);
+                return;
+            }
+            
+            const options = {
+                "key": "rzp_test_4LPGV7rP4wBreT",
+                "amount": amount,
+                "currency": "INR",
+                "name": "Premium Services",
+                "description": "Wallet Top-up",
+                "image": "https://example.com/your_logo",
+                "handler": function (response) {
+                    // On successful payment
+                    const paidAmount = amount / 100; // Convert back to INR
+                    
+                    // Get existing balance or 0 if none
+                    const existingBalance = parseInt(localStorage.getItem('razorpayBalance')) || 0;
+                    const newBalance = existingBalance + paidAmount;
+                    
+                    // Store the new balance
+                    localStorage.setItem('razorpayBalance', newBalance);
+                    
+                    // Update UI
+                    document.getElementById('balanceAmount').textContent = newBalance;
+                    document.getElementById('balanceDisplay').classList.add('show');
+                    
+                    // Show success message
+                    const successMsg = document.getElementById('successMessage');
+                    successMsg.innerHTML = `<i class="fas fa-check-circle"></i> Payment of ₹${paidAmount} successful!`;
+                    successMsg.style.display = 'block';
+                    
+                    // Clear input field
+                    amountInput.value = '';
+                    
+                    // Clear message after 5 seconds
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 5000);
+                },
+                "prefill": {
+                    "name": "Customer Name",
+                    "email": "customer@example.com",
+                    "contact": "9999999999"
+                },
+                "notes": {
+                    "address": "Payment Gateway"
+                },
+                "theme": {
+                    "color": "#4361ee"
+                }
+            };
+            
+            const rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                document.getElementById('errorMessage').innerHTML = 
+                    `<i class="fas fa-exclamation-circle"></i> Payment failed: ${response.error.description}<br>Please try again.`;
+                setTimeout(() => {
+                    document.getElementById('errorMessage').textContent = '';
+                }, 5000);
+            });
+            rzp1.open();
+        }
+    </script>
+</body>
+</html>

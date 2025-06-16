@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MCQ Examination</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4F46E5',
+            secondary: '#10B981',
+            dark: '#1F2937',
+            light: '#F9FAFB',
+            danger: '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-dark">MCQ Examination</h1>
+        <div class="flex items-center mt-2 space-x-4">
+          <div class="flex items-center">
+            <span class="text-sm text-gray-600">Type ID: </span>
+            <span id="mcqTypeDisplay" class="ml-2 px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full"></span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-sm text-gray-600">User ID: </span>
+            <span id="displayUserId" class="ml-2 px-3 py-1 bg-secondary/10 text-secondary text-sm font-medium rounded-full"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center">
+          <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold" id="userInitial">U</div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-dark" id="username">Loading...</p>
+            <p class="text-xs text-gray-500" id="userId">ID: loading...</p>
+          </div>
+        </div>
+        <button id="viewToggle" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center">
+          <i class="fas fa-th mr-2"></i> Gallery View
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 flex justify-between items-center">
+      <div class="flex items-center">
+        <i class="fas fa-exclamation-triangle text-yellow-500 mr-3"></i>
+        <p class="text-yellow-700">Tab switching is not allowed. Your exam will be submitted automatically if detected.</p>
+      </div>
+      <div class="bg-white px-4 py-2 rounded-lg shadow-inner border border-yellow-200">
+        <span class="font-mono font-bold text-dark" id="examTimer">00:00:00</span>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <div class="flex-1">
+        <div id="questionsContainer" class="space-y-6"></div>
+        
+        <div id="loading" class="text-center py-12">
+          <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+          <p class="text-gray-600">Loading questions...</p>
+        </div>
+        
+        <div id="errorContainer" class="hidden"></div>
+      </div>
+      
+      <div class="lg:w-64 hidden lg:block">
+        <div class="bg-white p-6 rounded-xl shadow sticky top-8">
+          <h3 class="font-bold text-dark mb-4">Your Progress</h3>
+          <div class="mb-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-1">
+              <span>Answered</span>
+              <span><span id="answeredCount">0</span>/<span id="totalCount">0</span></span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div id="progressBar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <p class="text-sm font-medium text-dark">Question Navigation</p>
+            <div id="questionNav" class="grid grid-cols-5 gap-2">
+              </div>
+          </div>
+          <button id="submitBtn" class="w-full mt-6 py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg font-medium hidden">
+            Submit Answers
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="galleryModal" class="fixed inset-0 bg-black/80 z-50 hidden overflow-y-auto">
+    <div class="container mx-auto p-4 max-w-6xl">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold text-white">Questions Gallery</h2>
+        <button id="closeGallery" class="text-white hover:text-gray-300 text-2xl">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="galleryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </div>
+
+  <div id="submitModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+      <div class="text-center">
+        <div id="submissionSuccess" class="hidden">
+          <i class="fas fa-check-circle text-5xl text-secondary mb-4"></i>
+          <h3 class="text-xl font-bold text-dark mb-2">Exam Submitted Successfully!</h3>
+          <div class="mb-4 text-left">
+            <p class="text-gray-600"><span class="font-medium">Total Questions:</span> <span id="resultTotalQuestions" class="font-bold">0</span></p>
+            <p class="text-gray-600"><span class="font-medium">Correct Answers:</span> <span id="resultCorrectAnswers" class="font-bold text-green-600">0</span></p>
+            <p class="text-gray-600"><span class="font-medium">Percentage:</span> <span id="resultPercentage" class="font-bold">0%</span></p>
+            <p class="text-gray-600"><span class="font-medium">Time Taken:</span> <span id="resultDuration" class="font-bold">00:00:00</span></p>
+          </div>
+        </div>
+        <div id="submissionError" class="hidden">
+          <i class="fas fa-times-circle text-5xl text-red-500 mb-4"></i>
+          <h3 class="text-xl font-bold text-dark mb-2">Submission Failed!</h3>
+          <p class="text-gray-600 mb-4" id="errorMessage">Unable to submit your answers. Please try again.</p>
+        </div>
+        <button id="proceedBtn" class="w-full py-2 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium">
+          Proceed to Technical MCQ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let examStartTime;
+    let examTimerInterval;
+    let tabSwitchCount = 0;
+    let hasSubmitted = false;
+    let questions = [];
+    let durationInSeconds = 0;
+    let userData = {}; // Initialize userData as an empty object
+    let actualUserId = null; // Will store the validated user ID
+    let mcqTypeIdFromUrl = null; // Will store the validated MCQ Type ID from URL
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- USER ID from localStorage ---
+      const userString = localStorage.getItem('user');
+      const usernameElement = document.getElementById('username');
+      const userIdElement = document.getElementById('userId');
+      const userInitialElement = document.getElementById('userInitial');
+      const displayUserIdElement = document.getElementById('displayUserId');
+      
+      if (userString) {
+        try {
+          userData = JSON.parse(userString);
+          // Prioritize common ID fields and assign to actualUserId
+          actualUserId = userData._id || userData.id || userData.userId || userData.userID;
+
+          usernameElement.textContent = userData.name || 'Unknown User';
+          userIdElement.textContent = `ID: ${actualUserId || 'N/A'}`;
+          displayUserIdElement.textContent = actualUserId || 'N/A';
+          userInitialElement.textContent = userData.name ? userData.name.charAt(0).toUpperCase() : 'U';
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+          usernameElement.textContent = 'Error User';
+          userIdElement.textContent = 'ID: Error';
+          displayUserIdElement.textContent = 'Error';
+          userInitialElement.textContent = 'E';
+        }
+      } else {
+        usernameElement.textContent = 'No User Data';
+        userIdElement.textContent = 'ID: N/A';
+        displayUserIdElement.textContent = 'N/A';
+        userInitialElement.textContent = 'N';
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      mcqTypeIdFromUrl = urlParams.get('mcqTypeId'); // Assign to the global variable
+      const questionsContainer = document.getElementById('questionsContainer');
+      const loadingElement = document.getElementById('loading');
+      const mcqTypeDisplay = document.getElementById('mcqTypeDisplay');
+      const errorContainer = document.getElementById('errorContainer');
+      const viewToggle = document.getElementById('viewToggle');
+      const galleryModal = document.getElementById('galleryModal');
+      const closeGallery = document.getElementById('closeGallery');
+      const galleryContainer = document.getElementById('galleryContainer');
+      const questionNav = document.getElementById('questionNav');
+      const answeredCount = document.getElementById('answeredCount');
+      const totalCount = document.getElementById('totalCount');
+      const progressBar = document.getElementById('progressBar');
+      const submitBtn = document.getElementById('submitBtn');
+      const examTimerElement = document.getElementById('examTimer');
+      const submitModal = document.getElementById('submitModal');
+      const proceedBtn = document.getElementById('proceedBtn');
+      const submissionSuccess = document.getElementById('submissionSuccess');
+      const submissionError = document.getElementById('submissionError');
+      const resultTotalQuestions = document.getElementById('resultTotalQuestions');
+      const resultCorrectAnswers = document.getElementById('resultCorrectAnswers');
+      const resultPercentage = document.getElementById('resultPercentage');
+      const resultDuration = document.getElementById('resultDuration');
+      const errorMessage = document.getElementById('errorMessage');
+
+      if (!mcqTypeIdFromUrl) {
+        showError("No MCQ type specified in the URL. Please add '?mcqTypeId=YOUR_ID_HERE' to the URL.");
+        return;
+      }
+      mcqTypeDisplay.textContent = mcqTypeIdFromUrl; 
+
+      // Start exam timer
+      startExamTimer();
+
+      // Tab switch detection
+      setupTabSwitchDetection();
+
+      // Load questions
+      loadQuestions();
+
+      async function loadQuestions() {
+        try {
+          // In a real app, you would fetch from your API:
+          const response = await fetch(`http://localhost:5000/api/mcqquestion/mcqquestion/${mcqTypeIdFromUrl}`);
+          if (!response.ok) throw new Error(`Server error: ${response.status}`);
+          questions = await response.json();
+          
+          
+          if (!questions || questions.length === 0) {
+            showError("Questions are not posted by the admin. Please wait.");
+            return;
+          }
+
+          loadingElement.style.display = 'none';
+          renderQuestions(questions);
+          setupQuestionNavigation(questions);
+          totalCount.textContent = questions.length;
+          submitBtn.classList.remove('hidden');
+
+          // Event listeners
+          viewToggle.addEventListener('click', () => {
+            galleryModal.classList.remove('hidden');
+            renderGallery(questions);
+          });
+          
+          closeGallery.addEventListener('click', () => {
+            galleryModal.classList.add('hidden');
+          });
+          
+          submitBtn.addEventListener('click', () => {
+            submitExam();
+          });
+          
+          proceedBtn.addEventListener('click', () => {
+            window.location.href = 'technicalmcqs.html'; // Or relevant next page
+          });
+
+        } catch (error) {
+          showError(`Error loading questions: ${error.message}`);
+          console.error(error);
+        }
+      }
+
+      function renderQuestions(questions) {
+        questionsContainer.innerHTML = '';
+        
+        questions.forEach((question, index) => {
+          const questionElement = document.createElement('div');
+          questionElement.className = 'bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow';
+          questionElement.id = `question-${index}`;
+          
+          questionElement.innerHTML = `
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="font-bold text-dark text-lg">${index + 1}. ${question.question}</h3>
+              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">${question.difficulty}</span>
+            </div>
+            <div class="space-y-3 ml-2">
+              ${['A', 'B', 'C', 'D'].map(letter => `
+                <div class="flex items-center">
+                  <input type="radio" name="q${index}" id="q${index}_${letter}" value="${letter}" 
+                    class="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded">
+                  <label for="q${index}_${letter}" class="ml-3 text-gray-700 hover:text-dark cursor-pointer">
+                    <span class="font-medium">${letter}.</span> ${question.options[letter]}
+                  </label>
+                </div>
+              `).join('')}
+            </div>
+          `;
+          
+          // Add event listener to track answered questions
+          const inputs = questionElement.querySelectorAll('input[type="radio"]');
+          inputs.forEach(input => {
+            input.addEventListener('change', () => {
+              updateProgress();
+            });
+          });
+          
+          questionsContainer.appendChild(questionElement);
+        });
+      }
+      
+      function renderGallery(questions) {
+        galleryContainer.innerHTML = '';
+        
+        questions.forEach((question, index) => {
+          const card = document.createElement('div');
+          card.className = 'bg-white p-4 rounded-lg shadow hover:shadow-lg transition-all cursor-pointer';
+          card.innerHTML = `
+            <div class="h-40 overflow-y-auto mb-3">
+              <h4 class="font-medium text-dark mb-2">Q${index + 1}: ${question.question.substring(0, 80)}${question.question.length > 80 ? '...' : ''}</h4>
+              <ul class="text-sm text-gray-600 space-y-1">
+                ${['A', 'B', 'C', 'D'].map(letter => `
+                  <li class="${letter === question.correctAnswer ? 'text-secondary font-medium' : ''}">
+                    ${letter}. ${question.options[letter].substring(0, 40)}${question.options[letter].length > 40 ? '...' : ''}
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+            <button onclick="scrollToQuestion(${index})" class="w-full py-1 bg-primary/10 text-primary text-sm rounded hover:bg-primary/20">
+              View Question
+            </button>
+          `;
+          galleryContainer.appendChild(card);
+        });
+      }
+      
+      function setupQuestionNavigation(questions) {
+        questionNav.innerHTML = '';
+        
+        questions.forEach((_, index) => {
+          const btn = document.createElement('button');
+          btn.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border border-gray-300 hover:bg-primary/10 hover:border-primary/50';
+          btn.textContent = index + 1;
+          btn.onclick = () => scrollToQuestion(index);
+          questionNav.appendChild(btn);
+        });
+      }
+      
+      function updateProgress() {
+        const answered = document.querySelectorAll('#questionsContainer input[type="radio"]:checked').length;
+        answeredCount.textContent = answered;
+        const total = parseInt(totalCount.textContent);
+        const percentage = Math.round((answered / total) * 100);
+        progressBar.style.width = `${percentage}%`;
+        
+        // Update navigation buttons
+        const navButtons = questionNav.querySelectorAll('button');
+        navButtons.forEach((btn, index) => {
+          const isAnswered = document.querySelector(`#question-${index} input[type="radio"]:checked`);
+          btn.className = isAnswered 
+            ? 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-primary/10 border border-primary/50 text-primary'
+            : 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border border-gray-300 hover:bg-primary/10 hover:border-primary/50';
+        });
+      }
+      
+      function scrollToQuestion(index) {
+        const questionElement = document.getElementById(`question-${index}`);
+        if (questionElement) {
+          questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          questionElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          setTimeout(() => {
+            questionElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          }, 2000);
+        }
+        galleryModal.classList.add('hidden');
+      }
+      
+      function showError(message) {
+        loadingElement.style.display = 'none';
+        errorContainer.className = 'bg-red-50 border-l-4 border-red-500 p-4 mb-6';
+        errorContainer.innerHTML = `
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-red-700">${message}</p>
+            </div>
+          </div>
+        `;
+        errorContainer.classList.remove('hidden'); // Ensure error message is visible
+      }
+      
+      function startExamTimer() {
+        examStartTime = new Date();
+        examTimerInterval = setInterval(() => {
+          const now = new Date();
+          const diff = now - examStartTime;
+          durationInSeconds = Math.floor(diff / 1000);
+          
+          const hours = Math.floor(durationInSeconds / 3600).toString().padStart(2, '0');
+          const minutes = Math.floor((durationInSeconds % 3600) / 60).toString().padStart(2, '0');
+          const seconds = (durationInSeconds % 60).toString().padStart(2, '0');
+          
+          examTimerElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }, 1000);
+      }
+      
+      function setupTabSwitchDetection() {
+        // Visibility change detection
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden && !hasSubmitted) {
+            tabSwitchCount++;
+            if (tabSwitchCount >= 1) { // Changed to 1 to submit on first detection
+              submitExam();
+              alert('Exam submitted automatically due to tab switching!');
+            }
+          }
+        });
+        
+        // Blur detection (for iframe attempts)
+        window.addEventListener('blur', () => {
+          if (!hasSubmitted) {
+            tabSwitchCount++;
+            if (tabSwitchCount >= 1) { // Changed to 1 to submit on first detection
+              submitExam();
+              alert('Exam submitted automatically due to window switching!');
+            }
+          }
+        });
+        
+        // Disable right click and copy/paste
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('paste', (e) => e.preventDefault());
+        
+        // Disable keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+          if (e.key === 'F12' || 
+              (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+              (e.ctrlKey && e.key === 'u')) {
+            e.preventDefault();
+          }
+        });
+      }
+      
+      async function submitExam() {
+        if (hasSubmitted) return;
+        
+        // --- Frontend Validation before sending to backend ---
+        // Basic check for MongoDB ObjectId format (24 hex characters)
+        const isObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
+        if (!actualUserId || !isObjectId(actualUserId)) {
+            console.error("Submission prevented: Invalid or missing User ID.");
+            errorMessage.textContent = "Cannot submit: Invalid or missing User ID. Please ensure you are logged in correctly.";
+            submitModal.classList.remove('hidden');
+            submissionError.classList.remove('hidden');
+            return; 
+        }
+        if (!mcqTypeIdFromUrl || !isObjectId(mcqTypeIdFromUrl)) {
+            console.error("Submission prevented: Invalid or missing MCQ Type ID from URL.");
+            errorMessage.textContent = "Cannot submit: Invalid or missing MCQ Type ID in URL. Please check the URL.";
+            submitModal.classList.remove('hidden');
+            submissionError.classList.remove('hidden');
+            return;
+        }
+
+        hasSubmitted = true;
+        clearInterval(examTimerInterval);
+        
+        // Disable all inputs
+        const inputs = document.querySelectorAll('input[type="radio"]');
+        inputs.forEach(input => {
+          input.disabled = true;
+        });
+        
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        
+        // Show submission modal
+        submitModal.classList.remove('hidden');
+        submissionSuccess.classList.add('hidden');
+        submissionError.classList.add('hidden');
+        
+        // Collect all answers
+        const mcqs = [];
+        let correctAnswers = 0;
+        
+        questions.forEach((question, index) => {
+          const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+          const isCorrect = selectedOption && selectedOption.value === question.correctAnswer;
+          
+          if (isCorrect) correctAnswers++;
+          
+          mcqs.push({
+            questionId: question._id || `mock-id-${index}`, // Use actual question ID if available
+            selectedOption: selectedOption ? selectedOption.value : 'N/A',
+            correctAnswer: question.correctAnswer,
+            isCorrect: isCorrect
+          });
+        });
+        
+        // Calculate results
+        const totalQuestions = questions.length;
+        const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+        
+        // Prepare submission data
+        const submissionData = {
+          userId: actualUserId, // Use the validated user ID
+          mcqTypeId: mcqTypeIdFromUrl, // Use the validated MCQ Type ID
+          // mcqs: mcqs, // Uncomment if your backend expects individual MCQ answers in the main submission object
+          totalQuestions: totalQuestions,
+          correctAnswers: correctAnswers,
+          totalMarks: correctAnswers, // Assuming 1 mark per question
+          percentage: percentage,
+          durationInSeconds: durationInSeconds,
+          status: 'completed'
+        };
+        
+        try {
+          // Submit to backend API
+          // IMPORTANT: Double-check this URL against your backend routes.
+          // Your error log shows "/api/submit-test" but previous code had "/api/submit/test".
+          // I'm using "/api/submit-test" to match your error log exactly.
+          const response = await fetch('http://localhost:5000/api/submit-test', { 
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+            },
+            body: JSON.stringify(submissionData)
+          });
+          
+          if (!response.ok) {
+            // Try to parse the error message from the server response
+            const errorBody = await response.json(); 
+            throw new Error(errorBody.message || 'Failed to submit exam. Server error.');
+          }
+          
+          // Show success results
+          resultTotalQuestions.textContent = totalQuestions;
+          resultCorrectAnswers.textContent = correctAnswers;
+          resultPercentage.textContent = `${percentage}%`;
+          
+          // Format duration for display
+          const hours = Math.floor(durationInSeconds / 3600).toString().padStart(2, '0');
+          const minutes = Math.floor((durationInSeconds % 3600) / 60).toString().padStart(2, '0');
+          const seconds = (durationInSeconds % 60).toString().padStart(2, '0');
+          resultDuration.textContent = `${hours}:${minutes}:${seconds}`;
+          
+          submissionSuccess.classList.remove('hidden');
+        } catch (error) {
+          console.error('Submission error:', error);
+          errorMessage.textContent = error.message;
+          submissionError.classList.remove('hidden');
+        }
+      }
+      
+      // Make scrollToQuestion available globally for gallery buttons
+      window.scrollToQuestion = scrollToQuestion;
+    });
+    
+    // Function to generate mock questions for demo
+    function generateMockQuestions(count) {
+      const difficulties = ['Easy', 'Medium', 'Hard'];
+      const subjects = ['Math', 'Science', 'History', 'English'];
+      const questions = [];
+      
+      for (let i = 0; i < count; i++) {
+        const difficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
+        const subject = subjects[Math.floor(Math.random() * subjects.length)];
+        const correctAnswer = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
+        
+        questions.push({
+          _id: `68501c1125c0f19e2d7675${i < 10 ? '0' + i : i}`, // Mock IDs that look like ObjectIds for testing
+          question: `This is a sample ${difficulty.toLowerCase()} question about ${subject} (Question ${i + 1}). What is the correct answer?`,
+          options: {
+            A: `Option A for question ${i + 1}`,
+            B: `Option B for question ${i + 1}`,
+            C: `Option C for question ${i + 1}`,
+            D: `Option D for question ${i + 1}`
+          },
+          correctAnswer: correctAnswer,
+          difficulty: difficulty,
+          subject: subject
+        });
+      }
+      
+      return questions;
+    }
+  </script>
+</body>
+</html>
