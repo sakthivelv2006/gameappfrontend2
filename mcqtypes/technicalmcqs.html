@@ -285,7 +285,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            const MCQ_TYPES_API_URL = 'http://localhost:5000/api/mcqtypes';
+          const MCQ_TYPES_API_URL = 
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api/mcqtypes'
+    : 'https://gameappbackend-i8zv.onrender.com/api/mcqtypes';
+
             const userString = localStorage.getItem('user');
             const token = localStorage.getItem('token');
 

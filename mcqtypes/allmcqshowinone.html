@@ -219,11 +219,13 @@
 
       // Load questions
       loadQuestions();
-
+      const BASE_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000'
+  : 'https://gameappbackend-i8zv.onrender.com';
       async function loadQuestions() {
         try {
           // In a real app, you would fetch from your API:
-          const response = await fetch(`http://localhost:5000/api/mcqquestion/mcqquestion/${mcqTypeIdFromUrl}`);
+          const response = await fetch(`${BASE_URL}/api/mcqquestion/mcqquestion/${mcqTypeIdFromUrl}`);
           if (!response.ok) throw new Error(`Server error: ${response.status}`);
           questions = await response.json();
           
@@ -520,7 +522,7 @@
           // IMPORTANT: Double-check this URL against your backend routes.
           // Your error log shows "/api/submit-test" but previous code had "/api/submit/test".
           // I'm using "/api/submit-test" to match your error log exactly.
-          const response = await fetch('http://localhost:5000/api/submit-test', { 
+          const response = await fetch(`${BASE_URL}/api/submit-test`,{ 
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -46,7 +46,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // Backend configuration
-            const BACKEND_BASE_URL = 'https://gameappbackend-i8zv.onrender.com/api';
+           const BACKEND_BASE_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : 'https://gameappbackend-i8zv.onrender.com/api';
+
             
             const loginStatusElement = document.getElementById('loginStatus');
 
