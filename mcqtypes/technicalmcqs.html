@@ -645,7 +645,7 @@
                         } else if (data.message && (data.message.includes("account balance is zero") || data.message.includes("Insufficient"))) {
                             showMessage('Purchase failed. Insufficient balance. Redirecting to deposit page...', 'error');
                             setTimeout(() => {
-                                window.location.href = "../Dashboard/Payments.html";
+                                window.location.href = "../Dashboard/payments.html";
                             }, 2000);
                         } else {
                             showMessage(`Failed to complete purchase: ${data.message || 'Unknown error'}`, 'error');
