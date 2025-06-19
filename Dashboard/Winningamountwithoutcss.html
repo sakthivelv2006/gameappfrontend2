@@ -253,7 +253,7 @@
         document.getElementById('amountForm').style.display = 'none';
 
         // Fetch data from backend API
-        const response = await fetch(`http://localhost:5000/api/users/${userId}/earnings`, {
+        const response = await fetch(`https://gameappbackend-i8zv.onrender.com/api/users/${userId}/earnings`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
@@ -320,7 +320,7 @@
         document.getElementById('calculatedEarningsTableBody').innerHTML = 
           '<tr><td colspan="3">Loading calculated earnings data...</td></tr>';
 
-        const response = await fetch(`http://localhost:5000/api/calculate-amounts/${userId}`, {
+        const response = await fetch(`https://gameappbackend-i8zv.onrender.com/api/calculate-amounts/${userId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'

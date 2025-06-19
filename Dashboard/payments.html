@@ -988,7 +988,7 @@
       const description = document.getElementById("description").value.trim();
 
       try {
-        const orderResponse = await fetch("http://localhost:5000/api/create-order", {
+        const orderResponse = await fetch("https://gameappbackend-i8zv.onrender.com/api/create-order", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -1022,7 +1022,7 @@
           order_id: orderData.id,
           handler: async function (response) {
             try {
-              const successResponse = await fetch("http://localhost:5000/api/payment-success", {
+              const successResponse = await fetch("https://gameappbackend-i8zv.onrender.com/api/payment-success", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
