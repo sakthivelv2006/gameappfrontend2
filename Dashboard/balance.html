@@ -1,211 +1,504 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Wallet Balance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --accent: #4cc9f0;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #38b000;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    .balance-display {
+      font-size: 3.5rem; /* Larger font size for balance */
+      line-height: 1;
+    }
+    .sidebar {
+      width: 280px; /* Fixed width for sidebar */
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 40; /* Below sidebar, above content */
+    }
+    .transaction-item {
+        border-left: 4px solid;
+    }
+    .transaction-status-created { border-color: #3B82F6; /* blue-500 */ }
+    .transaction-status-completed { border-color: #10B981; /* green-500 */ }
+    .transaction-status-failed { border-color: #EF4444; /* red-500 */ }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans antialiased flex">
+
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+  <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 bg-gray-800 text-white p-6 z-50 shadow-lg lg:relative lg:translate-x-0">
+    <div class="flex justify-between items-center mb-10">
+      <h2 class="text-2xl font-bold text-blue-300">My Wallet</h2>
+      <button id="closeSidebar" class="text-gray-400 hover:text-white lg:hidden">
+        <i class="fas fa-times text-2xl"></i>
+      </button>
+    </div>
+    <nav>
+      <ul>
+        <li class="mb-4">
+          <a href="#" id="sidebarDashboardBtn" class="flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-gray-700 p-3 rounded-lg transition duration-200">
+            <i class="fas fa-home text-lg"></i>
+            <span class="text-lg">Dashboard</span>
+          </a>
+        </li>
+        <li class="mb-4">
+          <a href="#" id="sidebarAddBalanceBtn" class="flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-gray-700 p-3 rounded-lg transition duration-200">
+            <i class="fas fa-plus-circle text-lg"></i>
+            <span class="text-lg">Add Balance</span>
+          </a>
+        </li>
+        <li class="mb-4">
+          <a href="#" id="sidebarTransactionsBtn" class="flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-gray-700 p-3 rounded-lg transition duration-200">
+            <i class="fas fa-exchange-alt text-lg"></i>
+            <span class="text-lg">Transactions</span>
+          </a>
+        </li>
+        <li class="mb-4">
+          <a href="#" id="sidebarSettingsBtn" class="flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-gray-700 p-3 rounded-lg transition duration-200">
+            <i class="fas fa-cog text-lg"></i>
+            <span class="text-lg">Settings</span>
+          </a>
+        </li>
+        <li class="absolute bottom-6 left-6 right-6">
+          <button id="logoutBtn" class="flex items-center justify-center w-full space-x-3 text-red-300 hover:text-red-100 hover:bg-gray-700 p-3 rounded-lg transition duration-200">
+            <i class="fas fa-sign-out-alt text-lg"></i>
+            <span class="text-lg">Logout</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="flex-1 flex flex-col">
+    <header class="bg-white shadow-sm p-4 flex items-center justify-between lg:justify-end">
+      <button id="openSidebar" class="text-gray-600 hover:text-gray-800 lg:hidden mr-4">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+      <div class="flex items-center space-x-4">
+        <div class="hidden md:block">
+          <p id="navUsername" class="font-semibold text-gray-800">Loading...</p>
+          <p id="navUserEmail" class="text-sm text-gray-500">Loading...</p>
+        </div>
+        <div id="navUserInitial" class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
+          G
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+
+      <section id="dashboardView" class="animate-fade-in">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Dashboard</h1>
+
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl shadow-xl p-8 text-white mb-8">
+          <div class="flex justify-between items-center mb-4">
+            <p class="text-lg font-medium opacity-90">Available Balance</p>
+            <i class="fas fa-wallet text-3xl opacity-80"></i>
+          </div>
+          <h2 id="userBalance" class="balance-display font-bold text-shadow-lg">₹0</h2>
+          <p id="userIdDisplay" class="text-sm opacity-75 mt-4 text-right">User ID: Loading...</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <button id="dashboardAddBalanceBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-3">
+            <i class="fas fa-plus text-xl"></i>
+            <span class="text-lg">Add Balance</span>
+          </button>
+          <button id="dashboardViewTransactionsBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-3">
+            <i class="fas fa-exchange-alt text-xl"></i>
+            <span class="text-lg">View Transactions</span>
+          </button>
+        </div>
+
+        <div id="dashboardLoadingIndicator" class="text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-500"></div>
+          <p class="mt-4 text-gray-600 text-lg">Fetching your data...</p>
+        </div>
+
+        <div id="dashboardErrorMessage" class="hidden bg-red-100 border-l-4 border-red-500 p-5 rounded-lg mb-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+            <div class="ml-4">
+              <p id="dashboardErrorText" class="text-base font-medium text-red-800">Error loading data. Please try again.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="addBalanceView" class="hidden animate-fade-in">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Add Balance</h1>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+          <p class="text-gray-700 text-lg mb-6">How much would you like to add?</p>
+          
+          <div class="mb-6">
+            <label for="amountInput" class="block text-gray-700 text-sm font-semibold mb-2">Amount (₹)</label>
+            <input type="number" id="amountInput" placeholder="e.g., 500.00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-lg">
+          </div>
+
+          <p class="text-gray-700 text-lg mb-4">Choose a payment method:</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <label class="flex items-center bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200 border border-gray-200">
+              <input type="radio" name="paymentMethod" value="upi" class="form-radio h-5 w-5 text-blue-600">
+              <div class="ml-4">
+                <i class="fas fa-qrcode text-2xl text-blue-500 mr-2"></i>
+                <span class="text-lg font-medium text-gray-800">UPI / QR Code</span>
+                <p class="text-sm text-gray-500">Instant payment via UPI apps.</p>
+              </div>
+            </label>
+
+            <label class="flex items-center bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200 border border-gray-200">
+              <input type="radio" name="paymentMethod" value="card" class="form-radio h-5 w-5 text-blue-600">
+              <div class="ml-4">
+                <i class="fas fa-credit-card text-2xl text-purple-500 mr-2"></i>
+                <span class="text-lg font-medium text-gray-800">Debit/Credit Card</span>
+                <p class="text-sm text-gray-500">Visa, Mastercard, RuPay.</p>
+              </div>
+            </label>
+
+            <label class="flex items-center bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200 border border-gray-200">
+              <input type="radio" name="paymentMethod" value="netbanking" class="form-radio h-5 w-5 text-blue-600">
+              <div class="ml-4">
+                <i class="fas fa-building-columns text-2xl text-orange-500 mr-2"></i>
+                <span class="text-lg font-medium text-gray-800">Net Banking</span>
+                <p class="text-sm text-gray-500">Pay through your bank account.</p>
+              </div>
+            </label>
+
+            <label class="flex items-center bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200 border border-gray-200">
+              <input type="radio" name="paymentMethod" value="other_wallet" class="form-radio h-5 w-5 text-blue-600">
+              <div class="ml-4">
+                <i class="fas fa-mobile-alt text-2xl text-green-500 mr-2"></i>
+                <span class="text-lg font-medium text-gray-800">Other Wallets</span>
+                <p class="text-sm text-gray-500">Paytm, PhonePe, etc.</p>
+              </div>
+            </label>
+          </div>
+
+          <button id="processAddBalance" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-3">
+            <i class="fas fa-money-bill-wave text-xl"></i>
+            <span class="text-lg">Proceed to Add Balance</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="transactionsView" class="hidden animate-fade-in">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Transaction History</h1>
+        
+        <div id="transactionsList" class="space-y-4">
+          </div>
+
+        <div id="transactionsLoadingIndicator" class="text-center py-12 hidden">
+          <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-500"></div>
+          <p class="mt-4 text-gray-600 text-lg">Loading transactions...</p>
+        </div>
+
+        <div id="transactionsErrorMessage" class="hidden bg-red-100 border-l-4 border-red-500 p-5 rounded-lg mb-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+            <div class="ml-4">
+              <p id="transactionsErrorText" class="text-base font-medium text-red-800">Error loading transactions. Please try again.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="noTransactionsMessage" class="hidden bg-yellow-100 border-l-4 border-yellow-500 p-5 rounded-lg text-center mt-8">
+            <p class="text-lg text-yellow-800"><i class="fas fa-info-circle mr-2"></i> No transactions found for your account.</p>
+            <button id="noTransactionsAddBtn" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Add First Balance</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      
+      // Get all view sections
+      const dashboardView = document.getElementById('dashboardView');
+      const addBalanceView = document.getElementById('addBalanceView');
+      const transactionsView = document.getElementById('transactionsView');
+
+      // Get loading/error indicators for different sections
+      const dashboardLoadingIndicator = document.getElementById('dashboardLoadingIndicator');
+      const dashboardErrorMessage = document.getElementById('dashboardErrorMessage');
+      const transactionsLoadingIndicator = document.getElementById('transactionsLoadingIndicator');
+      const transactionsErrorMessage = document.getElementById('transactionsErrorMessage');
+      const noTransactionsMessage = document.getElementById('noTransactionsMessage');
+
+
+      // Sidebar and Navbar elements
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      // Buttons to switch views
+      const sidebarDashboardBtn = document.getElementById('sidebarDashboardBtn');
+      const sidebarAddBalanceBtn = document.getElementById('sidebarAddBalanceBtn');
+      const sidebarTransactionsBtn = document.getElementById('sidebarTransactionsBtn');
+      const sidebarSettingsBtn = document.getElementById('sidebarSettingsBtn'); // Add this for completeness
+
+      const dashboardAddBalanceBtn = document.getElementById('dashboardAddBalanceBtn');
+      const dashboardViewTransactionsBtn = document.getElementById('dashboardViewTransactionsBtn');
+      const noTransactionsAddBtn = document.getElementById('noTransactionsAddBtn');
+
+
+      if (!user || isLoggedIn !== 'true') {
+        window.location.href = '../Home.html'; // Adjust path if needed
+        return;
+      }
+
+      // Initial state - show dashboard and fetch user info/balance
+      showView(dashboardView);
+      updateUserInfo();
+      fetchUserBalance(user._id || user.id);
+      
+      // Event Listeners for Sidebar Toggle
+      openSidebarBtn.addEventListener('click', toggleSidebar);
+      closeSidebarBtn.addEventListener('click', toggleSidebar);
+      sidebarOverlay.addEventListener('click', toggleSidebar);
+
+      // Event Listener for Logout
+      logoutBtn.addEventListener('click', function() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = '../Home.html'; // Redirect to home/login page
+      });
+
+      // Event Listeners for Navigation
+      sidebarDashboardBtn.addEventListener('click', () => {
+        showView(dashboardView);
+        toggleSidebar(); 
+        fetchUserBalance(user._id || user.id); // Refresh balance on dashboard view
+      });
+
+      sidebarAddBalanceBtn.addEventListener('click', () => {
+        showView(addBalanceView);
+        toggleSidebar(); 
+      });
+
+      dashboardAddBalanceBtn.addEventListener('click', () => showView(addBalanceView));
+      noTransactionsAddBtn.addEventListener('click', () => showView(addBalanceView));
+
+
+      // New: Event listener for Transactions button
+      sidebarTransactionsBtn.addEventListener('click', () => {
+        showView(transactionsView);
+        toggleSidebar(); 
+        fetchTransactionHistory(user._id || user.id); // Fetch transactions when switching to this view
+      });
+      dashboardViewTransactionsBtn.addEventListener('click', () => {
+        showView(transactionsView);
+        fetchTransactionHistory(user._id || user.id); // Fetch transactions when switching to this view
+      });
+      
+      // Placeholder for Settings button (if you implement a settings page later)
+      sidebarSettingsBtn.addEventListener('click', () => {
+        alert('Settings page functionality would be implemented here.');
+        toggleSidebar();
+      });
+
+      // Event Listener for Process Add Balance button
+      document.getElementById('processAddBalance').addEventListener('click', function() {
+        const amount = document.getElementById('amountInput').value;
+        const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+        if (!amount || parseFloat(amount) <= 0) {
+          alert('Please enter a valid amount to add.');
+          return;
+        }
+        if (!selectedMethod) {
+          alert('Please select a payment method.');
+          return;
+        }
+
+        alert(`Proceeding to add ₹${amount} using ${selectedMethod.value}. (This would integrate with a payment gateway)`);
+        // In a real app, this would initiate a payment gateway flow
+      });
+    });
+
+    // --- Helper Functions ---
+
+    function showView(viewToShow) {
+      document.querySelectorAll('section').forEach(section => {
+        section.classList.add('hidden');
+      });
+      viewToShow.classList.remove('hidden');
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('hidden');
+    }
+
+    async function fetchUserBalance(userId) {
+      try {
+        dashboardLoadingIndicator.classList.remove('hidden');
+        dashboardErrorMessage.classList.add('hidden');
+
+        const response = await fetch(`http://localhost:5000/api/balance/${userId}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to fetch balance');
         }
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--dark);
-        }
+        const data = await response.json();
+        const formattedBalance = new Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(data.balance);
+        document.getElementById('userBalance').textContent = formattedBalance;
+        
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+        document.getElementById('dashboardErrorText').textContent = error.message || 'Failed to load balance';
+        dashboardErrorMessage.classList.remove('hidden');
+        document.getElementById('userBalance').textContent = '₹N/A'; // Indicate balance couldn't be loaded
+      } finally {
+        dashboardLoadingIndicator.classList.add('hidden');
+      }
+    }
 
-        .header {
-            text-align: center;
-            padding: 2rem 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+    async function fetchTransactionHistory(userId) {
+        const transactionsList = document.getElementById('transactionsList');
+        transactionsList.innerHTML = ''; // Clear previous transactions
+        transactionsLoadingIndicator.classList.remove('hidden');
+        transactionsErrorMessage.classList.add('hidden');
+        noTransactionsMessage.classList.add('hidden');
 
-        .container {
-            max-width: 800px;
-            width: 90%;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .balance-card {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-            transition: transform 0.3s ease;
-        }
-
-        .balance-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .balance-title {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .balance-amount {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--success);
-            margin: 1rem 0;
-            position: relative;
-            display: inline-block;
-        }
-
-        .balance-amount::before {
-            content: "₹";
-            font-size: 2.5rem;
-            position: absolute;
-            left: -1.5rem;
-            top: 0.5rem;
-        }
-
-        .content-section {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
-
-        h2 {
-            color: var(--secondary);
-            margin-top: 0;
-        }
-
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .feature-card {
-            flex: 1;
-            min-width: 200px;
-            background: var(--light);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .cta-button:hover {
-            background: var(--secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            .balance-amount {
-                font-size: 3rem;
+        try {
+            const response = await fetch(`http://localhost:5000/api/transactions/${userId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to fetch transactions');
             }
             
-            .balance-amount::before {
-                font-size: 2rem;
-                left: -1.2rem;
+            const data = await response.json();
+            const history = data.history || [];
+
+            if (history.length === 0) {
+                noTransactionsMessage.classList.remove('hidden');
+                return;
             }
+
+            history.forEach(transaction => {
+                const transactionElement = document.createElement('div');
+                // Determine icon and color based on transaction status (you might need to expand this if statuses vary)
+                let iconClass = '';
+                let statusColorClass = '';
+                let statusText = transaction.status;
+
+                switch (transaction.status.toLowerCase()) {
+                    case 'created':
+                        iconClass = 'fas fa-hourglass-half text-blue-500';
+                        statusColorClass = 'transaction-status-created';
+                        statusText = 'Pending';
+                        break;
+                    case 'completed': // Assuming you'll have a 'completed' status
+                        iconClass = 'fas fa-check-circle text-green-500';
+                        statusColorClass = 'transaction-status-completed';
+                        statusText = 'Completed';
+                        break;
+                    case 'failed': // Assuming you'll have a 'failed' status
+                        iconClass = 'fas fa-times-circle text-red-500';
+                        statusColorClass = 'transaction-status-failed';
+                        statusText = 'Failed';
+                        break;
+                    default:
+                        iconClass = 'fas fa-info-circle text-gray-500';
+                        statusColorClass = ''; // Default border
+                        break;
+                }
+
+                // Format amount to INR currency
+                const formattedAmount = new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(transaction.amount);
+
+                // Add a simple date placeholder or parse if a date field exists
+                const date = transaction.timestamp ? new Date(transaction.timestamp).toLocaleDateString() : 'N/A';
+
+                transactionElement.className = `bg-white p-4 rounded-lg shadow-sm flex items-center justify-between transition duration-200 hover:shadow-md ${statusColorClass} transaction-item`;
+                transactionElement.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0 text-2xl">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">Amount: ${formattedAmount}</p>
+                            <p class="text-sm text-gray-500">Order ID: ${transaction.orderId || 'N/A'}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-block text-sm font-medium px-3 py-1 rounded-full 
+                            ${transaction.status.toLowerCase() === 'created' ? 'bg-blue-100 text-blue-800' :
+                             transaction.status.toLowerCase() === 'completed' ? 'bg-green-100 text-green-800' :
+                             transaction.status.toLowerCase() === 'failed' ? 'bg-red-100 text-red-800' :
+                             'bg-gray-100 text-gray-800'}">
+                            ${statusText}
+                        </span>
+                        <p class="text-xs text-gray-400 mt-1">${date}</p>
+                    </div>
+                `;
+                transactionsList.appendChild(transactionElement);
+            });
+
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+            document.getElementById('transactionsErrorText').textContent = error.message || 'Failed to load transactions';
+            transactionsErrorMessage.classList.remove('hidden');
+        } finally {
+            transactionsLoadingIndicator.classList.add('hidden');
         }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Your Digital Wallet</h1>
-    </div>
+    }
 
-    <div class="container">
-        <div class="balance-card">
-            <div class="balance-title">Available Balance</div>
-            <div class="balance-amount" id="balanceDisplay">0</div>
-            <p>This amount is ready to use for your next purchase</p>
-        </div>
+    function updateUserInfo() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) return;
 
-        <div class="content-section">
-            <h2>What You Can Do With Your Balance</h2>
-            <p>Your wallet balance gives you the freedom to shop, pay bills, and send money instantly. Here's how you can make the most of it:</p>
-            
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">🛒</div>
-                    <h3>Shop Online</h3>
-                    <p>Use your balance at thousands of online stores with instant checkout.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Mobile Recharge</h3>
-                    <p>Top up your phone or pay your mobile bills in seconds.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">💸</div>
-                    <h3>Send Money</h3>
-                    <p>Transfer to friends and family with just a phone number.</p>
-                </div>
-            </div>
+      const name = user.username || user.fullName || user.name || 'User';
+      const initial = name.charAt(0).toUpperCase();
 
-            <a href="payments.html" class="cta-button">Add More Money</a>
-        </div>
+      // Navbar
+      document.getElementById('navUsername').textContent = name;
+      document.getElementById('navUserEmail').textContent = user.email || 'No email provided';
+      document.getElementById('navUserInitial').textContent = initial;
 
-        <div class="content-section">
-            <h2>Your Transaction History</h2>
-            <p>While we're displaying your current balance here, soon you'll be able to view your complete transaction history with details of every payment and purchase.</p>
-            <p>Coming in our next update: Detailed statements, spending analytics, and export options.</p>
-        </div>
-    </div>
-
-    <script>
-        // Display balance from localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            const balance = localStorage.getItem('razorpayBalance') || '0';
-            document.getElementById('balanceDisplay').textContent = balance;
-            
-            // Add animation when balance loads
-            const balanceElement = document.getElementById('balanceDisplay');
-            balanceElement.style.opacity = 0;
-            let opacity = 0;
-            const fadeIn = setInterval(() => {
-                opacity += 0.05;
-                balanceElement.style.opacity = opacity;
-                if (opacity >= 1) clearInterval(fadeIn);
-            }, 30);
-        });
-    </script>
+      // Dashboard View (User ID)
+      document.getElementById('userIdDisplay').textContent = `User ID: ${user._id || user.id || 'N/A'}`;
+    }
+  </script>
 </body>
 </html>
