@@ -864,99 +864,115 @@
       alert("Failed to update user: " + error.message);
     }
   }
-<script>
-    // Redirect to index.html if admin is not logged in
-    window.onload = function () {
-      const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
-      if (isAdminLoggedIn !== 'true') {
-        window.location.href = '../index.html';
-      }
-    };
-  </script> 
-  // Show create user modal
-  function showCreateUserModal() {
-    document.getElementById('createModal').classList.remove('hidden');
+
+ // Show create user modal
+function showCreateUserModal() {
+  document.getElementById('createModal').classList.remove('hidden');
+}
+
+// Hide create user modal
+function hideCreateUserModal() {
+  document.getElementById('createModal').classList.add('hidden');
+}
+
+// Submit new user creation
+async function submitCreateUser() {
+  const username = document.getElementById('createUsername').value.trim();
+  const email = document.getElementById('createEmail').value.trim();
+  const password = document.getElementById('createPassword').value;
+  const role = document.getElementById('createRole').value;
+  const isVerified = document.getElementById('createVerified').checked;
+  const isActive = document.getElementById('createActive').checked;
+
+  if (!username || !email || !password) {
+    alert("Username, Email and Password are required.");
+    return;
   }
 
-  // Hide create user modal
-  function hideCreateUserModal() {
-    document.getElementById('createModal').classList.add('hidden');
-  }
+  try {
+    const res = await fetch('https://gameappbackend-i8zv.onrender.com/api/createuser', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Add auth token if required
+      },
+      body: JSON.stringify({ 
+        username, 
+        email, 
+        password, 
+        role, 
+        isVerified, 
+        isActive 
+      })
+    });
 
-  // Submit new user creation
-  async function submitCreateUser() {
-    const username = document.getElementById('createUsername').value;
-    const email = document.getElementById('createEmail').value;
-    const password = document.getElementById('createPassword').value;
-    const role = document.getElementById('createRole').value;
-    const isVerified = document.getElementById('createVerified').checked;
-    const isActive = document.getElementById('createActive').checked;
-
-    if (!username || !email || !password) {
-      alert("Username, Email and Password are required.");
-      return;
+    const responseData = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(responseData.message || `HTTP error! status: ${res.status}`);
     }
 
+    alert("User created successfully!");
+    hideCreateUserModal();
+    fetchUsers(); // Refresh user list
+    
+    // Clear form
+    document.getElementById('createUsername').value = '';
+    document.getElementById('createEmail').value = '';
+    document.getElementById('createPassword').value = '';
+    document.getElementById('createRole').value = 'user';
+    document.getElementById('createVerified').checked = false;
+    document.getElementById('createActive').checked = true;
+    
+  } catch (error) {
+    console.error("Error creating user:", error);
+    alert("Failed to create user: " + (error.message || 'Unknown error'));
+  }
+}
+
+// Show delete confirmation
+function showDeleteConfirmation(userId, username) {
+  document.getElementById('confirmModalTitle').textContent = `Delete User: ${username}`;
+  document.getElementById('confirmModalMessage').textContent = `Are you sure you want to delete the user "${username}"? This action cannot be undone.`;
+  document.getElementById('confirmModal').classList.remove('hidden');
+  
+  pendingAction = 'deleteUser';
+  pendingActionData = userId;
+}
+
+// Hide confirmation modal
+function hideConfirmModal() {
+  document.getElementById('confirmModal').classList.add('hidden');
+  pendingAction = null;
+  pendingActionData = null;
+}
+
+// Confirm action (delete user)
+async function confirmAction() {
+  if (pendingAction === 'deleteUser') {
     try {
-      const res = await fetch('https://gameappbackend-i8zv.onrender.com/api/createuser', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, role, isVerified, isActive })
+      const res = await fetch(`https://gameappbackend-i8zv.onrender.com/api/deleteuser/${pendingActionData}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Add auth token if required
+        }
       });
 
+      const responseData = await res.json();
+      
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        throw new Error(responseData.message || `HTTP error! status: ${res.status}`);
       }
 
-      alert("User created successfully!");
-      hideCreateUserModal();
+      alert("User deleted successfully!");
+      hideConfirmModal();
       fetchUsers(); // Refresh user list
     } catch (error) {
-      console.error("Error creating user:", error);
-      alert("Failed to create user: " + error.message);
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user: " + (error.message || 'Unknown error'));
     }
   }
-
-  // Show delete confirmation
-  function showDeleteConfirmation(userId, username) {
-    document.getElementById('confirmModalTitle').textContent = `Delete User: ${username}`;
-    document.getElementById('confirmModalMessage').textContent = `Are you sure you want to delete the user "${username}"? This action cannot be undone.`;
-    document.getElementById('confirmModal').classList.remove('hidden');
-    
-    pendingAction = 'deleteUser';
-    pendingActionData = userId;
-  }
-
-  // Hide confirmation modal
-  function hideConfirmModal() {
-    document.getElementById('confirmModal').classList.add('hidden');
-    pendingAction = null;
-    pendingActionData = null;
-  }
-
-  // Confirm action (delete user)
-  async function confirmAction() {
-    if (pendingAction === 'deleteUser') {
-      try {
-        const res = await fetch(`https://gameappbackend-i8zv.onrender.com/api/deleteuser/${pendingActionData}`, {
-          method: 'DELETE'
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
-        }
-
-        alert("User deleted successfully!");
-        hideConfirmModal();
-        fetchUsers(); // Refresh user list
-      } catch (error) {
-        console.error("Error deleting user:", error);
-        alert("Failed to delete user: " + error.message);
-      }
-    }
-  }
+}
 </script>
 </body>
 </html>
