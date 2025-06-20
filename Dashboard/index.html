@@ -106,7 +106,7 @@
         console.log("Payment successful:", response);
 
         // Step 3: Send payment confirmation to backend
-        const successResponse = await fetch("http://localhost:5000/api/payment-success", {
+        const successResponse = await fetch("https://gameappbackend-i8zv.onrender.com/api/payment-success", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

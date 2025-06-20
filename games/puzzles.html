@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Number Puzzles</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom Styles - Expanded for Dashboard, Modals, and more intricate puzzle cells */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .puzzle-grid {
+            display: grid;
+            gap: 12px; /* Increased gap */
+            max-width: 400px; /* Larger grid */
+            margin: 0 auto;
+            border: 1px solid #e2e8f0; /* Subtle border */
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .puzzle-cell {
+            width: 90px; /* Larger cells */
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em; /* Larger font */
+            font-weight: bold;
+            border: 2px solid #cbd5e0;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out; /* Smoother transitions */
+            border-radius: 6px;
+            user-select: none; /* Prevent text selection */
+        }
+        .puzzle-cell.empty {
+            background-color: #edf2f7;
+            cursor: text; /* Indicate it's an input spot */
+            color: #4a5568;
+        }
+        .puzzle-cell:not(.empty):hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .correct {
+            color: #10b981; /* Green-500 */
+        }
+        .incorrect {
+            color: #ef4444; /* Red-500 */
+        }
+        .section-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col items-center">
+
+    <header class="w-full bg-blue-600 text-white shadow-md py-4 mb-8">
+        <div class="container flex justify-between items-center">
+            <h1 class="text-4xl font-extrabold tracking-tight">Number Quest</h1>
+            <nav>
+                <button id="show-game-button" class="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-md transition duration-300 mr-4">Play Game</button>
+                <button id="show-dashboard-button" class="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-md transition duration-300">Dashboard</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container flex-grow">
+        <section id="game-section" class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full text-center mb-8">
+            <h2 class="text-3xl font-bold mb-6 section-header">Solve the Number Puzzle!</h2>
+
+            <p id="puzzle-description" class="text-lg text-gray-700 mb-4 font-semibold"></p>
+
+            <div id="puzzle-container" class="puzzle-grid mb-8">
+                </div>
+
+            <div class="mb-6 flex justify-center items-center space-x-4">
+                <label for="user-input" class="block text-xl font-medium text-gray-700">Answer:</label>
+                <input type="number" id="user-input" class="w-32 p-3 border border-gray-300 rounded-md text-center text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="?">
+            </div>
+
+            <div class="flex justify-center space-x-4 mb-6">
+                <button id="check-button" class="bg-blue-600 text-white px-7 py-3 rounded-md hover:bg-blue-700 transition duration-300 text-lg font-semibold">Check</button>
+                <button id="next-puzzle-button" class="bg-green-600 text-white px-7 py-3 rounded-md hover:bg-green-700 transition duration-300 text-lg font-semibold">Next</button>
+                <button id="hint-button" class="bg-yellow-500 text-white px-7 py-3 rounded-md hover:bg-yellow-600 transition duration-300 text-lg font-semibold">Hint</button>
+                <button id="reset-button" class="bg-gray-500 text-white px-7 py-3 rounded-md hover:bg-gray-600 transition duration-300 text-lg font-semibold">Reset</button>
+            </div>
+
+            <p id="message" class="text-2xl font-bold mt-4"></p>
+            <p class="text-gray-600 text-md mt-4">
+                Puzzle <span id="current-puzzle-index">1</span> of <span id="total-puzzles">0</span> |
+                Attempts: <span id="attempts-count">0</span> |
+                Time: <span id="timer">00:00</span>
+            </p>
+        </section>
+
+        <section id="dashboard-section" class="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full mx-auto hidden">
+            <h2 class="text-3xl font-bold mb-6 section-header">Your Puzzle Dashboard</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-blue-50 p-6 rounded-lg shadow-sm text-center">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-2">Puzzles Solved</h3>
+                    <p id="dashboard-puzzles-solved" class="text-5xl font-extrabold text-blue-600">0</p>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-lg shadow-sm text-center">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-2">Accuracy Rate</h3>
+                    <p id="dashboard-accuracy" class="text-5xl font-extrabold text-purple-600">0%</p>
+                </div>
+                <div class="bg-green-50 p-6 rounded-lg shadow-sm text-center">
+                    <h3 class="text-xl font-semibold text-green-800 mb-2">Fastest Solve Time</h3>
+                    <p id="dashboard-fastest-time" class="text-5xl font-extrabold text-green-600">N/A</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-700">All Puzzles</h3>
+            <div class="mb-4">
+                <label for="difficulty-filter" class="font-medium mr-2">Filter by Difficulty:</label>
+                <select id="difficulty-filter" class="p-2 border border-gray-300 rounded-md">
+                    <option value="all">All</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                    <option value="Very Hard">Very Hard</option>
+                </select>
+            </div>
+
+            <div id="puzzle-list-container" class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">#</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Type</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Difficulty</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Status</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Best Time</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Attempts</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-puzzle-table-body" class="divide-y divide-gray-200">
+                        </tbody>
+                </table>
+            </div>
+
+            <button id="clear-data-button" class="mt-8 bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600 transition duration-300 text-lg font-semibold">Clear All Data</button>
+        </section>
+    </main>
+
+    <div id="completion-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="text-4xl font-bold text-green-600 mb-4">Puzzle Solved! 🎉</h3>
+            <p id="completion-message" class="text-xl text-gray-700 mb-6"></p>
+            <button id="modal-next-puzzle" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-300 text-lg font-semibold mr-4">Next Puzzle</button>
+            <button id="modal-dashboard-button" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition duration-300 text-lg font-semibold">Go to Dashboard</button>
+        </div>
+    </div>
+
+    <div id="game-over-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="text-4xl font-bold text-blue-600 mb-4">All Puzzles Completed!</h3>
+            <p class="text-xl text-gray-700 mb-6">Congratulations! You've mastered all the challenges.</p>
+            <button id="modal-reset-game" class="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition duration-300 text-lg font-semibold mr-4">Play Again (Reset)</button>
+            <button id="modal-final-dashboard" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition duration-300 text-lg font-semibold">View Final Dashboard</button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- 1. Puzzle Data ---
+        const puzzles = [
+            // --- Easy (for warm-up, but still with a twist) ---
+            { id: 'E001', grid: [1, 2, 4, 7, null, 16], answer: 11, blankIndex: 4, difficulty: 'Easy', type: 'Increasing Add', hint: 'The number added increases by 1 each time.' }, // +1, +2, +3, +4, +5
+            { id: 'E002', grid: [3, 6, 12, null, 48, 96], answer: 24, blankIndex: 3, difficulty: 'Easy', type: 'Geometric Progression (x2)', hint: 'Each number is double the previous one.' },
+            { id: 'E003', grid: [50, 45, 40, null, 30, 25], answer: 35, blankIndex: 3, difficulty: 'Easy', type: 'Decreasing Arithmetic', hint: 'Subtract the same number repeatedly.' },
+            { id: 'E004', grid: [1, 1, 2, 3, 5, null, 13], answer: 8, blankIndex: 5, difficulty: 'Easy', type: 'Fibonacci Sequence', hint: 'Sum of the two preceding numbers.' },
+            { id: 'E005', grid: [2, 3, 5, null, 11, 13], answer: 7, blankIndex: 3, difficulty: 'Easy', type: 'Prime Numbers', hint: 'Numbers only divisible by 1 and themselves.' },
+            { id: 'E006', grid: [1, 4, 9, 16, null, 36], answer: 25, blankIndex: 4, difficulty: 'Easy', type: 'Square Numbers', hint: 'Numbers multiplied by themselves (1x1, 2x2...).' },
+            { id: 'E007', grid: [1, 8, 27, null, 125, 216], answer: 64, blankIndex: 3, difficulty: 'Easy', type: 'Cube Numbers', hint: 'Numbers multiplied by themselves three times (1x1x1, 2x2x2...).' },
+            { id: 'E008', grid: [100, 99, 97, 94, null, 85], answer: 90, blankIndex: 4, difficulty: 'Easy', type: 'Decreasing Subtraction', hint: 'The number subtracted increases by 1 each time (1, 2, 3...).' }, // -1, -2, -3, -4, -5
+            { id: 'E009', grid: [7, 14, 21, null, 35, 42], answer: 28, blankIndex: 3, difficulty: 'Easy', type: 'Multiples of 7', hint: 'Add 7 each time.' },
+            { id: 'E010', grid: [2, 5, 10, 17, null, 37], answer: 26, blankIndex: 4, difficulty: 'Easy', type: 'Squares plus 1', hint: '1^2+1, 2^2+1, 3^2+1...' }, // (n^2)+1
+
+            // --- Medium ---
+            { id: 'M001', grid: [1, 2, 6, 24, null, 720], answer: 120, blankIndex: 4, difficulty: 'Medium', type: 'Factorial Sequence', hint: '1!, 2!, 3!, 4!...' }, // 1, 2, 6, 24, 120, 720
+            { id: 'M002', grid: [2, 4, 8, 14, 22, null, 46], answer: 32, blankIndex: 5, difficulty: 'Medium', type: 'Increasing Differences', hint: 'Differences are 2, 4, 6, 8, 10...' }, // Add (index + 1) * 2? No. Add 2, Add 4, Add 6, Add 8, Add 10.
+            { id: 'M003', grid: [5, 10, 8, 16, 14, null, 28], answer: 28, blankIndex: 5, difficulty: 'Medium', type: 'Alternating Operations (*2, -2)', hint: 'Multiply by 2, then subtract 2, then multiply by 2...' },
+            { id: 'M004', grid: [1, 3, 7, 15, null, 63], answer: 31, blankIndex: 4, difficulty: 'Medium', type: 'Powers of 2 minus 1', hint: '2^1-1, 2^2-1, 2^3-1...' },
+            { id: 'M005', grid: [1, 2, 5, 12, null, 50], answer: 27, blankIndex: 4, difficulty: 'Medium', type: 'N(i) = N(i-1)*2 + (i-1)', hint: 'Each number is twice the previous number plus its 0-based index.' }, // 1, 2 (1*2+0), 5 (2*2+1), 12 (5*2+2), 27 (12*2+3)
+            { id: 'M006', grid: [100, 50, 48, 24, null, 10], answer: 22, blankIndex: 4, difficulty: 'Medium', type: 'Alternating Operations (/2, -2)', hint: 'Divide by 2, then subtract 2, then divide by 2...' },
+            { id: 'M007', grid: [1, 3, 4, 7, 11, null, 29], answer: 18, blankIndex: 5, difficulty: 'Medium', type: 'Sum of Two Prev (like Fibonacci)', hint: 'Sum of the two preceding numbers (current - 1 and current - 2).' },
+            { id: 'M008', grid: [6, 11, 21, 36, null, 71], answer: 56, blankIndex: 4, difficulty: 'Medium', type: 'Increasing Differences by 5', hint: 'The difference between numbers increases by 5 each time (5, 10, 15...).' },
+            { id: 'M009', grid: [4, 16, 36, 64, null, 144], answer: 100, blankIndex: 4, difficulty: 'Medium', type: 'Even Square Numbers', hint: 'Squares of even numbers (2^2, 4^2, 6^2...).' },
+            { id: 'M010', grid: [1, 5, 13, 29, null, 125], answer: 61, blankIndex: 4, difficulty: 'Medium', type: 'N(i) = N(i-1)*2 + 3', hint: 'Each number is twice the previous number plus 3.' },
+
+            // --- Hard ---
+            {
+                id: 'H001', // Magic Square (sum 15) - missing center
+                grid: [8, 1, 6,
+                    3, null, 7,
+                    4, 9, 2],
+                answer: 5, blankIndex: 4, difficulty: 'Hard', type: 'Magic Square 3x3', hint: 'Every row, column, and main diagonal sums to the same number (15).'
+            },
+            {
+                id: 'H002', // Pyramid sum: each number is sum of two below it
+                grid: [null,
+                    8, 7,
+                    3, 5, 2],
+                answer: 15, blankIndex: 0, difficulty: 'Hard', type: 'Number Pyramid', hint: 'Each number is the sum of the two numbers directly below it.'
+            },
+            {
+                id: 'H003', // Row-wise pattern: (A+B)*C = D (for a 3x4 grid structure)
+                grid: [
+                    2, 3, 4, 20,
+                    5, 1, 6, null,
+                    7, 2, 3, 27
+                ],
+                answer: 36, blankIndex: 7, difficulty: 'Hard', type: 'Row Logic: (A+B)*C', hint: 'The last number in each row is derived from an operation on the first three numbers.'
+            },
+            { id: 'H004', grid: [1, 2, 3, 5, 8, null, 21, 34], answer: 13, blankIndex: 5, difficulty: 'Hard', type: 'Fibonacci-like Progression', hint: 'Sum of the previous two numbers in the sequence.' },
+            { id: 'H005', grid: [2, 6, 12, 20, null, 42], answer: 30, blankIndex: 4, difficulty: 'Hard', type: 'N(N+1) sequence', hint: 'Consecutive products: 1*2, 2*3, 3*4...' },
+            { id: 'H006', grid: [10, 1, 9, 2, 8, null, 7, 4], answer: 3, blankIndex: 5, difficulty: 'Hard', type: 'Interleaved Sequences', hint: 'There are two separate patterns intertwined (10,9,8,7... and 1,2,3,4...).' },
+            { id: 'H007', grid: [1, 2, 6, 24, 120, null], answer: 720, blankIndex: 5, difficulty: 'Hard', type: 'Factorial Sequence', hint: 'Product of all integers from 1 up to that number.' },
+            { id: 'H008', grid: [1, 5, 11, 19, null, 41], answer: 29, blankIndex: 4, difficulty: 'Hard', type: 'Increasing Differences (+2)', hint: 'Differences are 4, 6, 8, 10, 12...' },
+            { id: 'H009', grid: [7, 17, 34, 58, null, 127], answer: 89, blankIndex: 4, difficulty: 'Hard', type: 'Second Order Arithmetic Progression', hint: 'Look at the differences between the differences (they increase by 7).' }, // 10, 17, 24 (diff of diffs: 7, 7). Next diff is 24+7=31. 58+31=89.
+            { id: 'H010', grid: [5, 7, 11, 19, null, 67], answer: 35, blankIndex: 4, difficulty: 'Hard', type: 'N(i) = N(i-1)*2 - 3', hint: 'Each number is twice the previous number minus 3.' },
+            { id: 'H011', grid: [1, 2, 4, 8, 16, null, 64, 128], answer: 32, blankIndex: 5, difficulty: 'Hard', type: 'Powers of Two', hint: 'Each number is 2 raised to a consecutive power (2^0, 2^1...).' },
+            { id: 'H012', grid: [3, 4, 7, 12, 19, null, 37], answer: 28, blankIndex: 5, difficulty: 'Hard', type: 'Adding increasing numbers', hint: 'Add 1, then 3, then 5, then 7, then 9.' }, // This is N(i) = N(i-1) + (2*i - 1) if i is 1-indexed. (3+1=4, 4+3=7, 7+5=12, 12+7=19, 19+9=28)
+            { id: 'H013', grid: [1, 2, 4, 7, 11, null, 22], answer: 16, blankIndex: 5, difficulty: 'Hard', type: 'Adding increasing numbers (+1, +2, +3...)', hint: 'Add 1, then 2, then 3, then 4, then 5...' },
+            { id: 'H014', grid: [100, 96, 90, 82, null, 60], answer: 72, blankIndex: 4, difficulty: 'Hard', type: 'Decreasing Subtraction (Even)', hint: 'Subtract even numbers: 4, 6, 8, 10...' },
+            { id: 'H015', grid: [6, 12, 10, 20, 18, null], answer: 36, blankIndex: 5, difficulty: 'Hard', type: 'Alternating Operations (*2, -2)', hint: 'Multiply by 2, then subtract 2, alternating.' },
+            { id: 'H016', grid: [1, 2, 3, 6, 11, 20, null], answer: 37, blankIndex: 6, difficulty: 'Hard', type: 'Sum of 3 Previous', hint: 'Each number is the sum of the three preceding numbers.' },
+            { id: 'H017', grid: [1, 10, 2, 9, 3, null, 4, 7], answer: 8, blankIndex: 5, difficulty: 'Hard', type: 'Two Converging Sequences', hint: 'Two sequences are intertwined: one increasing (1,2,3,4...) and one decreasing (10,9,8,7...).' },
+            { id: 'H018', grid: [2, 5, 11, 23, null, 95], answer: 47, blankIndex: 4, difficulty: 'Hard', type: 'N(i) = N(i-1)*2 + 1', hint: 'Each number is twice the previous number plus 1.' },
+            { id: 'H019', grid: [3, 9, 21, 45, null, 189], answer: 93, blankIndex: 4, difficulty: 'Hard', type: 'N(i) = N(i-1)*2 + 3 (variant)', hint: 'Each number is twice the previous number plus 3.' },
+            { id: 'H020', grid: [5, 7, 10, 14, 19, null], answer: 25, blankIndex: 5, difficulty: 'Hard', type: 'Increasing Add (Prime Like)', hint: 'Add 2, then 3, then 4, then 5, then 6...' },
+            { id: 'H021', grid: [1, 1, 2, 4, 7, 13, null], answer: 24, blankIndex: 6, difficulty: 'Hard', type: 'Tribonacci Sequence', hint: 'Each number is the sum of the three preceding numbers.' },
+            { id: 'H022', grid: [6, 12, 24, 48, null, 192], answer: 96, blankIndex: 4, difficulty: 'Hard', type: 'Geometric (x2)', hint: 'Multiply by 2 each time.' },
+            { id: 'H023', grid: [1, 4, 27, 256, null], answer: 3125, blankIndex: 4, difficulty: 'Hard', type: 'N^N (Index as Base and Power)', hint: 'The number is the index raised to the power of the index (1^1, 2^2, 3^3...).' },
+            { id: 'H024', grid: [1000, 500, 250, 125, null, 31.25], answer: 62.5, blankIndex: 4, difficulty: 'Hard', type: 'Geometric (/2)', hint: 'Divide by 2 each time.' },
+            { id: 'H025', grid: [1, 4, 7, 10, 13, null, 19], answer: 16, blankIndex: 5, difficulty: 'Hard', type: 'Arithmetic Sequence (+3)', hint: 'Add 3 each time.' },
+
+            // --- Very Hard ---
+            { id: 'V001', grid: [1, 2, 4, 8, null, 28, 47], answer: 15, blankIndex: 4, difficulty: 'Very Hard', type: 'Fibonacci with Index Add', hint: 'Each number is the sum of the two preceding numbers plus its 1-based index (1+2+1=4, 2+4+2=8, 4+8+3=15).' }, // (N_prev + N_prev-1) + index
+            {
+                id: 'V002', // Logic: Consecutive numbers in a grid
+                grid: [
+                    1, 2, 3,
+                    4, null, 6,
+                    7, 8, 9
+                ],
+                answer: 5, blankIndex: 4, difficulty: 'Very Hard', type: 'Consecutive Grid', hint: 'Numbers increase consecutively across rows.'
+            },
+            {
+                id: 'V003', grid: [
+                    2, 3, 4,
+                    3, null, 5,
+                    4, 5, 6
+                ],
+                answer: 4, blankIndex: 4, difficulty: 'Very Hard', type: 'Coordinate Based (R+C+2)', hint: 'The number in a cell is its (0-indexed row + 0-indexed column + 2).'
+            },
+            {
+                id: 'V004', // Pattern: Columns are arithmetic progressions, rows are also related.
+                grid: [
+                    10, null, 20,
+                    15, 25, 35,
+                    30, 40, 50
+                ],
+                answer: 10, blankIndex: 1, difficulty: 'Very Hard', type: 'Column/Row Arithmetic', hint: 'Numbers in each column increase by 5 or 10. Numbers in each row also have a pattern.'
+            },
+            {
+                id: 'V005', grid: [
+                    2, 3, 4, 20, // (2+3)*4 = 20
+                    5, 1, 6, null, // (5+1)*6 = 36
+                    7, 2, 3, 27  // (7+2)*3 = 27
+                ],
+                answer: 36, blankIndex: 7, difficulty: 'Very Hard', type: 'Row Logic: (A+B)*C', hint: 'The last number in each row is the product of the sum of the first two and the third.'
+            },
+            { id: 'V006', grid: [1, 2, 5, 14, null, 122], answer: 41, blankIndex: 4, difficulty: 'Very Hard', type: 'N(i) = N(i-1)*3 - (i-1)', hint: 'Current number is (previous number * 3) - its 0-based index.' }, // 1, 2(1*3-1), 5(2*3-1), 14(5*3-1), 41(14*3-1)
+            { id: 'V007', grid: [1, 2, 6, 42, null, 1806], answer: 1806, blankIndex: 4, difficulty: 'Very Hard', type: 'N(i) = N(i-1) * (N(i-1) + 1)', hint: 'Each number is the previous number multiplied by (previous number + 1).' },
+            { id: 'V008', grid: [0, 1, 2, 7, null, 56], answer: 24, blankIndex: 4, difficulty: 'Very Hard', type: 'N(i) = N(i-1)*i + N(i-2)', hint: 'Current number is (previous * current 1-based index) + (number before previous).' }, // 0, 1, 2(1*2+0), 7(2*3+1), 24(7*4+2)
+            { id: 'V009', grid: [10, 8, 11, 7, 12, null, 13, 5], answer: 6, blankIndex: 5, difficulty: 'Very Hard', type: 'Alternating Add/Subtract', hint: 'The pattern involves alternating subtracting and adding with increasing values (-2, +3, -4, +5, -6).' },
+            { id: 'V010', grid: [1, 3, 9, 27, 81, null], answer: 243, blankIndex: 5, difficulty: 'Very Hard', type: 'Geometric (x3)', hint: 'Multiply by 3 each time.' },
+
+            // --- More Very Hard Puzzles ---
+            { id: 'V011', grid: [2, 6, 12, 20, 30, null], answer: 42, blankIndex: 5, difficulty: 'Very Hard', type: 'N*(N+1) sequence (shifted)', hint: 'Numbers of the form n(n+1) starting from n=1 (1*2, 2*3, 3*4...).' },
+            { id: 'V012', grid: [3, 5, 9, 17, 33, null], answer: 65, blankIndex: 5, difficulty: 'Very Hard', type: 'N(i) = N(i-1)*2 - 1', hint: 'Double the previous number, then subtract 1.' },
+            { id: 'V013', grid: [1, 2, 3, 6, 11, null], answer: 20, blankIndex: 5, difficulty: 'Very Hard', type: 'Tribonacci-like', hint: 'Each number is the sum of the three preceding numbers.' }, // 1+2+3=6, 2+3+6=11, 3+6+11=20
+            { id: 'V014', grid: [100, 99, 97, 94, 89, null], answer: 82, blankIndex: 5, difficulty: 'Very Hard', type: 'Decreasing Primes Subtracted', hint: 'Subtract prime numbers in order (1, 2, 3, 5, 7...).' }, // 100-1=99, 99-2=97, 97-3=94, 94-5=89, 89-7=82
+            { id: 'V015', grid: [4, 9, 19, 39, null, 159], answer: 79, blankIndex: 4, difficulty: 'Very Hard', type: 'N(i) = N(i-1)*2 + 1', hint: 'Double the previous number and add 1.' },
+            { id: 'V016', grid: [1, 2, 3, 4, 5, 6, null, 10, 11], answer: 7, blankIndex: 6, difficulty: 'Very Hard', type: 'Simple Sequence', hint: 'The numbers are consecutive.' }, // This is too simple for 'Very Hard' given current format, but kept as a placeholder if you integrate complex visual grids.
+            { id: 'V017', grid: [1, 2, 3, 6, 7, 10, 11, null], answer: 14, blankIndex: 7, difficulty: 'Very Hard', type: 'Alternating Add (+1, +3)', hint: 'Add 1, then add 3, then add 1, then add 3...' }, // +1, +1, +3, +1, +3, +1, +3
+            { id: 'V018', grid: [1, 4, 13, 40, null, 364], answer: 121, blankIndex: 4, difficulty: 'Very Hard', type: 'N(i) = N(i-1)*3 + 1', hint: 'Triple the previous number and add 1.' },
+            { id: 'V019', grid: [0, 1, 0, 1, 0, null], answer: 1, blankIndex: 5, difficulty: 'Very Hard', type: 'Alternating Binary', hint: 'A simple repeating binary pattern.' },
+            { id: 'V020', grid: [1, 2, 4, 6, 12, 14, null], answer: 28, blankIndex: 6, difficulty: 'Very Hard', type: 'Alternating (*2, +2)', hint: 'Multiply by 2, then add 2, then multiply by 2...' },
+            { id: 'V021', grid: [1, 4, 6, 8, 9, 10, null, 12, 14], answer: 15, blankIndex: 6, difficulty: 'Very Hard', type: 'Composite Numbers', hint: 'Numbers that have more than two factors (excluding primes).' }, // 1 is special, 4, 6, 8, 9, 10, 12, 14, 15...
+            { id: 'V022', grid: [1, 2, 4, 5, 7, 8, 10, 11, null], answer: 13, blankIndex: 8, difficulty: 'Very Hard', type: 'Missing Multiples of 3', hint: 'Numbers are consecutive except for multiples of 3.' },
+            { id: 'V023', grid: [1, 2, 3, 4, 5, 6, 7, 8, null], answer: 9, blankIndex: 8, difficulty: 'Very Hard', type: 'Simple Grid Sequence', hint: 'Basic sequential number grid. (This would typically be part of a visual grid, but pattern is sequential)' },
+            { id: 'V024', grid: [1, 1, 2, 3, 5, 8, 13, null], answer: 21, blankIndex: 7, difficulty: 'Very Hard', type: 'Fibonacci (Extended)', hint: 'Standard Fibonacci sequence.' },
+            { id: 'V025', grid: [0, 1, 3, 7, 15, null], answer: 31, blankIndex: 5, difficulty: 'Very Hard', type: 'Powers of 2 minus 1 (from 0)', hint: '2^0-1, 2^1-1, 2^2-1...' },
+            { id: 'V026', grid: [4, 7, 13, 25, 49, null], answer: 97, blankIndex: 5, difficulty: 'Very Hard', type: 'N(i) = N(i-1)*2 - 1', hint: 'Double the previous number, then subtract 1.' },
+            { id: 'V027', grid: [1, 2, 4, 8, 16, null], answer: 32, blankIndex: 5, difficulty: 'Very Hard', type: 'Powers of 2 Sequence', hint: 'Each number is double the previous.' },
+            { id: 'V028', grid: [1, 3, 7, 13, 21, null], answer: 31, blankIndex: 5, difficulty: 'Very Hard', type: 'Increasing Even Differences', hint: 'Differences are 2, 4, 6, 8, 10...' },
+            { id: 'V029', grid: [2, 3, 5, 7, 11, null], answer: 13, blankIndex: 5, difficulty: 'Very Hard', type: 'Prime Numbers Sequence', hint: 'The sequence of prime numbers.' },
+            { id: 'V030', grid: [100, 90, 81, 73, 66, null], answer: 60, blankIndex: 5, difficulty: 'Very Hard', type: 'Decreasing Subtraction (Decreasing Diff)', hint: 'Subtract 10, then 9, then 8, then 7, then 6.' },
+            { id: 'V031', grid: [1, 4, 27, 256, null], answer: 3125, blankIndex: 4, difficulty: 'Very Hard', type: 'N^N Sequence (1-indexed)', hint: 'The number is the index raised to its own power (1^1, 2^2, 3^3...).' },
+            { id: 'V032', grid: [2, 6, 30, 210, null], answer: 2310, blankIndex: 4, difficulty: 'Very Hard', type: 'Primorials Sequence', hint: 'The product of the first n prime numbers (2, 2*3, 2*3*5...).' },
+            { id: 'V033', grid: [1, 2, 4, 8, 16, null], answer: 32, blankIndex: 5, difficulty: 'Very Hard', type: 'Powers of 2', hint: 'Each number is double the previous number.' }, // For simplicity, let's use a clear hard sequence.
+
+        ];
+
+
+        // --- 2. Game State Variables ---
+        let currentPuzzleIndex = 0;
+        let userAttempts = 0;
+        let timerInterval;
+        let startTime;
+        let currentPuzzleStartTime;
+
+        // Dashboard statistics
+        let totalPuzzlesSolved = 0;
+        let totalAttemptsMade = 0;
+        let totalCorrectAttempts = 0;
+        let fastestSolveTime = Infinity; // Stores time in seconds
+
+        // Puzzle progress and stats storage
+        const puzzleStats = puzzles.map(p => ({
+            id: p.id,
+            solved: false,
+            bestTime: Infinity,
+            attempts: 0,
+            initialLoad: true // To ensure timer doesn't start on initial load for dashboard display
+        }));
+
+        // --- 3. DOM Elements ---
+        const puzzleContainer = document.getElementById('puzzle-container');
+        const userInput = document.getElementById('user-input');
+        const checkButton = document.getElementById('check-button');
+        const nextPuzzleButton = document.getElementById('next-puzzle-button');
+        const hintButton = document.getElementById('hint-button');
+        const resetButton = document.getElementById('reset-button');
+        const messageDisplay = document.getElementById('message');
+        const puzzleDescription = document.getElementById('puzzle-description');
+        const currentPuzzleIndexSpan = document.getElementById('current-puzzle-index');
+        const totalPuzzlesSpan = document.getElementById('total-puzzles');
+        const attemptsCountSpan = document.getElementById('attempts-count');
+        const timerSpan = document.getElementById('timer');
+
+        const gameSection = document.getElementById('game-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const showGameButton = document.getElementById('show-game-button');
+        const showDashboardButton = document.getElementById('show-dashboard-button');
+
+        const dashboardPuzzlesSolved = document.getElementById('dashboard-puzzles-solved');
+        const dashboardAccuracy = document.getElementById('dashboard-accuracy');
+        const dashboardFastestTime = document.getElementById('dashboard-fastest-time');
+        const dashboardPuzzleTableBody = document.getElementById('dashboard-puzzle-table-body');
+        const difficultyFilter = document.getElementById('difficulty-filter');
+        const clearDataButton = document.getElementById('clear-data-button');
+
+        const completionModal = document.getElementById('completion-modal');
+        const completionMessage = document.getElementById('completion-message');
+        const modalNextPuzzleButton = document.getElementById('modal-next-puzzle');
+        const modalDashboardButton = document.getElementById('modal-dashboard-button');
+
+        const gameOverModal = document.getElementById('game-over-modal');
+        const modalResetGameButton = document.getElementById('modal-reset-game');
+        const modalFinalDashboardButton = document.getElementById('modal-final-dashboard');
+
+
+        // --- 4. Core Game Logic Functions ---
+
+        /**
+         * Loads puzzle state from localStorage.
+         */
+        function loadGameState() {
+            const savedState = localStorage.getItem('numberQuestGameState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                currentPuzzleIndex = state.currentPuzzleIndex;
+                totalPuzzlesSolved = state.totalPuzzlesSolved;
+                totalAttemptsMade = state.totalAttemptsMade;
+                totalCorrectAttempts = state.totalCorrectAttempts;
+                fastestSolveTime = state.fastestSolveTime;
+                // Ensure puzzleStats array length matches and merge saved data
+                state.puzzleStats.forEach(savedStat => {
+                    const existingStat = puzzleStats.find(p => p.id === savedStat.id);
+                    if (existingStat) {
+                        Object.assign(existingStat, savedStat);
+                    }
+                });
+            }
+        }
+
+        /**
+         * Saves puzzle state to localStorage.
+         */
+        function saveGameState() {
+            const state = {
+                currentPuzzleIndex,
+                totalPuzzlesSolved,
+                totalAttemptsMade,
+                totalCorrectAttempts,
+                fastestSolveTime,
+                puzzleStats
+            };
+            localStorage.setItem('numberQuestGameState', JSON.stringify(state));
+        }
+
+        /**
+         * Resets all game data in localStorage and current state.
+         */
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all your game data? This cannot be undone.")) {
+                localStorage.removeItem('numberQuestGameState');
+                resetGameVariables();
+                renderPuzzle(puzzles[currentPuzzleIndex]);
+                updateDashboard();
+                hideModal(gameOverModal);
+                alert("All game data cleared!");
+            }
+        }
+
+        /**
+         * Resets game variables to their initial state.
+         * Used for 'Clear All Data' and 'Play Again'.
+         */
+        function resetGameVariables() {
+            currentPuzzleIndex = 0;
+            userAttempts = 0;
+            totalPuzzlesSolved = 0;
+            totalAttemptsMade = 0;
+            totalCorrectAttempts = 0;
+            fastestSolveTime = Infinity;
+            puzzleStats.forEach(p => {
+                p.solved = false;
+                p.bestTime = Infinity;
+                p.attempts = 0;
+                p.initialLoad = true;
+            });
+            stopTimer(); // Ensure timer is stopped
+            timerSpan.textContent = '00:00';
+            messageDisplay.textContent = '';
+            userInput.value = '';
+        }
+
+
+        /**
+         * Formats time in seconds into MM:SS string.
+         * @param {number} seconds - The time in seconds.
+         * @returns {string} Formatted time string.
+         */
+        function formatTime(seconds) {
+            if (seconds === Infinity) return 'N/A';
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        /**
+         * Starts the puzzle timer.
+         */
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval); // Clear any existing timer
+            currentPuzzleStartTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - currentPuzzleStartTime) / 1000);
+                timerSpan.textContent = formatTime(elapsedTime);
+            }, 1000);
+        }
+
+        /**
+         * Stops the puzzle timer.
+         */
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        /**
+         * Renders the current puzzle grid and description.
+         * @param {object} puzzle - The puzzle object to render.
+         */
+        function renderPuzzle(puzzle) {
+            stopTimer(); // Stop timer before rendering new puzzle
+            userInput.value = '';
+            messageDisplay.textContent = '';
+            messageDisplay.classList.remove('correct', 'incorrect');
+            userAttempts = 0; // Reset attempts for new puzzle
+
+            puzzleContainer.innerHTML = '';
+            puzzleDescription.textContent = `Pattern Type: ${puzzle.type}.`;
+
+            const numCols = puzzle.grid.length > 9 ? 4 : (puzzle.grid.length === 9 ? 3 : 6); // Adjust grid columns based on size
+            puzzleContainer.style.gridTemplateColumns = `repeat(${numCols}, 1fr)`;
+
+            puzzle.grid.forEach((cellValue, index) => {
+                const cell = document.createElement('div');
+                cell.classList.add('puzzle-cell');
+                if (index === puzzle.blankIndex) {
+                    cell.classList.add('empty');
+                    cell.textContent = '?';
+                } else {
+                    cell.textContent = cellValue;
+                }
+                puzzleContainer.appendChild(cell);
+            });
+
+            currentPuzzleIndexSpan.textContent = currentPuzzleIndex + 1;
+            totalPuzzlesSpan.textContent = puzzles.length;
+            attemptsCountSpan.textContent = userAttempts;
+            timerSpan.textContent = '00:00'; // Reset timer display
+
+            // Only start timer if it's not an initial dashboard load and puzzle isn't solved
+            if (!puzzleStats[currentPuzzleIndex].solved && puzzleStats[currentPuzzleIndex].initialLoad) {
+                puzzleStats[currentPuzzleIndex].initialLoad = false;
+                startTimer();
+            } else if (puzzleStats[currentPuzzleIndex].solved) {
+                // If already solved, display the best time
+                timerSpan.textContent = formatTime(puzzleStats[currentPuzzleIndex].bestTime);
+            }
+            checkButton.disabled = false;
+            nextPuzzleButton.disabled = false;
+            hintButton.disabled = false;
+            resetButton.disabled = false;
+
+            // Enable/disable 'Next' button
+            if (currentPuzzleIndex >= puzzles.length - 1) {
+                nextPuzzleButton.disabled = true;
+                modalNextPuzzleButton.disabled = true;
+            } else {
+                nextPuzzleButton.disabled = false;
+                modalNextPuzzleButton.disabled = false;
+            }
+        }
+
+        /**
+         * Checks the user's answer against the current puzzle's solution.
+         */
+        function checkAnswer() {
+            if (puzzleStats[currentPuzzleIndex].solved) {
+                messageDisplay.textContent = "You've already solved this puzzle! Click 'Next' or go to the Dashboard.";
+                messageDisplay.classList.add('correct');
+                return;
+            }
+
+            const userAnswer = parseInt(userInput.value);
+            const currentPuzzle = puzzles[currentPuzzleIndex];
+            userAttempts++;
+            totalAttemptsMade++;
+            attemptsCountSpan.textContent = userAttempts;
+            puzzleStats[currentPuzzleIndex].attempts++;
+
+            if (userAnswer === currentPuzzle.answer) {
+                stopTimer();
+                totalCorrectAttempts++;
+                messageDisplay.textContent = 'Correct! Well done! 🎉';
+                messageDisplay.classList.add('correct');
+                messageDisplay.classList.remove('incorrect');
+
+                // Update puzzle stats
+                const solvedTime = Math.floor((Date.now() - currentPuzzleStartTime) / 1000);
+                if (!puzzleStats[currentPuzzleIndex].solved) {
+                    totalPuzzlesSolved++;
+                }
+                puzzleStats[currentPuzzleIndex].solved = true;
+                puzzleStats[currentPuzzleIndex].bestTime = Math.min(puzzleStats[currentPuzzleIndex].bestTime, solvedTime);
+                fastestSolveTime = Math.min(fastestSolveTime, solvedTime);
+
+                saveGameState();
+                showCompletionModal(solvedTime);
+
+                // Check if all puzzles are solved
+                if (totalPuzzlesSolved === puzzles.length) {
+                    setTimeout(() => showGameOverModal(), 1000);
+                }
+
+            } else {
+                messageDisplay.textContent = 'Incorrect. Try again!';
+                messageDisplay.classList.add('incorrect');
+                messageDisplay.classList.remove('correct');
+                userInput.value = ''; // Clear input on incorrect answer
+                userInput.focus(); // Keep focus on input
+            }
+        }
+
+        /**
+         * Displays a hint for the current puzzle.
+         */
+        function showHint() {
+            const currentPuzzle = puzzles[currentPuzzleIndex];
+            if (currentPuzzle.hint) {
+                messageDisplay.textContent = `Hint: ${currentPuzzle.hint}`;
+                messageDisplay.classList.remove('correct', 'incorrect');
+                messageDisplay.classList.add('text-blue-600');
+            } else {
+                messageDisplay.textContent = "No specific hint available for this puzzle.";
+            }
+        }
+
+        /**
+         * Resets the current puzzle to its initial state.
+         */
+        function resetPuzzle() {
+            if (confirm('Are you sure you want to reset this puzzle? Your current attempts and time for THIS puzzle will be reset.')) {
+                // Do not reset global attempts or solved status, just for this puzzle
+                const currentStat = puzzleStats[currentPuzzleIndex];
+                // If it was already solved, decrement totalPuzzlesSolved (as we're effectively re-attempting from scratch)
+                // This logic might need refinement based on desired "reset" behavior.
+                // For now, let's keep global stats, but reset current puzzle's attempts/time.
+                userAttempts = 0;
+                startTimer(); // Restart timer
+                attemptsCountSpan.textContent = userAttempts;
+                userInput.value = '';
+                messageDisplay.textContent = '';
+                messageDisplay.classList.remove('correct', 'incorrect');
+                alert("Puzzle reset!");
+            }
+        }
+
+
+        /**
+         * Moves to the next puzzle in the sequence.
+         */
+        function nextPuzzle() {
+            hideModal(completionModal);
+            if (currentPuzzleIndex < puzzles.length - 1) {
+                currentPuzzleIndex++;
+                renderPuzzle(puzzles[currentPuzzleIndex]);
+                saveGameState(); // Save state after moving to next puzzle
+            } else {
+                showGameOverModal();
+            }
+        }
+
+        /**
+         * Shows a modal.
+         * @param {HTMLElement} modalElement - The modal DOM element.
+         */
+        function showModal(modalElement) {
+            modalElement.classList.remove('hidden');
+        }
+
+        /**
+         * Hides a modal.
+         * @param {HTMLElement} modalElement - The modal DOM element.
+         */
+        function hideModal(modalElement) {
+            modalElement.classList.add('hidden');
+        }
+
+        /**
+         * Displays the completion modal with success message.
+         * @param {number} solvedTime - The time taken to solve the puzzle in seconds.
+         */
+        function showCompletionModal(solvedTime) {
+            const currentPuzzle = puzzles[currentPuzzleIndex];
+            completionMessage.textContent = `You solved Puzzle ${currentPuzzleIndex + 1} (${currentPuzzle.difficulty}) in ${formatTime(solvedTime)} with ${userAttempts} attempts!`;
+            showModal(completionModal);
+        }
+
+        /**
+         * Displays the game over modal when all puzzles are completed.
+         */
+        function showGameOverModal() {
+            showModal(gameOverModal);
+            modalNextPuzzleButton.disabled = true; // Disable next puzzle button if game is over
+        }
+
+
+        // --- 5. Dashboard Logic ---
+
+        /**
+         * Updates the dashboard with current game statistics.
+         */
+        function updateDashboard() {
+            dashboardPuzzlesSolved.textContent = totalPuzzlesSolved;
+            const accuracy = totalAttemptsMade > 0 ? ((totalCorrectAttempts / totalAttemptsMade) * 100).toFixed(1) : 0;
+            dashboardAccuracy.textContent = `${accuracy}%`;
+            dashboardFastestTime.textContent = formatTime(fastestSolveTime);
+            renderPuzzleList();
+        }
+
+        /**
+         * Renders the list of puzzles on the dashboard, applying filters.
+         */
+        function renderPuzzleList() {
+            dashboardPuzzleTableBody.innerHTML = '';
+            const filterValue = difficultyFilter.value;
+
+            puzzles.forEach((puzzle, index) => {
+                const stat = puzzleStats[index];
+
+                if (filterValue !== 'all' && puzzle.difficulty !== filterValue) {
+                    return; // Skip if filter doesn't match
+                }
+
+                const row = document.createElement('tr');
+                row.classList.add('hover:bg-gray-50');
+
+                row.innerHTML = `
+                    <td class="py-3 px-4 whitespace-nowrap">${index + 1}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">${puzzle.type}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColorClass(puzzle.difficulty)}">
+                            ${puzzle.difficulty}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                        <span class="font-medium ${stat.solved ? 'text-green-600' : 'text-yellow-600'}">
+                            ${stat.solved ? 'Solved' : 'Pending'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap">${formatTime(stat.bestTime)}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">${stat.attempts}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                        <button class="text-blue-600 hover:text-blue-900 font-semibold text-sm" onclick="playSpecificPuzzle(${index})">
+                            ${stat.solved ? 'Replay' : 'Play'}
+                        </button>
+                    </td>
+                `;
+                dashboardPuzzleTableBody.appendChild(row);
+            });
+        }
+
+        /**
+         * Helper to get Tailwind CSS class for difficulty badge.
+         * @param {string} difficulty - The difficulty string.
+         * @returns {string} Tailwind CSS class.
+         */
+        function getDifficultyColorClass(difficulty) {
+            switch (difficulty) {
+                case 'Easy': return 'bg-green-100 text-green-800';
+                case 'Medium': return 'bg-yellow-100 text-yellow-800';
+                case 'Hard': return 'bg-red-100 text-red-800';
+                case 'Very Hard': return 'bg-purple-100 text-purple-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        /**
+         * Switches to the game section and loads a specific puzzle.
+         * @param {number} index - The index of the puzzle to load.
+         */
+        function playSpecificPuzzle(index) {
+            currentPuzzleIndex = index;
+            gameSection.classList.remove('hidden');
+            dashboardSection.classList.add('hidden');
+            renderPuzzle(puzzles[currentPuzzleIndex]);
+            userInput.focus();
+        }
+
+        // --- 6. Event Listeners ---
+        checkButton.addEventListener('click', checkAnswer);
+        nextPuzzleButton.addEventListener('click', nextPuzzle);
+        hintButton.addEventListener('click', showHint);
+        resetButton.addEventListener('click', resetPuzzle); // This will only reset current puzzle's attempts/time
+
+        userInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        showGameButton.addEventListener('click', () => {
+            gameSection.classList.remove('hidden');
+            dashboardSection.classList.add('hidden');
+            renderPuzzle(puzzles[currentPuzzleIndex]); // Re-render to ensure current puzzle state is fresh
+            userInput.focus();
+        });
+
+        showDashboardButton.addEventListener('click', () => {
+            gameSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            stopTimer(); // Stop timer when going to dashboard
+            updateDashboard();
+        });
+
+        difficultyFilter.addEventListener('change', updateDashboard);
+        clearDataButton.addEventListener('click', clearAllData);
+
+        modalNextPuzzleButton.addEventListener('click', nextPuzzle);
+        modalDashboardButton.addEventListener('click', () => {
+            hideModal(completionModal);
+            showDashboardButton.click(); // Simulate click on dashboard button
+        });
+
+        modalResetGameButton.addEventListener('click', () => {
+            resetGameVariables();
+            renderPuzzle(puzzles[currentPuzzleIndex]);
+            updateDashboard();
+            hideModal(gameOverModal);
+            gameSection.classList.remove('hidden'); // Ensure game section is visible
+            dashboardSection.classList.add('hidden');
+            userInput.focus();
+        });
+
+        modalFinalDashboardButton.addEventListener('click', () => {
+            hideModal(gameOverModal);
+            showDashboardButton.click(); // Simulate click on dashboard button
+        });
+
+        // --- 7. Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGameState();
+            renderPuzzle(puzzles[currentPuzzleIndex]);
+            userInput.focus();
+            totalPuzzlesSpan.textContent = puzzles.length; // Ensure total puzzles is set on load
+        });
+    </script>
+</body>
+</html>

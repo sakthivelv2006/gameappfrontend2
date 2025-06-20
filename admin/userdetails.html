@@ -864,7 +864,15 @@
       alert("Failed to update user: " + error.message);
     }
   }
-
+<script>
+    // Redirect to index.html if admin is not logged in
+    window.onload = function () {
+      const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      if (isAdminLoggedIn !== 'true') {
+        window.location.href = '../index.html';
+      }
+    };
+  </script> 
   // Show create user modal
   function showCreateUserModal() {
     document.getElementById('createModal').classList.remove('hidden');

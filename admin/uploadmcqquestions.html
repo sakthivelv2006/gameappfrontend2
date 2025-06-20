@@ -179,7 +179,15 @@
       </div>
     </div>
   </div>
-
+<script>
+    // Redirect to index.html if admin is not logged in
+    window.onload = function () {
+      const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      if (isAdminLoggedIn !== 'true') {
+        window.location.href = '../index.html';
+      }
+    };
+  </script> 
   <script>
     const apiUrl = 'https://gameappbackend-i8zv.onrender.com/api/mcqquestion';
 

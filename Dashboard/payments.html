@@ -697,7 +697,7 @@
             </a>
           </li>
           <li class="sidebar-item">
-            <a href="#" class="sidebar-link" id="sidebar-logout-btn">
+            <a href="../Home.html" class="sidebar-link" id="sidebar-logout-btn">
               <i class="fas fa-sign-out-alt"></i> Logout
             </a>
           </li>
@@ -848,7 +848,7 @@
 
       // Check if user is logged in
       if (!user || isLoggedIn !== 'true') {
-        window.location.href = '../Home.html';
+        window.location.href = '../index.html';
         return;
       }
 
@@ -887,7 +887,7 @@
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('isLoggedIn');
-        window.location.href = './index.html';
+        window.location.href = '../Home.html';
       };
 
       if (signOutBtn) signOutBtn.addEventListener('click', handleLogout);

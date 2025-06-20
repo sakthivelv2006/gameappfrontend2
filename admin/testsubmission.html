@@ -546,7 +546,15 @@
   <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-  
+  <script>
+    // Redirect to index.html if admin is not logged in
+    window.onload = function () {
+      const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      if (isAdminLoggedIn !== 'true') {
+        window.location.href = '../index.html';
+      }
+    };
+  </script> 
   <script>
     const API_URL = 'https://gameappbackend-i8zv.onrender.com/api/testsubmissions';
     let submissionsData = [];
