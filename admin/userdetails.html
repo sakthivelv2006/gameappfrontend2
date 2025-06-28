@@ -805,7 +805,7 @@
   // Show update modal
   async function showUpdateModal(userId) {
     try {
-      const res = await fetch(`https://gameappbackend-i8zv.onrender.com/api/getuser/${userId}`);
+      const res = await fetch(`https://gameappbackend-i8zv.onrender.com/api/getuser/${userId}`)
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
