@@ -154,41 +154,49 @@
         element.className = `message ${type}`;
       }
 
-      signUpForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = signUpUsernameInput.value;
-        const email = signUpEmailInput.value;
-        const password = signUpPasswordInput.value;
+     signUpForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = signUpUsernameInput.value;
+  const email = signUpEmailInput.value;
+  const password = signUpPasswordInput.value;
 
-        displayMessage(signUpMessage, 'Registering...', 'info');
+  // Block specific emails
+  const blockedEmails = ['727823tucs252@skct.edu.in', 'askthi@gmail.com'];
+  if (blockedEmails.includes(email)) {
+    displayMessage(signUpMessage, 'This mail user is blocked by the website admin. Please contact admin.', 'error');
+    return;
+  }
 
-        try {
-          const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, email, password }),
-          });
+  displayMessage(signUpMessage, 'Registering...', 'info');
 
-          const data = await response.json();
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
 
-          if (response.ok) {
-            displayMessage(signUpMessage, data.message, 'success');
-            signUpForm.style.display = 'none';
-            signInForm.style.display = 'none';
-            otpVerificationForm.style.display = 'block';
-            otpUserIdInput.value = data.userId;
-            otpEmailDisplay.textContent = data.email;
-            container.classList.add('sign-up-mode');
-          } else {
-            displayMessage(signUpMessage, data.message || 'Registration failed.', 'error');
-          }
-        } catch (error) {
-          console.error('Registration error:', error);
-          displayMessage(signUpMessage, 'Network error. Please try again.', 'error');
-        }
-      });
+    const data = await response.json();
+
+    if (response.ok) {
+      displayMessage(signUpMessage, data.message, 'success');
+      signUpForm.style.display = 'none';
+      signInForm.style.display = 'none';
+      otpVerificationForm.style.display = 'block';
+      otpUserIdInput.value = data.userId;
+      otpEmailDisplay.textContent = data.email;
+      container.classList.add('sign-up-mode');
+    } else {
+      displayMessage(signUpMessage, data.message || 'Registration failed.', 'error');
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    displayMessage(signUpMessage, 'Network error. Please try again.', 'error');
+  }
+});
+
 
       otpVerificationForm.addEventListener('submit', async (e) => {
         e.preventDefault();
