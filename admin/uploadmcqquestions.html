@@ -164,6 +164,15 @@
                 class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                 <i class="fas fa-sync-alt mr-2"></i> Show All
               </button>
+              <button onclick="downloadExcel()" 
+                  class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                  <i class="fas fa-file-excel mr-2"></i> Export to Excel
+              </button>
+
+              <button onclick="downloadPDF()" 
+                  class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                 <i class="fas fa-file-pdf mr-2"></i> Export PDF
+               </button>
             </div>
 
             <!-- MCQ List -->
@@ -189,6 +198,207 @@
     };
   </script> 
   <script>
+    async function getCurrentMCQs() {
+  const filterTypeId = document.getElementById('filterTypeId').value;
+  if (filterTypeId) {
+    const res = await fetch(`${apiUrl}/mcqquestion/${filterTypeId}`);
+    return await res.json();
+  } else {
+    const res = await fetch(`${apiUrl}/mcq-questions`);
+    return await res.json();
+  }
+}
+
+// Excel (CSV) Download
+async function downloadExcel() {
+  try {
+    const btn = document.querySelector('[onclick="downloadExcel()"]');
+    const originalBtnText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Preparing Excel...';
+    btn.disabled = true;
+
+    const mcqs = await getCurrentMCQs();
+
+    if (!Array.isArray(mcqs) || mcqs.length === 0) {
+      showNotification('No questions found to export', 'warning');
+      return;
+    }
+
+    // Create CSV content
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Type ID,Question,Option A,Option B,Option C,Option D,Correct Answer\n";
+    
+    mcqs.forEach(mcq => {
+      const row = [
+        `"${mcq.mcqTypeId}"`,
+        `"${mcq.question.replace(/"/g, '""')}"`,
+        `"${mcq.options.A.replace(/"/g, '""')}"`,
+        `"${mcq.options.B.replace(/"/g, '""')}"`,
+        `"${mcq.options.C.replace(/"/g, '""')}"`,
+        `"${mcq.options.D.replace(/"/g, '""')}"`,
+        mcq.answer
+      ].join(",");
+      csvContent += row + "\n";
+    });
+
+    // Trigger download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `MCQs_${filterTypeId || 'All'}_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showNotification('Excel file downloaded successfully!', 'success');
+  } catch (err) {
+    console.error(err);
+    showNotification('Error generating Excel file', 'error');
+  } finally {
+    const btn = document.querySelector('[onclick="downloadExcel()"]');
+    btn.innerHTML = '<i class="fas fa-file-excel mr-2"></i> Export Excel';
+    btn.disabled = false;
+  }
+}
+
+// PDF Download
+async function downloadPDF() {
+  try {
+    const btn = document.querySelector('[onclick="downloadPDF()"]');
+    const originalBtnText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Preparing PDF...';
+    btn.disabled = true;
+
+    // Get filter values
+    const filterTypeId = document.getElementById('filterTypeId').value;
+    
+    // Fetch filtered MCQs
+    let mcqs;
+    if (filterTypeId) {
+      const response = await fetch(`${apiUrl}/mcqquestion/${filterTypeId}`);
+      mcqs = await response.json();
+    } else {
+      const response = await fetch(`${apiUrl}/mcq-questions`);
+      mcqs = await response.json();
+    }
+
+    if (!Array.isArray(mcqs) || mcqs.length === 0) {
+      showNotification('No questions found to export', 'warning');
+      return;
+    }
+
+    // Load jsPDF library dynamically
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload = async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // PDF styling constants
+      const titleFontSize = 16;
+      const headerFontSize = 12;
+      const questionFontSize = 11;
+      const optionFontSize = 10;
+      const leftMargin = 14;
+      const optionIndent = 20;
+      const rightMargin = 200;
+      const lineHeight = 7;
+      const pageHeight = 280;
+
+      // Add title with filter info
+      doc.setFontSize(titleFontSize);
+      doc.setFont('helvetica', 'bold');
+      doc.text('MCQ Questions Report', leftMargin, 15);
+      
+      doc.setFontSize(headerFontSize);
+      doc.setFont('helvetica', 'normal');
+      if (filterTypeId) {
+        doc.text(`Filtered by Type: ${filterTypeId}`, leftMargin, 25);
+      } else {
+        doc.text('All Questions', leftMargin, 25);
+      }
+      
+      // Add metadata
+      doc.setFontSize(optionFontSize);
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, leftMargin, 35);
+      doc.text(`Total Questions: ${mcqs.length}`, rightMargin, 35, null, null, 'right');
+
+      let yPosition = 45;
+      let page = 1;
+      let questionCount = 1;
+
+      mcqs.forEach(mcq => {
+        // Add new page if needed
+        if (yPosition > pageHeight) {
+          doc.addPage();
+          page++;
+          yPosition = 20;
+          doc.setPage(page);
+          doc.setFontSize(optionFontSize);
+          doc.text(`Page ${page}`, rightMargin, 10, null, null, 'right');
+        }
+
+        // Question number and type
+        doc.setFontSize(headerFontSize);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Q${questionCount}: [${mcq.mcqTypeId}]`, leftMargin, yPosition);
+        yPosition += lineHeight;
+
+        // Question text
+        doc.setFontSize(questionFontSize);
+        doc.setFont('helvetica', 'normal');
+        const questionLines = doc.splitTextToSize(mcq.question, 180);
+        doc.text(questionLines, leftMargin, yPosition);
+        yPosition += (questionLines.length * lineHeight) + 5;
+
+        // Options
+        doc.setFontSize(optionFontSize);
+        ['A', 'B', 'C', 'D'].forEach(opt => {
+          const isCorrect = mcq.answer === opt;
+          
+          // Set color for correct answer
+          if (isCorrect) {
+            doc.setTextColor(0, 128, 0); // Green
+            doc.setFont('helvetica', 'bold');
+          } else {
+            doc.setTextColor(0); // Black
+            doc.setFont('helvetica', 'normal');
+          }
+          
+          const optionText = `${opt}) ${mcq.options[opt]}`;
+          const optionLines = doc.splitTextToSize(optionText, 170);
+          
+          optionLines.forEach(line => {
+            doc.text(line, optionIndent, yPosition);
+            yPosition += lineHeight;
+          });
+          
+          // Reset styling
+          doc.setTextColor(0);
+          doc.setFont('helvetica', 'normal');
+        });
+
+        // Space between questions
+        yPosition += 10;
+        questionCount++;
+      });
+
+      // Save the PDF
+      const fileName = `MCQs_${filterTypeId || 'All'}_${new Date().toISOString().slice(0,10)}.pdf`;
+      doc.save(fileName);
+      showNotification('PDF file downloaded successfully!', 'success');
+    };
+    
+    document.body.appendChild(script);
+  } catch (err) {
+    console.error(err);
+    showNotification('Error generating PDF file', 'error');
+  } finally {
+    const btn = document.querySelector('[onclick="downloadPDF()"]');
+    btn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> Export PDF';
+    btn.disabled = false;
+  }
+}
     const apiUrl = 'https://gameappbackend-i8zv.onrender.com/api/mcqquestion';
 
     // Global variables for dashboard
