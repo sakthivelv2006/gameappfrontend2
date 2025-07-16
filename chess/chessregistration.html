@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chess Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            color: darkblue;
+        }
+        .info-box {
+            border: 2px solid #007bff;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+            background-color: #f0f8ff;
+        }
+        .info-box p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SakthiVel Form Cse C </h1>
+
+    <div class="info-box" id="userDetails">
+        <!-- Details will appear here -->
+    </div>
+
+    <script>
+        // Get all values from localStorage
+        const userId = localStorage.getItem('loggedInUserId') || 'N/A';
+        const userName = localStorage.getItem('loggedInUserName') || 'N/A';
+        const userEmail = localStorage.getItem('loggedInUserEmail') || 'N/A';
+        const mcqTypeId = localStorage.getItem('selectedMcqTypeId') || 'N/A';
+
+        // Display values
+        const detailsDiv = document.getElementById('userDetails');
+        detailsDiv.innerHTML = `
+            <p><strong>User ID:</strong> ${userId}</p>
+            <p><strong>Name:</strong> ${userName}</p>
+            <p><strong>Email:</strong> ${userEmail}</p>
+            <p><strong>Selected MCQ Type ID:</strong> ${mcqTypeId}</p>
+        `;
+    </script>
+
+</body>
+</html>

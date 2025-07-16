@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chess Tournament MCQ Types</title>
+</head>
+<body>
+
+    <h1>Chess Tournament MCQ Types</h1>
+
+    <div id="mcqList"></div>
+
+    <script>
+        // Function to get user info from localStorage
+        function getLoggedInUserInfo() {
+            const userString = localStorage.getItem('user');
+            let userId = 'N/A';
+            let userName = 'Guest';
+            let userEmail = '';
+            let userInitial = 'G';
+
+            if (userString) {
+                try {
+                    const userData = JSON.parse(userString);
+                    userId = userData._id || userData.id || userData.userId || userData.userID || 'N/A';
+                    userName = userData.username || userData.fullName || userData.name || 'Unknown User';
+                    userEmail = userData.email || '';
+                    userInitial = userName ? userName.charAt(0).toUpperCase() : 'U';
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                    userName = 'Error User';
+                    userId = 'Error';
+                    userEmail = 'Parse Error';
+                    userInitial = 'E';
+                }
+            } else {
+                console.warn("User not found in localStorage");
+            }
+
+            return {
+                id: userId,
+                name: userName,
+                email: userEmail,
+                initial: userInitial
+            };
+        }
+
+        // Fetch all MCQ types
+        function fetchMCQTypes() {
+            fetch('http://localhost:5000/api/chess/mcqtypes')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(data => {
+                    displayMCQTypes(data);
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        }
+
+        // Display MCQ types
+        function displayMCQTypes(mcqTypes) {
+            const listDiv = document.getElementById('mcqList');
+            listDiv.innerHTML = '';
+
+            if (mcqTypes.length === 0) {
+                listDiv.innerHTML = '<p>No MCQ types found.</p>';
+                return;
+            }
+
+            const userInfo = getLoggedInUserInfo();
+
+            mcqTypes.forEach(item => {
+                const container = document.createElement('div');
+                container.style.border = '1px solid black';
+                container.style.padding = '10px';
+                container.style.marginBottom = '10px';
+                container.style.cursor = 'pointer';
+
+                container.onclick = function () {
+                    // Store all necessary user info
+                    localStorage.setItem('selectedMcqTypeId', item._id);
+                    localStorage.setItem('loggedInUserId', userInfo.id);
+                    localStorage.setItem('loggedInUserName', userInfo.name);
+                    localStorage.setItem('loggedInUserEmail', userInfo.email);
+
+                    // Redirect to registration page
+                    window.location.href = 'chessregistration.html';
+                };
+
+                container.innerHTML = `
+                    <p><strong>Name:</strong> ${item.name}</p>
+                    <p><strong>Description:</strong> ${item.description || 'N/A'}</p>
+                    <p><strong>Entry Fee:</strong> ${item.entryFee}</p>
+                    <p><strong>Start Time:</strong> ${new Date(item.startTimeBeforeStart).toLocaleString()}</p>
+                    <p><strong>Due Time:</strong> ${new Date(item.dueTimeBeforeStart).toLocaleString()}</p>
+                    ${item.imageUrl ? `<img src="${item.imageUrl}" width="100" alt="MCQ Image">` : ''}
+                `;
+
+                listDiv.appendChild(container);
+            });
+        }
+
+        // Auto fetch on page load
+        window.onload = fetchMCQTypes;
+    </script>
+
+</body>
+</html>
