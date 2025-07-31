@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Dashboard - Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fef7ff',
+                            100: '#fdf2ff',
+                            200: '#fce7ff',
+                            300: '#f8ccfd',
+                            400: '#f0a1f9',
+                            500: '#e879f9',
+                            600: '#d946ef',
+                            700: '#be185d',
+                            800: '#a21caf',
+                            900: '#86198f',
+                        },
+                        secondary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        },
+                        success: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efad',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        danger: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        electric: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        neon: {
+                            50: '#fdfcff',
+                            100: '#f8f4ff',
+                            200: '#f0e8ff',
+                            300: '#e5d5ff',
+                            400: '#d4b5ff',
+                            500: '#c084fc',
+                            600: '#a855f7',
+                            700: '#9333ea',
+                            800: '#7c3aed',
+                            900: '#6b21a8',
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                        'mesh-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
+                        'electric-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
+                        'neon-gradient': 'linear-gradient(45deg, #ff006e, #ffbe0b, #8338ec, #3a86ff)',
+                        'aurora': 'linear-gradient(45deg, #ff9a9e 0%, #fecfef 25%, #fecfef 50%, #a8edea 75%, #fed6e3 100%)',
+                    },
+                    boxShadow: {
+                        'neon': '0 0 5px theme(colors.primary.400), 0 0 20px theme(colors.primary.600), 0 0 35px theme(colors.primary.700)',
+                        'electric': '0 0 20px theme(colors.electric.400)',
+                        'glow-sm': '0 0 10px rgba(168, 85, 247, 0.4)',
+                        'glow-md': '0 0 20px rgba(168, 85, 247, 0.5)',
+                        'glow-lg': '0 0 30px rgba(168, 85, 247, 0.6)',
+                        'card-float': '0 20px 40px rgba(0,0,0,0.1), 0 0 40px rgba(168, 85, 247, 0.1)',
+                        'card-hover': '0 25px 50px rgba(0,0,0,0.15), 0 0 50px rgba(168, 85, 247, 0.2)',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        bounce: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        },
+                        pulse: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.7 },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(1deg)' },
+                            '75%': { transform: 'rotate(-1deg)' },
+                        },
+                        gradient: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        },
+                        glow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)' },
+                            '50%': { boxShadow: '0 0 40px rgba(168, 85, 247, 0.8)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'wiggle': 'wiggle 0.5s ease-in-out',
+                        'gradient': 'gradient 3s ease infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'glow': 'glow 2s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.5s ease-out',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-gradient {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.4);
+        }
+
+        .btn-neon {
+            background: linear-gradient(45deg, #ff006e, #ffbe0b, #8338ec, #3a86ff);
+            background-size: 400% 400%;
+            animation: gradient 3s ease infinite;
+        }
+
+        .btn-neon:hover {
+            animation-duration: 1s;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 0, 110, 0.4);
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+        }
+
+        .status-upcoming {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .status-closed {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            box-shadow: 0 0 20px rgba(107, 114, 128, 0.3);
+        }
+
+        .filter-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .filter-card:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .mcq-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mcq-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 50px rgba(168, 85, 247, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #ff006e, #ffbe0b, #8338ec, #3a86ff);
+            background-size: 200% 100%;
+            animation: gradient 2s linear infinite;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: linear-gradient(45deg, #ff006e, #ffbe0b, #8338ec, #3a86ff);
+            border-radius: inherit;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(2n) {
+            animation-delay: -2s;
+        }
+
+        .floating-element:nth-child(3n) {
+            animation-delay: -4s;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    <!-- Floating background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="floating-element absolute top-20 left-10 w-72 h-72 bg-primary-500 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+        <div class="floating-element absolute top-40 right-20 w-96 h-96 bg-secondary-500 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+        <div class="floating-element absolute bottom-20 left-1/4 w-80 h-80 bg-accent-500 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+        <div class="floating-element absolute bottom-40 right-1/3 w-64 h-64 bg-electric-500 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+    </div>
+
+    <header class="navbar sticky top-0 z-50 shadow-2xl">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <a href="../Home.html" class="group flex items-center text-white hover:text-primary-300 transition-all duration-300">
+                        <div class="p-2 rounded-full bg-white bg-opacity-20 mr-3 group-hover:bg-opacity-30 transition-all duration-300">
+                            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-300"></i>
+                        </div>
+                        <span class="hidden sm:inline font-semibold text-lg">Back to Home</span>
+                    </a>
+                    <div class="relative">
+                        <h1 class="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-white via-primary-200 to-secondary-200 bg-clip-text text-transparent">
+                            MCQ Dashboard
+                        </h1>
+                        <div class="absolute -bottom-1 left-0 h-1 w-24 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full"></div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="glass px-6 py-3 rounded-2xl flex items-center space-x-4 hover:bg-opacity-20 transition-all duration-300 group">
+                        <div class="relative">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white font-bold text-lg shadow-glow-md group-hover:shadow-glow-lg transition-all duration-300">
+                                <span id="userInitial">U</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-success-400 rounded-full border-2 border-white animate-pulse"></div>
+                        </div>
+                        <div class="hidden md:block">
+                            <p id="username" class="font-semibold text-white">Loading...</p>
+                            <p id="userEmail" class="text-sm text-white opacity-80 truncate max-w-40">user@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <a href="../Dashboard/dashboard.html" class="btn-neon px-6 py-3 rounded-2xl font-bold text-white flex items-center space-x-2 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                        <i class="fas fa-chart-line text-lg"></i>
+                        <span class="hidden lg:inline">EXAM RESULTS</span>
+                        <span class="lg:hidden">Results</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="messageBox" class="hidden container mx-auto px-6 py-3 mt-4 z-40"></div>
+
+    <main class="container mx-auto px-6 py-12 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Enhanced Sidebar -->
+            <aside class="lg:col-span-1 space-y-8">
+                <!-- User Profile Card -->
+                <div class="hidden lg:block card-gradient rounded-3xl p-8 shadow-card-float hover:shadow-card-hover transition-all duration-500 group">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="relative">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-400 via-secondary-500 to-accent-500 flex items-center justify-center text-white font-black text-3xl shadow-glow-md group-hover:shadow-glow-lg transition-all duration-300">
+                                <span id="userInitialDesktop">U</span>
+                            </div>
+                            <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-success-400 rounded-full border-3 border-white animate-bounce-slow"></div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-white opacity-70 font-medium">User ID:</p>
+                            <p id="userIdDesktop" class="font-bold text-white text-lg break-words">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-2xl bg-white bg-opacity-10 backdrop-blur-sm">
+                            <p class="text-sm text-white opacity-70 font-medium mb-1">Username:</p>
+                            <p id="usernameDesktop" class="font-bold text-white text-xl">Loading...</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white bg-opacity-10 backdrop-blur-sm">
+                            <p class="text-sm text-white opacity-70 font-medium mb-1">Email:</p>
+                            <p id="userEmailDesktop" class="text-sm text-white opacity-90 break-words">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Filter Card -->
+                <div class="filter-card rounded-3xl p-8 shadow-card-float animate-fade-in-up">
+                    <h2 class="text-2xl font-black text-white mb-8 flex items-center">
+                        <div class="p-3 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 mr-4 shadow-glow-sm">
+                            <i class="fas fa-sliders-h text-xl text-white"></i>
+                        </div>
+                        Smart Filters
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label for="dateFilter" class="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Time Period</label>
+                            <div class="relative">
+                                <select id="dateFilter" class="w-full glass text-white py-4 px-6 rounded-2xl border-2 border-white border-opacity-20 focus:border-primary-400 focus:ring-4 focus:ring-primary-400 focus:ring-opacity-20 transition-all appearance-none cursor-pointer font-semibold group-hover:border-opacity-40">
+                                    <option value="all" class="bg-gray-800">🌟 All Dates</option>
+                                    <option value="today" class="bg-gray-800">📅 Today</option>
+                                    <option value="week" class="bg-gray-800">📊 This Week</option>
+                                    <option value="month" class="bg-gray-800">📈 This Month</option>
+                                    <option value="year" class="bg-gray-800">🎯 This Year</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-white group-hover:text-primary-300 transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="group">
+                            <label for="sortBy" class="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Sort Order</label>
+                            <div class="relative">
+                                <select id="sortBy" class="w-full glass text-white py-4 px-6 rounded-2xl border-2 border-white border-opacity-20 focus:border-secondary-400 focus:ring-4 focus:ring-secondary-400 focus:ring-opacity-20 transition-all appearance-none cursor-pointer font-semibold group-hover:border-opacity-40">
+                                    <option value="start" class="bg-gray-800">⏰ Start Date (Asc)</option>
+                                    <option value="due" class="bg-gray-800">⏳ Due Date (Asc)</option>
+                                    <option value="name" class="bg-gray-800">🔤 Name (A-Z)</option>
+                                    <option value="fee" class="bg-gray-800">💰 Entry Fee (Low-High)</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-white group-hover:text-secondary-300 transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="group">
+                            <label for="filterSelect" class="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Quiz Status</label>
+                            <div class="relative">
+                                <select id="filterSelect" class="w-full glass text-white py-4 px-6 rounded-2xl border-2 border-white border-opacity-20 focus:border-accent-400 focus:ring-4 focus:ring-accent-400 focus:ring-opacity-20 transition-all appearance-none cursor-pointer font-semibold group-hover:border-opacity-40">
+                                    <option value="all" class="bg-gray-800">🎮 All Quizzes</option>
+                                    <option value="active" class="bg-gray-800">🔥 Active Now</option>
+                                    <option value="upcoming" class="bg-gray-800">⚡ Upcoming</option>
+                                    <option value="closed" class="bg-gray-800">🔒 Closed</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-white group-hover:text-accent-300 transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="applyFilters" class="w-full btn-neon py-4 px-6 rounded-2xl font-black text-lg uppercase tracking-wider shadow-glow-md hover:shadow-glow-lg transition-all duration-300 flex items-center justify-center space-x-3 group">
+                            <i class="fas fa-magic group-hover:animate-wiggle"></i>
+                            <span>Apply Magic Filters</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Stats Card -->
+                <div class="card-gradient rounded-3xl p-8 shadow-card-float animate-fade-in-up" style="animation-delay: 0.2s">
+                    <h2 class="text-2xl font-black text-white mb-8 flex items-center">
+                        <div class="p-3 rounded-2xl bg-gradient-to-br from-accent-500 to-electric-500 mr-4 shadow-glow-sm">
+                            <i class="fas fa-chart-pie text-xl text-white"></i>
+                        </div>
+                        Live Stats
+                    </h2>
+                    <div class="space-y-5">
+                        <div class="flex justify-between items-center p-4 rounded-2xl bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg group hover:shadow-glow-sm transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-trophy text-yellow-300 text-xl group-hover:animate-bounce"></i>
+                                <span class="font-semibold text-white">Total Quizzes</span>
+                            </div>
+                            <span id="totalQuizzes" class="font-black text-2xl bg-white bg-opacity-20 text-white px-4 py-2 rounded-xl backdrop-blur-sm">0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 rounded-2xl bg-gradient-to-r from-success-500 to-success-600 shadow-lg group hover:shadow-glow-sm transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-play-circle text-green-200 text-xl group-hover:animate-pulse animate-glow"></i>
+                                <span class="font-semibold text-white">Active Now</span>
+                            </div>
+                            <span id="activeQuizzes" class="font-black text-2xl bg-white bg-opacity-20 text-white px-4 py-2 rounded-xl backdrop-blur-sm">0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 rounded-2xl bg-gradient-to-r from-secondary-500 to-secondary-600 shadow-lg group hover:shadow-glow-sm transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-clock text-blue-200 text-xl group-hover:animate-spin"></i>
+                                <span class="font-semibold text-white">Upcoming</span>
+                            </div>
+                            <span id="upcomingQuizzes" class="font-black text-2xl bg-white bg-opacity-20 text-white px-4 py-2 rounded-xl backdrop-blur-sm">0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 rounded-2xl bg-gradient-to-r from-accent-500 to-accent-600 shadow-lg group hover:shadow-glow-sm transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-coins text-yellow-200 text-xl group-hover:animate-bounce"></i>
+                                <span class="font-semibold text-white">Total Spent</span>
+                            </div>
+                            <span id="totalSpent" class="font-black text-2xl bg-white bg-opacity-20 text-white px-4 py-2 rounded-xl backdrop-blur-sm">₹0</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Enhanced Main Content -->
+            <div class="lg:col-span-3">
+                <div class="card-gradient rounded-3xl shadow-card-float overflow-hidden animate-fade-in-up" style="animation-delay: 0.4s">
+                   <!-- Header Section -->
+<div class="p-8 bg-gradient-to-r from-yellow-100 from-opacity-10 to-yellow-100 to-opacity-5 border-b border-yellow-300 border-opacity-20">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-6 lg:space-y-0">
+        <div>
+            <h2 class="text-4xl font-black text-yellow-400 mb-2 bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-400 bg-clip-text text-transparent">
+                🎯 Premium MCQ Quizzes
+            </h2>
+            <p class="text-xl text-yellow-200 opacity-90 font-medium">Test your knowledge and win exciting rewards!</p>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Enhanced Search -->
+            <div class="search-container relative group">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchQuizzes" 
+                        placeholder="🔍 Search amazing quizzes..." 
+                        class="w-full sm:w-80 glass text-yellow-200 placeholder-yellow-100 placeholder-opacity-70 py-4 pl-14 pr-6 rounded-2xl border-2 border-yellow-300 border-opacity-20 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-20 transition-all font-semibold group-hover:border-opacity-40"
+                    >
+                    <div class="absolute left-4 top-1/2 -translate-y-1/2 text-yellow-100 opacity-60 group-hover:opacity-90 transition-opacity">
+                        <i class="fas fa-search text-lg"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enhanced Refresh Button -->
+            <button id="refreshQuizzes" class="p-4 glass rounded-2xl border-2 border-yellow-300 border-opacity-20 hover:border-opacity-40 hover:bg-opacity-30 transition-all duration-300 group">
+                <i class="fas fa-sync-alt text-yellow-200 text-xl group-hover:animate-spin"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+                    <!-- Quiz Cards Container -->
+                    <div id="mcqContainer" class="p-8 grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        <!-- Loading Skeletons -->
+                        <div class="loading-skeleton rounded-3xl h-80 shadow-lg animate-pulse"></div>
+                        <div class="loading-skeleton rounded-3xl h-80 shadow-lg animate-pulse" style="animation-delay: 0.2s"></div>
+                        <div class="loading-skeleton rounded-3xl h-80 shadow-lg animate-pulse hidden xl:block" style="animation-delay: 0.4s"></div>
+                        <div class="loading-skeleton rounded-3xl h-80 shadow-lg animate-pulse hidden xl:block" style="animation-delay: 0.6s"></div>
+                    </div>
+                    
+                    <!-- No Quizzes Message -->
+                    <div id="noQuizzesMessage" class="hidden text-center py-24 px-8">
+                        <div class="mb-8 animate-bounce">
+                            <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center shadow-glow-lg">
+                                <i class="fas fa-search text-6xl text-white"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-4xl font-black text-white mb-4">No Quizzes Found! 🔍</h3>
+                        <p class="text-xl text-white opacity-80 max-w-2xl mx-auto leading-relaxed">
+                            It looks like there are no quizzes matching your current filters. Try adjusting your criteria or check back later for new exciting challenges!
+                        </p>
+                        <div class="mt-8">
+                            <button class="btn-neon px-8 py-4 rounded-2xl font-bold text-lg">
+                                🔄 Reset Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = 'https://gameappbackend-i8zv.onrender.com';
+
+        // Enhanced message display with attractive styling
+        function showMessage(msg, type = 'error') {
+            const box = document.getElementById('messageBox');
+            let iconClass = '';
+            let gradientClass = '';
+            let borderClass = '';
+
+            switch (type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle';
+                    gradientClass = 'bg-gradient-to-r from-success-500 to-success-600';
+                    borderClass = 'border-success-400';
+                    break;
+                case 'warning':
+                    iconClass = 'fas fa-exclamation-triangle';
+                    gradientClass = 'bg-gradient-to-r from-yellow-500 to-accent-500';
+                    borderClass = 'border-yellow-400';
+                    break;
+                case 'info':
+                    iconClass = 'fas fa-info-circle';
+                    gradientClass = 'bg-gradient-to-r from-secondary-500 to-primary-500';
+                    borderClass = 'border-secondary-400';
+                    break;
+                case 'error':
+                default:
+                    iconClass = 'fas fa-times-circle';
+                    gradientClass = 'bg-gradient-to-r from-danger-500 to-danger-600';
+                    borderClass = 'border-danger-400';
+                    break;
+            }
+
+            box.innerHTML = `
+                <div class="${gradientClass} border-2 ${borderClass} text-white p-6 rounded-2xl shadow-glow-lg animate-scale-in backdrop-blur-sm" role="alert">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-white bg-opacity-20 mr-4">
+                            <i class="${iconClass} text-2xl"></i>
+                        </div>
+                        <p class="font-bold text-xl">${msg}</p>
+                    </div>
+                </div>
+            `;
+            box.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+                box.classList.add('hidden');
+            }, 7000);
+        }
+
+        function getLoggedInUserInfo() {
+            const s = localStorage.getItem('user');
+            let id = 'N/A', name = 'Guest', email = '', initial = 'G';
+            if (s) {
+                try {
+                    const u = JSON.parse(s);
+                    id = u._id || u.id || 'N/A';
+                    name = u.username || u.fullName || u.name || 'Unknown';
+                    email = u.email || '';
+                    initial = name.charAt(0).toUpperCase() || 'U';
+                } catch (e) {
+                    console.error("Error parsing user from localStorage:", e);
+                    id = 'Error'; name = 'Error'; initial = 'E';
+                }
+            }
+            return { id, name, email, initial };
+        }
+
+        function nowInIST() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const offset = 5.5 * 60 * 60000;
+            return new Date(utc + offset);
+        }
+
+        function formatTimeDifference(targetDate) {
+            const now = nowInIST();
+            const diffMs = targetDate - now;
+
+            if (diffMs <= 0) return '🔒 Closed';
+
+            const totalSeconds = Math.floor(diffMs / 1000);
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+            let parts = [];
+            if (days > 0) parts.push(`${days}d`);
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0 && days === 0) parts.push(`${minutes}m`);
+
+            return parts.length > 0 ? `⏰ ${parts.join(' ')} left` : '🚀 Starting soon...';
+        }
+
+        function getMcqStatus(mcq) {
+            const now = nowInIST();
+            const startTime = new Date(mcq.startTimeBeforeStart);
+            const dueTime = new Date(mcq.dueTimeBeforeStart);
+
+            if (now >= startTime && now <= dueTime) return 'active';
+            if (now < startTime) return 'upcoming';
+            return 'closed';
+        }
+
+        async function fetchMcqs() {
+            try {
+                const user = getLoggedInUserInfo();
+                const resp = await fetch(`${API_BASE}/api/mcqtypes?userId=${user.id}`); 
+                if (!resp.ok) {
+                    throw new Error(`HTTP error! status: ${resp.status}`);
+                }
+                const data = await resp.json();
+                return data; 
+            } catch (error) {
+                console.error("Failed to fetch MCQ types:", error);
+                showMessage("Failed to load quizzes. Please try again later.", 'error');
+                return [];
+            }
+        }
+
+        async function purchaseAndStart(mcqType) {
+            try {
+                const user = getLoggedInUserInfo();
+                if (!user || user.id === 'N/A' || user.id === 'Error') {
+                    return showMessage('Please login to participate in quizzes.', 'error');
+                }
+
+                const now = nowInIST();
+                const startTime = new Date(mcqType.startTimeBeforeStart);
+                const dueTime = new Date(mcqType.dueTimeBeforeStart);
+
+                if (now >= dueTime) {
+                    return showMessage('Quiz time is over. You cannot participate now.', 'warning');
+                }
+
+                if (mcqType.paid) { 
+                    if (now >= startTime) {
+                        sessionStorage.setItem('userId', encodeURIComponent(user.id));
+                        sessionStorage.setItem('mcqTypeId', encodeURIComponent(mcqType._id));
+                        showMessage("🎉 Validation verified. Redirecting to quiz...", 'success');
+                        setTimeout(() => {
+                            window.location = `allmcqshowinone.html`;
+                        }, 1500);
+                    } else {
+                        showMessage('✅ You have already paid for this quiz. Please wait until it starts.', 'info');
+                    }
+                    return;
+                }
+
+                if (now < startTime && mcqType.entryFee > 0) {
+                    const confirmPay = confirm(`🎯 This quiz starts on ${startTime.toLocaleString()}. Do you want to pay ₹${mcqType.entryFee} now to reserve your spot?`);
+                    if (!confirmPay) {
+                        return;
+                    }
+                }
+
+                if (mcqType.entryFee > 0) {
+                    const paymentId = 'PAY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                    const orderId = 'ORD-' + Date.now();
+
+                    const payload = {
+                        userId: user.id,
+                        mcqTypeId: mcqType._id,
+                        mcqTypeName: mcqType.name,
+                        amount: mcqType.entryFee,
+                        paymentId: paymentId,
+                        orderId: orderId
+                    };
+
+                    const resp = await fetch(`${API_BASE}/api/purchase`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await resp.json();
+
+                    if (!resp.ok) {
+                        if (data.message && data.message.includes('You have already paid')) {
+                            if (now >= startTime) {
+                                sessionStorage.setItem('userId', encodeURIComponent(user.id));
+                                sessionStorage.setItem('mcqTypeId', encodeURIComponent(mcqType._id));
+                                showMessage("🎉 Validation verified. Redirecting to quiz...", 'success');
+                                setTimeout(() => {
+                                    window.location = `allmcqshowinone.html`;
+                                }, 1500);
+                            } else {
+                                showMessage("✅ You already paid. Please wait for quiz start.", 'info');
+                            }
+                        } else if (data.message && (data.message.includes("account balance is zero") || data.message.includes("Insufficient"))) {
+                            showMessage('💳 Purchase failed. Insufficient balance. Redirecting to deposit page...', 'error');
+                            setTimeout(() => {
+                                window.location.href = "../Dashboard/payments.html";
+                            }, 2000);
+                        } else {
+                            showMessage(`❌ Failed to complete purchase: ${data.message || 'Unknown error'}`, 'error');
+                        }
+                        return;
+                    }
+
+                    showMessage("💰 Payment successful!", 'success');
+                    mcqType.paid = true; 
+                }
+
+                if (now >= startTime) {
+                    sessionStorage.setItem('userId', encodeURIComponent(user.id));
+                    sessionStorage.setItem('mcqTypeId', encodeURIComponent(mcqType._id));
+                    showMessage(`🚀 Starting quiz: ${mcqType.name}`, 'success');
+                    setTimeout(() => {
+                        window.location = `allmcqshowinone.html`;
+                    }, 1500);
+                } else {
+                    showMessage(`🎯 You are ready! Quiz "${mcqType.name}" will start on ${startTime.toLocaleString()}.`, 'info');
+                    initPage();
+                }
+
+            } catch (error) {
+                console.error('Error in purchaseAndStart:', error);
+                showMessage('💥 An unexpected error occurred. Please try again.', 'error');
+            }
+        }
+
+        // Enhanced card creation with stunning visuals
+        function createMcqCard(m) {
+            const startTime = new Date(m.startTimeBeforeStart);
+            const dueTime = new Date(m.dueTimeBeforeStart);
+            const status = getMcqStatus(m);
+            let displayRemainingTime = '';
+            let buttonText = '';
+            let buttonClasses = 'px-6 py-3 rounded-2xl font-black text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ';
+            let buttonDisabled = false;
+            let statusBadgeClasses = '';
+            let statusIcon = '';
+
+            if (status === 'active') {
+                displayRemainingTime = formatTimeDifference(dueTime);
+                statusBadgeClasses = 'status-active';
+                statusIcon = '🔥';
+                if (m.paid) {
+                    buttonText = '🚀 Start Quiz';
+                    buttonClasses += 'bg-gradient-to-r from-success-500 to-success-600 text-white hover:from-success-600 hover:to-success-700 hover:shadow-glow-md';
+                } else {
+                    buttonText = `🎯 Start Quiz ${m.entryFee > 0 ? '(₹' + m.entryFee + ')' : '(FREE)'}`;
+                    buttonClasses += 'btn-neon text-white hover:shadow-glow-lg';
+                }
+            } else if (status === 'upcoming') {
+                displayRemainingTime = formatTimeDifference(startTime);
+                statusBadgeClasses = 'status-upcoming';
+                statusIcon = '⚡';
+                if (m.paid) {
+                    buttonText = '✅ Paid (Starts Soon)';
+                    buttonClasses += 'bg-gradient-to-r from-success-300 to-success-400 text-success-800 cursor-not-allowed';
+                    buttonDisabled = true;
+                } else {
+                    buttonText = `💳 Pay to Join ${m.entryFee > 0 ? '(₹' + m.entryFee + ')' : '(FREE)'}`;
+                    buttonClasses += 'btn-neon text-white hover:shadow-glow-lg';
+                }
+            } else {
+                displayRemainingTime = '🔒 Closed';
+                statusBadgeClasses = 'status-closed';
+                statusIcon = '🔒';
+                buttonText = '❌ Quiz Closed';
+                buttonClasses += 'bg-gradient-to-r from-gray-400 to-gray-500 text-gray-700 cursor-not-allowed';
+                buttonDisabled = true;
+            }
+
+            const card = document.createElement('div');
+            card.className = `mcq-card rounded-3xl p-8 shadow-card-float border border-white border-opacity-20 group animate-scale-in relative overflow-hidden`;
+            
+            card.innerHTML = `
+                <!-- Background Pattern -->
+                <div class="absolute inset-0 opacity-5">
+                    <div class="absolute top-4 right-4 text-6xl">🎯</div>
+                    <div class="absolute bottom-4 left-4 text-4xl rotate-12">⚡</div>
+                </div>
+                
+                <div class="relative z-10 flex flex-col h-full">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <h3 class="text-2xl font-black text-white group-hover:text-primary-200 transition-colors">${m.name}</h3>
+                                <div class="px-3 py-1 ${statusBadgeClasses} rounded-full text-white text-sm font-bold shadow-lg">
+                                    ${statusIcon} ${status.toUpperCase()}
+                                </div>
+                            </div>
+                            <p class="text-white opacity-80 text-lg leading-relaxed">${m.description || '🧠 Test your knowledge on this exciting topic'}</p>
+                        </div>
+                        <div class="ml-4">
+                            ${m.entryFee > 0 ? 
+                                `<div class="px-4 py-2 bg-gradient-to-r from-yellow-400 to-accent-500 text-white rounded-2xl text-lg font-black shadow-glow-sm">
+                                    💰 ₹${m.entryFee}
+                                </div>` : 
+                                `<div class="px-4 py-2 bg-gradient-to-r from-success-400 to-electric-500 text-white rounded-2xl text-lg font-black shadow-glow-sm">
+                                    🎁 FREE
+                                </div>`
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- Time Info Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 flex-1">
+                        <div class="glass p-4 rounded-2xl border border-white border-opacity-20 group-hover:border-opacity-40 transition-all">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-play-circle text-success-400 text-lg"></i>
+                                <p class="text-sm font-bold text-white opacity-70 uppercase tracking-wider">Starts</p>
+                            </div>
+                            <p class="font-bold text-white text-lg">${startTime.toLocaleDateString()}</p>
+                            <p class="text-white opacity-80 text-sm">${startTime.toLocaleTimeString()}</p>
+                        </div>
+                        <div class="glass p-4 rounded-2xl border border-white border-opacity-20 group-hover:border-opacity-40 transition-all">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-stop-circle text-danger-400 text-lg"></i>
+                                <p class="text-sm font-bold text-white opacity-70 uppercase tracking-wider">Ends</p>
+                            </div>
+                            <p class="font-bold text-white text-lg">${dueTime.toLocaleDateString()}</p>
+                            <p class="text-white opacity-80 text-sm">${dueTime.toLocaleTimeString()}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Section -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-lg font-bold text-white flex items-center space-x-2">
+                                <i class="fas fa-hourglass-half text-primary-400"></i>
+                                <span>Time Status</span>
+                            </span>
+                            <span class="text-lg font-black text-white bg-white bg-opacity-20 px-3 py-1 rounded-xl backdrop-blur-sm">
+                                ${displayRemainingTime}
+                            </span>
+                        </div>
+                        <div class="w-full bg-white bg-opacity-20 rounded-full h-3 backdrop-blur-sm">
+                            <div class="progress-bar h-3 rounded-full shadow-glow-sm" style="width: ${
+                                status === 'closed' ? '100%' : 
+                                status === 'upcoming' ? '30%' : 
+                                '70%'
+                            }"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="flex justify-between items-center pt-4 border-t border-white border-opacity-20">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2 text-white opacity-80">
+                                <i class="fas fa-users text-lg"></i>
+                                <span class="font-semibold">${m.participants || 0} participants</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-white opacity-80">
+                                <i class="fas fa-brain text-lg"></i>
+                                <span class="font-semibold">Smart Quiz</span>
+                            </div>
+                        </div>
+                        <button 
+                            id="mcq-btn-${m._id}" 
+                            class="${buttonClasses}"
+                            ${buttonDisabled ? 'disabled' : ''}
+                        >
+                            ${buttonText}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            if (!buttonDisabled) {
+                const btn = card.querySelector(`#mcq-btn-${m._id}`);
+                btn.addEventListener('click', () => purchaseAndStart(m));
+            }
+            
+            return card;
+        }
+
+        function updateStats(mcqs) {
+            const now = nowInIST();
+            let total = 0, active = 0, upcoming = 0, spent = 0;
+            
+            mcqs.forEach(m => {
+                total++;
+                const status = getMcqStatus(m);
+                if (status === 'active') active++;
+                if (status === 'upcoming') upcoming++;
+                if (m.paid) spent += m.entryFee;
+            });
+            
+            document.getElementById('totalQuizzes').textContent = total;
+            document.getElementById('activeQuizzes').textContent = active;
+            document.getElementById('upcomingQuizzes').textContent = upcoming;
+            document.getElementById('totalSpent').textContent = `₹${spent}`;
+        }
+
+        function filterAndSortMcqs(mcqs) {
+            const filterValue = document.getElementById('filterSelect').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+            const searchQuery = document.getElementById('searchQuizzes').value.toLowerCase();
+            
+            const now = nowInIST();
+            
+            let filtered = mcqs.filter(m => {
+                if (filterValue !== 'all') {
+                    const status = getMcqStatus(m);
+                    if (filterValue !== status) return false;
+                }
+                
+                const startTime = new Date(m.startTimeBeforeStart);
+                if (dateFilter !== 'all') {
+                    const today = new Date(now);
+                    today.setHours(0, 0, 0, 0);
+                    
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    const weekStart = new Date(today);
+                    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                    
+                    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const yearStart = new Date(today.getFullYear(), 0, 1);
+                    
+                    switch (dateFilter) {
+                        case 'today':
+                            if (startTime < today || startTime >= tomorrow) return false;
+                            break;
+                        case 'week':
+                            if (startTime < weekStart || startTime >= tomorrow) return false;
+                            break;
+                        case 'month':
+                            if (startTime < monthStart || startTime >= tomorrow) return false;
+                            break;
+                        case 'year':
+                            if (startTime < yearStart || startTime >= tomorrow) return false;
+                            break;
+                    }
+                }
+                
+                if (searchQuery && !m.name.toLowerCase().includes(searchQuery)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            filtered.sort((a, b) => {
+                const aStart = new Date(a.startTimeBeforeStart);
+                const bStart = new Date(b.startTimeBeforeStart);
+                const aDue = new Date(a.dueTimeBeforeStart);
+                const bDue = new Date(b.dueTimeBeforeStart);
+                
+                switch (sortBy) {
+                    case 'start':
+                        return aStart - bStart;
+                    case 'due':
+                        return aDue - bDue;
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'fee':
+                        return a.entryFee - b.entryFee;
+                    default:
+                        return 0;
+                }
+            });
+            
+            return filtered;
+        }
+
+        function renderMcqs(mcqs) {
+            const container = document.getElementById('mcqContainer');
+            const noQuizzesMsg = document.getElementById('noQuizzesMessage');
+            
+            container.innerHTML = '';
+            
+            if (mcqs.length === 0) {
+                noQuizzesMsg.classList.remove('hidden');
+                container.classList.add('hidden');
+            } else {
+                noQuizzesMsg.classList.add('hidden');
+                container.classList.remove('hidden');
+                
+                const filteredMcqs = filterAndSortMcqs(mcqs);
+                filteredMcqs.forEach((m, index) => {
+                    const cardElement = createMcqCard(m);
+                    cardElement.style.animationDelay = `${index * 0.1}s`;
+                    container.appendChild(cardElement);
+                });
+            }
+            
+            updateStats(mcqs);
+        }
+
+        async function initPage() {
+            const user = getLoggedInUserInfo();
+                        document.getElementById('userInitialDesktop').textContent = user.initial;
+            document.getElementById('usernameDesktop').textContent = user.name;
+            document.getElementById('userEmailDesktop').textContent = user.email;
+            document.getElementById('userIdDesktop').textContent = user.id;
+
+            try {
+                const mcqs = await fetchMcqs();
+                renderMcqs(mcqs);
+                
+                // Set up event listeners for filters
+                document.getElementById('filterSelect').addEventListener('change', () => renderMcqs(mcqs));
+                document.getElementById('dateFilter').addEventListener('change', () => renderMcqs(mcqs));
+                document.getElementById('sortBy').addEventListener('change', () => renderMcqs(mcqs));
+                document.getElementById('searchQuizzes').addEventListener('input', () => renderMcqs(mcqs));
+                document.getElementById('applyFilters').addEventListener('click', () => renderMcqs(mcqs));
+                
+                document.getElementById('refreshQuizzes').addEventListener('click', async () => {
+                    document.getElementById('refreshQuizzes').querySelector('i').classList.add('animate-spin');
+                    try {
+                        const updatedMcqs = await fetchMcqs();
+                        renderMcqs(updatedMcqs);
+                        showMessage('Quizzes refreshed successfully!', 'success');
+                    } catch (error) {
+                        showMessage('Failed to refresh quizzes', 'error');
+                    } finally {
+                        setTimeout(() => {
+                            document.getElementById('refreshQuizzes').querySelector('i').classList.remove('animate-spin');
+                        }, 1000);
+                    }
+                });
+                
+                // Check for any messages in sessionStorage
+                const message = sessionStorage.getItem('message');
+                const messageType = sessionStorage.getItem('messageType');
+                if (message) {
+                    showMessage(message, messageType || 'info');
+                    sessionStorage.removeItem('message');
+                    sessionStorage.removeItem('messageType');
+                }
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showMessage('Failed to initialize page. Please try again later.', 'error');
+            }
+        }
+
+        // Initialize the page when loaded
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
