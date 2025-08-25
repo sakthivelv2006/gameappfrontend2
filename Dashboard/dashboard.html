@@ -67,9 +67,68 @@
             from { opacity: 1; }
             to { opacity: 0; }
         }
+        
+        /* New styles for enhanced dashboard */
+        .sidebar {
+            width: 260px;
+            transition: all 0.3s ease;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+            margin-left: 260px;
+            width: calc(100% - 260px);
+        }
+        
+        .collapsed .sidebar {
+            width: 80px;
+        }
+        
+        .collapsed .main-content {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        }
+        
+        .stat-card {
+            border-left: 4px solid;
+        }
+        
+        .nav-item {
+            transition: all 0.2s ease;
+            border-radius: 0.5rem;
+        }
+        
+        .nav-item:hover {
+            background-color: #eef2ff;
+        }
+        
+        .nav-item.active {
+            background-color: #eef2ff;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+            
+            .sidebar-text {
+                display: none;
+            }
+            
+            .menu-collapse {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen flex">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get user data from localStorage
@@ -89,162 +148,338 @@
                 if (usernameElement) {
                     usernameElement.textContent = user.username;
                 }
+                
+                // Set avatar initial
+                const avatarInitial = document.getElementById('avatar-initial');
+                if (avatarInitial && user.username.length > 0) {
+                    avatarInitial.textContent = user.username.charAt(0).toUpperCase();
+                }
             }
+            
+            // Set up sidebar toggle
+            const toggleSidebar = document.getElementById('toggle-sidebar');
+            if (toggleSidebar) {
+                toggleSidebar.addEventListener('click', function() {
+                    document.body.classList.toggle('collapsed');
+                });
+            }
+            
+            // Generate sample activity data
+            generateActivityData();
+            
+            // Update dashboard stats
+            updateDashboardStats();
         });
+        
+        function generateActivityData() {
+            const activities = [
+                { action: 'Submitted', type: 'MCQ Test', name: 'Mathematics Test', time: '2 hours ago' },
+                { action: 'Deposited', type: 'Funds', amount: '$50.00', time: '5 hours ago' },
+                { action: 'Purchased', type: 'MCQ Package', name: 'Science Premium', time: '1 day ago' },
+                { action: 'Received', type: 'Reward', amount: '$25.00', time: '2 days ago' }
+            ];
+            
+            const activityList = document.getElementById('activity-list');
+            if (activityList) {
+                activityList.innerHTML = '';
+                
+                activities.forEach(activity => {
+                    let icon = 'fa-file-alt';
+                    let color = 'text-blue-500';
+                    
+                    if (activity.action === 'Deposited') {
+                        icon = 'fa-money-bill-wave';
+                        color = 'text-green-500';
+                    } else if (activity.action === 'Purchased') {
+                        icon = 'fa-shopping-cart';
+                        color = 'text-purple-500';
+                    } else if (activity.action === 'Received') {
+                        icon = 'fa-gift';
+                        color = 'text-yellow-500';
+                    }
+                    
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'flex items-center py-3 border-b border-gray-100';
+                    activityItem.innerHTML = `
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center ${color}">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <p class="text-sm font-medium text-gray-900">
+                                ${activity.action} ${activity.type}${activity.name ? ': ' + activity.name : ''}${activity.amount ? ': ' + activity.amount : ''}
+                            </p>
+                            <p class="text-xs text-gray-500">${activity.time}</p>
+                        </div>
+                    `;
+                    
+                    activityList.appendChild(activityItem);
+                });
+            }
+        }
+        
+        function updateDashboardStats() {
+            // In a real app, these would come from an API
+            document.getElementById('tests-submitted').textContent = '12';
+            document.getElementById('account-balance').textContent = '$175.00';
+            document.getElementById('tests-purchased').textContent = '5';
+            document.getElementById('pending-evaluations').textContent = '2';
+        }
+        
+        function logout() {
+            localStorage.removeItem('user');
+            localStorage.setItem('isLoggedIn', 'false');
+            window.location.href = '../Home.html';
+        }
     </script>
     
-    <div class="container mx-auto p-4 max-w-7xl">
-        <!-- Header with user info -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
-                <p class="text-gray-600">Welcome back, <span id="username-display" class="font-medium"></span></p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <button onclick="window.location.href='../Home.html'" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Back To Home
-                </button>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-8">
-            <li class="me-2">
-                <a href="#" class="inline-block p-4 rounded-t-lg tab-active">
-                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                </a>
-            </li>
-            <li class="me-2">
-                <a href="testsubmitedetails.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-file-alt mr-2"></i>Submit MCQ Details
-                </a>
-            </li>
-            <li class="me-2">
-                <a href="payments.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-wallet mr-2"></i>Deposit
-                </a>
-            </li>
-            <li class="me-2">
-                <a href="balance.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-wallet mr-2"></i>Balance
-                </a>
-            </li>
-            <li class="me-2">
-                <a href="../settings.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-cog mr-2"></i>Settings
-                </a>
-            </li>
-           
-            <li class="me-2">
-                <a href="WinningAmount.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-trophy mr-2"></i>Winning Amount
-                </a>
-            </li>
-             <li class="me-2">
-                <a href="purchasesmcqtypes.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-address-book mr-2"></i>Purchased Mcq Details
-                </a>
-            </li>
-            <li class="me-2">
-                <a href="admincontact.html" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
-                    <i class="fas fa-address-book mr-2"></i>Admin
-                </a>
-            </li>
-            
-        </ul>
-
-        <!-- Quick Access Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <!-- Submit MCQ Card -->
-            <div class="card bg-white rounded-xl p-6 cursor-pointer" onclick="window.location.href='testsubmitedetails.html'">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Submit MCQ Details</h3>
-                        <p class="text-gray-600 mt-1">Submit your test details for evaluation</p>
-                    </div>
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                        <i class="fas fa-file-alt text-xl"></i>
-                    </div>
+    <!-- Sidebar -->
+    <div class="sidebar bg-white h-screen fixed shadow-lg z-10">
+        <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-blue-500 avatar-initial" id="avatar-initial">
+                    U
                 </div>
-                <div class="mt-4">
-                    <button class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
-                        Go to Submission <i class="fas fa-arrow-right ml-2"></i>
+                <div class="ml-3 sidebar-text">
+                    <p class="text-sm font-medium text-gray-900" id="sidebar-username">User</p>
+                    <p class="text-xs text-gray-500">Premium Member</p>
+                </div>
+            </div>
+            <button id="toggle-sidebar" class="text-gray-500 hover:text-gray-700 menu-collapse">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="mt-6">
+            <ul class="space-y-2 px-3">
+                <li>
+                    <a href="#" class="nav-item active flex items-center px-3 py-3 text-sm">
+                        <i class="fas fa-tachometer-alt text-blue-500 w-5"></i>
+                        <span class="ml-3 sidebar-text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="testsubmitedetails.html" class="nav-item flex items-center px-3 py-3 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-file-alt text-blue-400 w-5"></i>
+                        <span class="ml-3 sidebar-text">Submit MCQ Details</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="payments.html" class="nav-item flex items-center px-3 py-3 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-wallet text-green-400 w-5"></i>
+                        <span class="ml-3 sidebar-text">Deposit</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="balance.html" class="nav-item flex items-center px-3 py-3 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-credit-card text-purple-400 w-5"></i>
+                        <span class="ml-3 sidebar-text">Balance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../settings.html" class="nav-item flex items-center px-3 py-3 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-cog text-gray-400 w-5"></i>
+                        <span class="ml-3 sidebar-text">Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="purchasesmcqtypes.html" class="nav-item flex items-center px-3 py-3 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-address-book text-yellow-400 w-5"></i>
+                        <span class="ml-3 sidebar-text">Purchased MCQs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="admincontact.html" class="nav-item flex items-center px-3 py-3 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-headset text-red-400 w-5"></i>
+                        <span class="ml-3 sidebar-text">Admin Contact</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="absolute bottom-0 w-full p-4 border-t border-gray-200">
+            <button onclick="logout()" class="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
+                <i class="fas fa-sign-out-alt w-5"></i>
+                <span class="ml-3 sidebar-text">Logout</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="p-4 md:p-6 max-w-7xl mx-auto">
+            <!-- Header with user info -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+                    <p class="text-gray-600">Welcome back, <span id="username-display" class="font-medium"></span></p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg">
+                        <span class="h-2 w-2 rounded-full bg-blue-500"></span>
+                        <span class="text-sm text-blue-700">Active</span>
+                    </div>
+                    <button class="md:hidden text-gray-500" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Deposit Card -->
-            <div class="card bg-white rounded-xl p-6 cursor-pointer" onclick="window.location.href='payments.html'">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Deposit Funds</h3>
-                        <p class="text-gray-600 mt-1">Add funds to your account balance</p>
-                    </div>
-                    <div class="p-3 rounded-full bg-green-100 text-green-600">
-                        <i class="fas fa-money-bill-wave text-xl"></i>
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="stat-card bg-white border-l-blue-500 rounded-lg p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Tests Submitted</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="tests-submitted">0</h3>
+                        </div>
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-4">
-                    <button class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
-                        Make Deposit <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+                
+                <div class="stat-card bg-white border-l-green-500 rounded-lg p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Account Balance</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="account-balance">$0.00</h3>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card bg-white border-l-purple-500 rounded-lg p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Tests Purchased</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="tests-purchased">0</h3>
+                        </div>
+                        <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card bg-white border-l-yellow-500 rounded-lg p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Pending Evaluation</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="pending-evaluations">0</h3>
+                        </div>
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Balance Card -->
-            <div class="card bg-white rounded-xl p-6 cursor-pointer" onclick="window.location.href='balance.html'">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Account Balance</h3>
-                        <p class="text-gray-600 mt-1">View your current balance</p>
+            <!-- Quick Access Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Submit MCQ Card -->
+                <div class="card bg-white rounded-xl p-6 cursor-pointer" onclick="window.location.href='testsubmitedetails.html'">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Submit MCQ Details</h3>
+                            <p class="text-gray-600 mt-1">Submit your test details for evaluation</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-file-alt text-xl"></i>
+                        </div>
                     </div>
-                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                        <i class="fas fa-wallet text-xl"></i>
+                    <div class="mt-4">
+                        <button class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
+                            Go to Submission <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="mt-4">
-                    <button class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
-                        Check Balance <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+
+                <!-- Deposit Card -->
+                <div class="card bg-white rounded-xl p-6 cursor-pointer" onclick="window.location.href='payments.html'">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Deposit Funds</h3>
+                            <p class="text-gray-600 mt-1">Add funds to your account balance</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-money-bill-wave text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
+                            Make Deposit <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Balance Card -->
+                <div class="card bg-white rounded-xl p-6 cursor-pointer" onclick="window.location.href='balance.html'">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Account Balance</h3>
+                            <p class="text-gray-600 mt-1">View your current balance</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                            <i class="fas fa-wallet text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
+                            Check Balance <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Additional Sections -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Winning Amount Section -->
-            <div class="card bg-white rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Winning Amount</h3>
-                    <a href="WinningAmount.html" class="text-blue-600 hover:underline">View All</a>
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Activity -->
+                <div class="card bg-white rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+                        <a href="#" class="text-blue-600 hover:underline text-sm">View All</a>
+                    </div>
+                    <div id="activity-list">
+                        <!-- Activity items will be dynamically inserted here -->
+                    </div>
                 </div>
-                <p class="text-gray-600 mb-4">Check your winnings and prize details</p>
-                <button onclick="window.location.href='WinningAmount.html'" class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
-                    <i class="fas fa-trophy mr-2"></i> View Winnings
-                </button>
-            </div>
 
-            <!-- Settings Section -->
-            <div class="card bg-white rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Account Settings</h3>
-                    <a href="../settings.html" class="text-blue-600 hover:underline">Manage</a>
+                <!-- Additional Actions -->
+                <div class="space-y-6">
+                    <!-- Settings Section -->
+                    <div class="card bg-white rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Account Settings</h3>
+                            <a href="../settings.html" class="text-blue-600 hover:underline">Manage</a>
+                        </div>
+                        <p class="text-gray-600 mb-4">Update your profile and security settings</p>
+                        <button onclick="window.location.href='../settings.html'" class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
+                            <i class="fas fa-cog mr-2"></i> Go to Settings
+                        </button>
+                    </div>
+                    
+                    <!-- Support Section -->
+                    <div class="card bg-white rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Need Help?</h3>
+                            <a href="admincontact.html" class="text-blue-600 hover:underline">Contact</a>
+                        </div>
+                        <p class="text-gray-600 mb-4">Get support from our admin team</p>
+                        <button onclick="window.location.href='admincontact.html'" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg w-full hover:bg-gray-200 transition">
+                            <i class="fas fa-headset mr-2"></i> Contact Support
+                        </button>
+                    </div>
                 </div>
-                <p class="text-gray-600 mb-4">Update your profile and security settings</p>
-                <button onclick="window.location.href='../settings.html'" class="btn-gradient text-white px-4 py-2 rounded-lg w-full">
-                    <i class="fas fa-cog mr-2"></i> Go to Settings
-                </button>
-            </div>
-        </div>
-
-        <!-- Recent Activity (Placeholder) -->
-        <div class="card bg-white rounded-xl p-6 mt-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-history text-4xl mb-2"></i>
-                <p>Your recent activities will appear here</p>
             </div>
         </div>
     </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.body.classList.toggle('collapsed');
+        });
+    </script>
 </body>
 </html>
