@@ -174,9 +174,9 @@
         function generateActivityData() {
             const activities = [
                 { action: 'Submitted', type: 'MCQ Test', name: 'Mathematics Test', time: '2 hours ago' },
-                { action: 'Deposited', type: 'Funds', amount: '$50.00', time: '5 hours ago' },
+                { action: 'Deposited', type: 'Funds', amount: '50.00', time: '5 hours ago' },
                 { action: 'Purchased', type: 'MCQ Package', name: 'Science Premium', time: '1 day ago' },
-                { action: 'Received', type: 'Reward', amount: '$25.00', time: '2 days ago' }
+                { action: 'Received', type: 'Reward', amount: '25.00', time: '2 days ago' }
             ];
             
             const activityList = document.getElementById('activity-list');
@@ -220,7 +220,7 @@
         function updateDashboardStats() {
             // In a real app, these would come from an API
             document.getElementById('tests-submitted').textContent = '12';
-            document.getElementById('account-balance').textContent = '$175.00';
+            document.getElementById('account-balance').textContent = '175.00';
             document.getElementById('tests-purchased').textContent = '5';
             document.getElementById('pending-evaluations').textContent = '2';
         }
@@ -342,7 +342,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-sm text-gray-500">Account Balance</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="account-balance">$0.00</h3>
+                            <h3 class="text-2xl font-bold text-gray-800" id="account-balance">0.00</h3>
                         </div>
                         <div class="p-3 rounded-full bg-green-100 text-green-600">
                             <i class="fas fa-wallet"></i>
