@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplified Iframe Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        iframe { border: 2px solid #007bff; margin: 15px 0; padding: 10px; width: 600px; height: 150px; } /* Adjusted height */
+        .main-page-content { background-color: #e0f7fa; padding: 15px; border-radius: 5px; }
+        .iframe-content { padding: 10px; background-color: #f8f9fa; border: 1px dashed #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Simplified Iframe Handling Examples</h1>
+
+    <div class="main-page-content">
+        <p>This is content on the main page.</p>
+        <input type="text" id="mainPageInput" value="Main Page Text">
+    </div>
+
+    <h2>Iframe by Name/ID (frame1)</h2>
+    <iframe name="frame1" id="iframe1" srcdoc="<!DOCTYPE html><html><head><title>Frame 1</title><style>.iframe-content {background-color: #f1f8e9;}</style></head><body><div class='iframe-content'><h3>Iframe One Content</h3><p>This is inside the first iframe (frame1).</p><input type='text' id='frame1Input' value='Text in Frame 1'><button id='frame1Btn' onclick='alert(&quot;Button in Frame 1 clicked!&quot;)'>Click Frame 1 Button</button></div></body></html>"></iframe>
+
+    
+    <button id="pageFooterBtn" onclick="alert('Main Page Footer Button Clicked!')">Main Page Footer Button</button>
+
+</body>
+</html>
