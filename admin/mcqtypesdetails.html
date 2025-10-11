@@ -104,9 +104,32 @@
         .toast.warning {
             background-color: #F59E0B;
         }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            font-size: 1.5rem;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Loading Overlay for Authentication Check -->
+    <div id="loading-overlay" class="loading-overlay">
+        <i class="fas fa-spinner fa-spin mb-4 text-4xl"></i>
+        <p>Checking authentication...</p>
+    </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden">
@@ -116,247 +139,268 @@
         </div>
     </div>
 
-    <div class="flex h-screen bg-gray-100">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-gradient-to-b from-gray-800 to-gray-900 text-gray-200 flex flex-col transform transition-all duration-300 ease-in-out">
-            <div class="px-6 py-5 border-b border-gray-700 flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg">A</div>
-                <div>
-                    <h1 class="text-xl font-semibold text-white">Admin Dashboard</h1>
-                    <p class="text-xs text-gray-400">Super Admin</p>
-                </div>
-            </div>
-            <nav class="flex-grow mt-5 px-2">
-                <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
-                    <i class="fas fa-tachometer-alt mr-3 text-primary-400"></i> 
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-white bg-primary-600 hover:bg-primary-700 transition-all duration-200 rounded-lg mb-1">
-                    <i class="fas fa-list-alt mr-3"></i> 
-                    <span>MCQ Types</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
-                    <i class="fas fa-question-circle mr-3 text-blue-400"></i> 
-                    <span>Questions</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
-                    <i class="fas fa-users mr-3 text-green-400"></i> 
-                    <span>Users</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
-                    <i class="fas fa-file-invoice-dollar mr-3 text-yellow-400"></i> 
-                    <span>Payments</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
-                    <i class="fas fa-cog mr-3 text-purple-400"></i> 
-                    <span>Settings</span>
-                </a>
-            </nav>
-            <div class="px-4 py-4 border-t border-gray-700">
-    <a href="adminhomepage.html" class="w-full flex items-center justify-between text-left text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-200">
-        <div class="flex items-center">
-            <i class="fas fa-sign-out-alt mr-3"></i> 
-            <span>Logout</span>
-        </div>
-        <i class="fas fa-chevron-right text-xs"></i>
-    </a>
-</div>
-
-        </aside>
-
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="flex justify-between items-center bg-white shadow-sm p-4">
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-800">MCQ Types Management</h2>
-                    <p class="text-sm text-gray-500">Create and manage different types of MCQ quizzes</p>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <i class="fas fa-bell text-gray-500 text-xl cursor-pointer hover:text-primary-600"></i>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-gray-700 font-medium">Admin User</span>
-                        <div class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg relative">
-                            A
-                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                        </div>
+    <div id="app-content" class="hidden">
+        <div class="flex h-screen bg-gray-100">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-gradient-to-b from-gray-800 to-gray-900 text-gray-200 flex flex-col transform transition-all duration-300 ease-in-out">
+                <div class="px-6 py-5 border-b border-gray-700 flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg">A</div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-white">Admin Dashboard</h1>
+                        <p class="text-xs text-gray-400">Super Admin</p>
                     </div>
                 </div>
-            </header>
+                <nav class="flex-grow mt-5 px-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
+                        <i class="fas fa-tachometer-alt mr-3 text-primary-400"></i> 
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-white bg-primary-600 hover:bg-primary-700 transition-all duration-200 rounded-lg mb-1">
+                        <i class="fas fa-list-alt mr-3"></i> 
+                        <span>MCQ Types</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
+                        <i class="fas fa-question-circle mr-3 text-blue-400"></i> 
+                        <span>Questions</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
+                        <i class="fas fa-users mr-3 text-green-400"></i> 
+                        <span>Users</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-yellow-400"></i> 
+                        <span>Payments</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg mb-1">
+                        <i class="fas fa-cog mr-3 text-purple-400"></i> 
+                        <span>Settings</span>
+                    </a>
+                </nav>
+                <div class="px-4 py-4 border-t border-gray-700">
+                    <a href="#" onclick="logout()" class="w-full flex items-center justify-between text-left text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-200">
+                        <div class="flex items-center">
+                            <i class="fas fa-sign-out-alt mr-3"></i> 
+                            <span>Logout</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </a>
+                </div>
+            </aside>
 
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-                <div class="container mx-auto">
-                    <!-- Stats Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-primary-500">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-500">Total MCQ Types</p>
-                                    <h3 id="total-mcqs" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
-                                </div>
-                                <div class="bg-primary-100 p-3 rounded-full">
-                                    <i class="fas fa-list-alt text-primary-600 text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2"><span class="text-green-500 font-medium">+2.5%</span> from last month</p>
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <header class="flex justify-between items-center bg-white shadow-sm p-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">MCQ Types Management</h2>
+                        <p class="text-sm text-gray-500">Create and manage different types of MCQ quizzes</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <i class="fas fa-bell text-gray-500 text-xl cursor-pointer hover:text-primary-600"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
                         </div>
-                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-500">Active Quizzes</p>
-                                    <h3 id="active-mcqs" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
-                                </div>
-                                <div class="bg-blue-100 p-3 rounded-full">
-                                    <i class="fas fa-play-circle text-blue-600 text-xl"></i>
-                                </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-700 font-medium">Admin User</span>
+                            <div class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg relative">
+                                A
+                                <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                             </div>
-                            <p class="text-xs text-gray-500 mt-2"><span class="text-green-500 font-medium">+5.1%</span> from last month</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-500">Total Revenue</p>
-                                    <h3 id="total-revenue" class="text-2xl font-bold text-gray-800 mt-1">₹0.00</h3>
-                                </div>
-                                <div class="bg-green-100 p-3 rounded-full">
-                                    <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2"><span class="text-green-500 font-medium">+12.3%</span> from last month</p>
                         </div>
                     </div>
+                </header>
 
-                    <!-- Form Section -->
-                    <div class="bg-white p-6 rounded-xl shadow-md mb-8 fade-in">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <i class="fas fa-edit mr-2 text-primary-600"></i>
-                                <span id="form-title">Add New MCQ Type</span>
-                            </h3>
-                            <button onclick="clearForm()" class="btn-secondary">
-                                <i class="fas fa-plus mr-2"></i>New MCQ
-                            </button>
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                    <div class="container mx-auto">
+                        <!-- Stats Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-primary-500">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Total MCQ Types</p>
+                                        <h3 id="total-mcqs" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+                                    </div>
+                                    <div class="bg-primary-100 p-3 rounded-full">
+                                        <i class="fas fa-list-alt text-primary-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2"><span class="text-green-500 font-medium">+2.5%</span> from last month</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Active Quizzes</p>
+                                        <h3 id="active-mcqs" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+                                    </div>
+                                    <div class="bg-blue-100 p-3 rounded-full">
+                                        <i class="fas fa-play-circle text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2"><span class="text-green-500 font-medium">+5.1%</span> from last month</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Total Revenue</p>
+                                        <h3 id="total-revenue" class="text-2xl font-bold text-gray-800 mt-1">₹0.00</h3>
+                                    </div>
+                                    <div class="bg-green-100 p-3 rounded-full">
+                                        <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2"><span class="text-green-500 font-medium">+12.3%</span> from last month</p>
+                            </div>
                         </div>
-                        <input type="hidden" id="mcq-id">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name <span class="text-red-500">*</span></label>
-                                <input type="text" id="name" placeholder="MCQ Type Name" required class="input-field">
+
+                        <!-- Form Section -->
+                        <div class="bg-white p-6 rounded-xl shadow-md mb-8 fade-in">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">
+                                    <i class="fas fa-edit mr-2 text-primary-600"></i>
+                                    <span id="form-title">Add New MCQ Type</span>
+                                </h3>
+                                <button onclick="clearForm()" class="btn-secondary">
+                                    <i class="fas fa-plus mr-2"></i>New MCQ
+                                </button>
                             </div>
-                            <div>
-                                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                                <input type="text" id="description" placeholder="Brief description about this MCQ type" class="input-field">
+                            <input type="hidden" id="mcq-id">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name <span class="text-red-500">*</span></label>
+                                    <input type="text" id="name" placeholder="MCQ Type Name" required class="input-field">
+                                </div>
+                                <div>
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                    <input type="text" id="description" placeholder="Brief description about this MCQ type" class="input-field">
+                                </div>
+                                <div>
+                                    <label for="imageUrl" class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                                    <div class="flex">
+                                        <input type="text" id="imageUrl" placeholder="https://example.com/image.png" class="input-field rounded-r-none">
+                                        <button onclick="testImageUrl()" class="bg-gray-200 px-4 rounded-r-lg border border-l-0 border-gray-300 hover:bg-gray-300 transition-all duration-200">
+                                            <i class="fas fa-link text-gray-700"></i>
+                                        </button>
+                                    </div>
+                                    <div id="image-preview" class="mt-2 hidden">
+                                        <img id="preview-image" src="" alt="Preview" class="max-h-20 rounded-lg border border-gray-200">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="entryFee" class="block text-sm font-medium text-gray-700 mb-2">Entry Fee (₹) <span class="text-red-500">*</span></label>
+                                    <input type="number" id="entryFee" placeholder="50.00" min="0" step="0.01" required class="input-field">
+                                </div>
+                                <div>
+                                    <label for="startTimeBeforeStart" class="block text-sm font-medium text-gray-700 mb-2">Start Time <span class="text-red-500">*</span></label>
+                                    <input type="datetime-local" id="startTimeBeforeStart" required class="input-field">
+                                </div>
+                                <div>
+                                    <label for="dueTimeBeforeStart" class="block text-sm font-medium text-gray-700 mb-2">Due Time <span class="text-red-500">*</span></label>
+                                    <input type="datetime-local" id="dueTimeBeforeStart" required class="input-field">
+                                </div>
                             </div>
-                            <div>
-                                <label for="imageUrl" class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
-                                <div class="flex">
-                                    <input type="text" id="imageUrl" placeholder="https://example.com/image.png" class="input-field rounded-r-none">
-                                    <button onclick="testImageUrl()" class="bg-gray-200 px-4 rounded-r-lg border border-l-0 border-gray-300 hover:bg-gray-300 transition-all duration-200">
-                                        <i class="fas fa-link text-gray-700"></i>
+                            <div class="flex space-x-3">
+                                <button onclick="saveMcqType()" class="btn-primary">
+                                    <i class="fas fa-save mr-2"></i>Save MCQ Type
+                                </button>
+                                <button onclick="clearForm()" class="btn-secondary">
+                                    <i class="fas fa-eraser mr-2"></i>Clear Form
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Table Section -->
+                        <div class="bg-white p-6 rounded-xl shadow-md fade-in">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">
+                                    <i class="fas fa-list-ul mr-2 text-primary-600"></i>
+                                    MCQ Types List
+                                </h3>
+                                <div class="flex items-center">
+                                    <div class="relative mr-3">
+                                        <input type="text" id="search-input" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200">
+                                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                    </div>
+                                    <button onclick="fetchMcqTypes()" class="bg-gray-200 p-2 rounded-lg hover:bg-gray-300 transition-all duration-200">
+                                        <i class="fas fa-sync-alt text-gray-700"></i>
                                     </button>
                                 </div>
-                                <div id="image-preview" class="mt-2 hidden">
-                                    <img id="preview-image" src="" alt="Preview" class="max-h-20 rounded-lg border border-gray-200">
+                            </div>
+                            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                                <table id="mcqTable" class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 table-header text-left">ID</th>
+                                            <th class="px-6 py-3 table-header text-left">Name</th>
+                                            <th class="px-6 py-3 table-header text-left">Description</th>
+                                            <th class="px-6 py-3 table-header text-center">Fee</th>
+                                            <th class="px-6 py-3 table-header text-center">Start Time</th>
+                                            <th class="px-6 py-3 table-header text-center">Due Time</th>
+                                            <th class="px-6 py-3 table-header text-center">Status</th>
+                                            <th class="px-6 py-3 table-header text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="mcq-table-body">
+                                        <!-- Data will be inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="loading-spinner" class="flex justify-center items-center py-8">
+                                <i class="fas fa-spinner fa-spin text-primary-600 text-2xl"></i>
+                            </div>
+                            <p id="noMcqTypes" class="text-center text-gray-500 mt-4 hidden">
+                                <i class="fas fa-info-circle mr-2"></i>No MCQ types found. Click "New MCQ" to add one.
+                            </p>
+                            <div id="pagination" class="flex justify-between items-center mt-4 hidden">
+                                <div class="text-sm text-gray-500">
+                                    Showing <span id="start-item">1</span> to <span id="end-item">10</span> of <span id="total-items">0</span> entries
                                 </div>
-                            </div>
-                            <div>
-                                <label for="entryFee" class="block text-sm font-medium text-gray-700 mb-2">Entry Fee (₹) <span class="text-red-500">*</span></label>
-                                <input type="number" id="entryFee" placeholder="50.00" min="0" step="0.01" required class="input-field">
-                            </div>
-                            <div>
-                                <label for="startTimeBeforeStart" class="block text-sm font-medium text-gray-700 mb-2">Start Time <span class="text-red-500">*</span></label>
-                                <input type="datetime-local" id="startTimeBeforeStart" required class="input-field">
-                            </div>
-                            <div>
-                                <label for="dueTimeBeforeStart" class="block text-sm font-medium text-gray-700 mb-2">Due Time <span class="text-red-500">*</span></label>
-                                <input type="datetime-local" id="dueTimeBeforeStart" required class="input-field">
-                            </div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <button onclick="saveMcqType()" class="btn-primary">
-                                <i class="fas fa-save mr-2"></i>Save MCQ Type
-                            </button>
-                            <button onclick="clearForm()" class="btn-secondary">
-                                <i class="fas fa-eraser mr-2"></i>Clear Form
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Table Section -->
-                    <div class="bg-white p-6 rounded-xl shadow-md fade-in">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <i class="fas fa-list-ul mr-2 text-primary-600"></i>
-                                MCQ Types List
-                            </h3>
-                            <div class="flex items-center">
-                                <div class="relative mr-3">
-                                    <input type="text" id="search-input" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200">
-                                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                <div class="flex space-x-2">
+                                    <button id="prev-page" class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <div id="page-numbers" class="flex space-x-1">
+                                        <!-- Page numbers will be inserted here -->
+                                    </div>
+                                    <button id="next-page" class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
                                 </div>
-                                <button onclick="fetchMcqTypes()" class="bg-gray-200 p-2 rounded-lg hover:bg-gray-300 transition-all duration-200">
-                                    <i class="fas fa-sync-alt text-gray-700"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto rounded-lg border border-gray-200">
-                            <table id="mcqTable" class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                         <th class="px-6 py-3 table-header text-left">ID</th>
-                                        <th class="px-6 py-3 table-header text-left">Name</th>
-                                        <th class="px-6 py-3 table-header text-left">Description</th>
-                                        <th class="px-6 py-3 table-header text-center">Fee</th>
-                                        <th class="px-6 py-3 table-header text-center">Start Time</th>
-                                        <th class="px-6 py-3 table-header text-center">Due Time</th>
-                                        <th class="px-6 py-3 table-header text-center">Status</th>
-                                        <th class="px-6 py-3 table-header text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200" id="mcq-table-body">
-                                    <!-- Data will be inserted here -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="loading-spinner" class="flex justify-center items-center py-8">
-                            <i class="fas fa-spinner fa-spin text-primary-600 text-2xl"></i>
-                        </div>
-                        <p id="noMcqTypes" class="text-center text-gray-500 mt-4 hidden">
-                            <i class="fas fa-info-circle mr-2"></i>No MCQ types found. Click "New MCQ" to add one.
-                        </p>
-                        <div id="pagination" class="flex justify-between items-center mt-4 hidden">
-                            <div class="text-sm text-gray-500">
-                                Showing <span id="start-item">1</span> to <span id="end-item">10</span> of <span id="total-items">0</span> entries
-                            </div>
-                            <div class="flex space-x-2">
-                                <button id="prev-page" class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <div id="page-numbers" class="flex space-x-1">
-                                    <!-- Page numbers will be inserted here -->
-                                </div>
-                                <button id="next-page" class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     </div>
-<script>
-    // Redirect to index.html if admin is not logged in
-    window.onload = function () {
-      const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
-      if (isAdminLoggedIn !== 'true') {
-        window.location.href = '../index.html';
-      }
-    };
-  </script> 
+
     <script>
+        // Authentication check - this runs first
+        document.addEventListener('DOMContentLoaded', function() {
+            const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            
+            if (isAdminLoggedIn !== 'true') {
+                // Show message and redirect
+                setTimeout(function() {
+                    alert('Access denied. Please login as admin first.');
+                    window.location.href = '../index.html';
+                }, 1000);
+            } else {
+                // Hide loading overlay and show app content
+                setTimeout(function() {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    document.getElementById('app-content').classList.remove('hidden');
+                    initializeApp();
+                }, 1000);
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                window.location.href = '../index.html';
+            }
+        }
+
         // Configuration
         const apiBase = 'https://gameappbackend-i8zv.onrender.com/api/mcqtypes';
         let currentPage = 1;
@@ -498,89 +542,88 @@
 
         // Render table with current page data
         function renderTable() {
-    mcqTableBody.innerHTML = '';
-    
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredMcqTypes.length);
-    const pageData = filteredMcqTypes.slice(startIndex, endIndex);
-    
-    if (pageData.length === 0) {
-        noMcqTypesElement.classList.remove('hidden');
-        paginationElement.classList.add('hidden');
-        return;
-    }
-    
-    noMcqTypesElement.classList.add('hidden');
-    
-    pageData.forEach(mcq => {
-        const now = new Date();
-        const startTime = new Date(mcq.startTimeBeforeStart);
-        const dueTime = new Date(mcq.dueTimeBeforeStart);
-        
-        let status = '';
-        let statusClass = '';
-        
-        if (now < startTime) {
-            status = 'Upcoming';
-            statusClass = 'bg-blue-100 text-blue-800';
-        } else if (now > dueTime) {
-            status = 'Completed';
-            statusClass = 'bg-gray-100 text-gray-800';
-        } else {
-            status = 'Active';
-            statusClass = 'bg-green-100 text-green-800';
+            mcqTableBody.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredMcqTypes.length);
+            const pageData = filteredMcqTypes.slice(startIndex, endIndex);
+            
+            if (pageData.length === 0) {
+                noMcqTypesElement.classList.remove('hidden');
+                paginationElement.classList.add('hidden');
+                return;
+            }
+            
+            noMcqTypesElement.classList.add('hidden');
+            
+            pageData.forEach(mcq => {
+                const now = new Date();
+                const startTime = new Date(mcq.startTimeBeforeStart);
+                const dueTime = new Date(mcq.dueTimeBeforeStart);
+                
+                let status = '';
+                let statusClass = '';
+                
+                if (now < startTime) {
+                    status = 'Upcoming';
+                    statusClass = 'bg-blue-100 text-blue-800';
+                } else if (now > dueTime) {
+                    status = 'Completed';
+                    statusClass = 'bg-gray-100 text-gray-800';
+                } else {
+                    status = 'Active';
+                    statusClass = 'bg-green-100 text-green-800';
+                }
+                
+                const row = document.createElement('tr');
+                row.className = 'table-row-hover animate__animated animate__fadeIn';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${mcq._id}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            ${mcq.imageUrl ? `
+                            <div class="flex-shrink-0 h-10 w-10 mr-3">
+                                <img class="h-10 w-10 rounded-full object-cover" src="${mcq.imageUrl}" alt="${mcq.name}">
+                            </div>
+                            ` : ''}
+                            <div>
+                                <div class="font-medium text-gray-900">${mcq.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-500 max-w-xs truncate">${mcq.description || 'N/A'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="px-2 py-1 rounded-full bg-primary-100 text-primary-800 text-sm font-medium">
+                            ₹${mcq.entryFee.toFixed(2)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                        ${formatDateTime(mcq.startTimeBeforeStart)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                        ${formatDateTime(mcq.dueTimeBeforeStart)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
+                            ${status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick='editMcq(${JSON.stringify(mcq)})' class="btn-edit mr-2">
+                            <i class="fas fa-edit mr-1"></i>Edit
+                        </button>
+                        <button onclick='deleteMcq("${mcq._id}")' class="btn-delete">
+                            <i class="fas fa-trash-alt mr-1"></i>Delete
+                        </button>
+                    </td>
+                `;
+                mcqTableBody.appendChild(row);
+            });
         }
-        
-        const row = document.createElement('tr');
-        row.className = 'table-row-hover animate__animated animate__fadeIn';
-        row.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                ${mcq._id}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                    ${mcq.imageUrl ? `
-                    <div class="flex-shrink-0 h-10 w-10 mr-3">
-                        <img class="h-10 w-10 rounded-full object-cover" src="${mcq.imageUrl}" alt="${mcq.name}">
-                    </div>
-                    ` : ''}
-                    <div>
-                        <div class="font-medium text-gray-900">${mcq.name}</div>
-                    </div>
-                </div>
-            </td>
-            <td class="px-6 py-4">
-                <div class="text-sm text-gray-500 max-w-xs truncate">${mcq.description || 'N/A'}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span class="px-2 py-1 rounded-full bg-primary-100 text-primary-800 text-sm font-medium">
-                    ₹${mcq.entryFee.toFixed(2)}
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                ${formatDateTime(mcq.startTimeBeforeStart)}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                ${formatDateTime(mcq.dueTimeBeforeStart)}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
-                    ${status}
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button onclick='editMcq(${JSON.stringify(mcq)})' class="btn-edit mr-2">
-                    <i class="fas fa-edit mr-1"></i>Edit
-                </button>
-                <button onclick='deleteMcq("${mcq._id}")' class="btn-delete">
-                    <i class="fas fa-trash-alt mr-1"></i>Delete
-                </button>
-            </td>
-        `;
-        mcqTableBody.appendChild(row);
-    });
-}
-
 
         // Format date for display
         function formatDateTime(dateString) {
@@ -814,8 +857,8 @@
             formTitle.textContent = 'Add New MCQ Type';
         }
 
-        // Initialize on page load
-        window.onload = function() {
+        // Initialize the application
+        function initializeApp() {
             fetchMcqTypes();
             
             // Add event listeners
@@ -835,7 +878,7 @@
                     }
                 }
             });
-        };
+        }
     </script>
 </body>
 </html>
