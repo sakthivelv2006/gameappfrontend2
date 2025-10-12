@@ -326,8 +326,9 @@
             const user = JSON.parse(localStorage.getItem('user'));
             const isLoggedIn = localStorage.getItem('isLoggedIn');
 
-            // Check if user is logged in
-            if (!user || isLoggedIn !== 'true') {
+             // 🔒 Check login and role
+            if (!user || user.role !== 'user') {
+                alert("session expired");
                 window.location.href = 'index.html';
                 return;
             }
@@ -337,13 +338,13 @@
             if (profileName) profileName.textContent = user.name || user.username || 'User';
             if (profileEmail) profileEmail.textContent = user.email || 'user@example.com';
 
-            // Logout function
             const handleLogout = (e) => {
                 e.preventDefault();
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('isLoggedIn');
-                window.location.href = 'index.html';
+                localStorage.clear();
+                window.location.href = 'login.html';
             };
 
             // Add event listeners

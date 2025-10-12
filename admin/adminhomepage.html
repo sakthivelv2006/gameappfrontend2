@@ -399,23 +399,32 @@
   <script>
     // Authentication check - this runs first
     document.addEventListener('DOMContentLoaded', function() {
-      const isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn');
-      
-      if (isAdminLoggedIn !== 'true') {
-        // Show message and redirect
-        setTimeout(function() {
-          alert('Access denied. Please login as admin first.');
-          window.location.href = '../index.html';
-        }, 1000);
-      } else {
-        // Hide loading overlay and show app content
-        setTimeout(function() {
-          document.getElementById('loading-overlay').style.display = 'none';
-          document.getElementById('app-content').classList.remove('hidden');
-          initializeApp();
-        }, 1000);
-      }
-    });
+  const token = localStorage.getItem('token');
+  const userData = localStorage.getItem('user');
+  let user = null;
+
+  if (userData) {
+    try {
+      user = JSON.parse(userData);
+    } catch (e) {
+      console.error('Invalid user data in localStorage');
+    }
+  }
+
+  if (!token || !user || user.role !== 'admin') {
+    setTimeout(function() {
+      alert('Access denied. Please login as admin first.');
+      window.location.href = '../index.html';
+    }, 1000);
+  } else {
+    setTimeout(function() {
+      document.getElementById('loading-overlay').style.display = 'none';
+      document.getElementById('app-content').classList.remove('hidden');
+      initializeApp();
+    }, 1000);
+  }
+});
+
 
     // Logout function
     function logoutAdmin() {

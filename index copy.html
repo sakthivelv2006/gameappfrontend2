@@ -1,291 +1,963 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SignIn&SignUp</title>
-    <link rel="stylesheet" type="text/css" href="./style.css" />
-    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <div class="container">
-      <div class="forms-container">
-        <div class="signin-signup">
-          <form action="#" class="sign-in-form" id="signInForm">
-            <h2 class="title">Sign In</h2>
-            <div class="input-field">
-              <i class="fas fa-envelope"></i>
-              <input type="email" placeholder="Email" id="signInEmail" required />
-            </div>
-            <div class="input-field">
-              <i class="fas fa-lock"></i>
-              <input type="password" placeholder="Password" id="signInPassword" required />
-            </div>
-            <input type="submit" value="Login" class="btn solid" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            <p class="social-text">Or Sign in with social platforms</p>
-            <div class="social-media">
-              <a href="#" class="social-icon">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" class="social-icon">
-                <i class="fab fa-twitter"></i>
-              </a>
-              <a href="#" class="social-icon">
-                <i class="fab fa-google"></i>
-              </a>
-              <a href="#" class="social-icon">
-                <i class="fab fa-linkedin-in"></i>
-              </a>
-            </div>
-            <div id="signInMessage" class="message"></div>
-          </form>
+    <!-- Primary SEO Title -->
+    <title>Learn From Sakthi | coding tutorials | projects | razorpay implementation | Java, Spring Boot, DSA | Full Stack | Smtp Implementation</title>
 
-          <form action="#" class="sign-up-form" id="signUpForm">
-            <h2 class="title">Sign Up</h2>
-            <div class="input-field">
-              <i class="fas fa-user"></i>
-              <input type="text" placeholder="Username" id="signUpUsername" required />
-            </div>
-            <div class="input-field">
-              <i class="fas fa-envelope"></i>
-              <input type="email" placeholder="Email" id="signUpEmail" required />
-            </div>
-            <div class="input-field">
-              <i class="fas fa-lock"></i>
-              <input type="password" placeholder="Password" id="signUpPassword" required />
-            </div>
-            <input type="submit" value="Sign Up" class="btn solid" />
+    <!-- Meta Description -->
+    <meta name="description" content="Learn From Sakthi - Explore coding tutorials, Java projects, Spring Boot, Data Structures & Algorithms, Full Stack Development, React, Node.js, HTML, CSS, JavaScript tutorials, and source code examples.">
 
-            <p class="social-text">Or Sign up with social platforms</p>
-            <div class="social-media">
-              <a href="#" class="social-icon">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" class="social-icon">
-                <i class="fab fa-twitter"></i>
-              </a>
-              <a href="#" class="social-icon">
-                <i class="fab fa-google"></i>
-              </a>
-              <a href="#" class="social-icon">
-                <i class="fab fa-linkedin-in"></i>
-              </a>
-            </div>
-            <div id="signUpMessage" class="message"></div>
-          </form>
+    <!-- Meta Keywords (optional) -->
+    <meta name="keywords" content="Learn from Sakthi, coding tutorials, Java projects, Spring Boot, DSA tutorials, Full Stack Development, React tutorials, Node.js tutorials, HTML, CSS, JavaScript, programming projects, source code">
 
-          <form action="#" class="otp-form" id="otpVerificationForm" style="display: none;">
-            <h2 class="title">Verify OTP</h2>
-            <p>An OTP has been sent to <span id="otpEmailDisplay" style="font-weight: bold;"></span>. Please enter it below:</p>
-            <div class="input-field">
-              <i class="fas fa-key"></i>
-              <input type="text" placeholder="Enter OTP" id="otpInput" required />
+    <meta name="google-site-verification" content="4u2CQtj6Ou1IZ7icHKUSlTkFnU-_MFp4glwMuXZQAoU" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://img.freepik.com/free-vector/luxury-letter-s-logo_1035-8525.jpg" type="image/png">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Learn From Sakthi | Java, Spring Boot, DSA & Full Stack Coding Tutorials">
+    <meta property="og:description" content="Explore tutorials, projects, and programming tips in Java, Spring Boot, DSA, Full Stack Development, React, Node.js, and more with Learn From Sakthi.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://codewithsakthi.vercel.app/">
+    <meta property="og:image" content="https://img.freepik.com/free-vector/luxury-letter-s-logo_1035-8525.jpg">
+    <meta property="og:image:alt" content="Learn From Sakthi Logo - Coding Tutorials & Projects">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Learn From Sakthi | Java, Spring Boot, DSA & Full Stack Coding Tutorials">
+    <meta name="twitter:description" content="Explore tutorials, projects, and programming tips in Java, Spring Boot, DSA, Full Stack Development, React, Node.js, and more with Learn From Sakthi.">
+    <meta name="twitter:image" content="https://learnfromsakthi.vercel.app/og-image.png">
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data: Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Learn From Sakthi",
+        "url": "https://learnfromsakthi.vercel.app/",
+        "logo": "https://learnfromsakthi.vercel.app/og-image.png",
+        "sameAs": [
+            "http://crackquizwithsakthi.vercel.app/",
+            "https://sakthisoftwaresolutions.vercel.app/"
+        ]
+    }
+    </script>
+
+    <!-- JSON-LD Structured Data: WebSite -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Learn From Sakthi",
+        "url": "https://learnfromsakthi.vercel.app/"
+    }
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4bb543;
+            --error-color: #ff3333;
+            --warning-color: #ffcc00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            min-height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -40%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            transform: skewX(-15deg);
+            pointer-events: none;
+        }
+
+        .forms-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .signin-signup {
+            position: absolute;
+            top: 50%;
+            left: 75%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            display: grid;
+            grid-template-columns: 1fr;
+            transition: 1s 0.7s ease-in-out;
+            z-index: 5;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 5rem;
+            overflow: hidden;
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            transition: 0.2s 0.7s ease-in-out;
+        }
+
+        form.sign-in-form {
+            z-index: 2;
+        }
+
+        form.sign-up-form {
+            z-index: 1;
+            opacity: 0;
+        }
+
+        form.otp-form {
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #ddd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field {
+            max-width: 380px;
+            width: 100%;
+            height: 55px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 10px 0;
+            border-radius: 55px;
+            display: grid;
+            grid-template-columns: 15% 85%;
+            padding: 0 0.4rem;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .input-field:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field i {
+            text-align: center;
+            line-height: 55px;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .input-field input {
+            background: none;
+            outline: none;
+            border: none;
+            line-height: 1;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .input-field input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        .btn {
+            width: 150px;
+            height: 49px;
+            border: none;
+            outline: none;
+            border-radius: 49px;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin: 10px 0;
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn.transparent {
+            margin: 0;
+            background: none;
+            border: 2px solid #fff;
+            width: 130px;
+            height: 41px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .btn.transparent:hover {
+            background-color: #fff;
+            color: var(--primary-color);
+        }
+
+        .social-text {
+            padding: 0.7rem 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .social-text::before, .social-text::after {
+            content: "";
+            position: absolute;
+            height: 1px;
+            width: 100px;
+            background-color: rgba(255, 255, 255, 0.3);
+            top: 50%;
+        }
+
+        .social-text::before {
+            left: -110px;
+        }
+
+        .social-text::after {
+            right: -110px;
+        }
+
+        .social-media {
+            display: flex;
+            justify-content: center;
+        }
+
+        .social-icon {
+            height: 46px;
+            width: 46px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin: 0 0.45rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.1rem;
+            border-radius: 50%;
+            transition: all 0.5s;
+        }
+
+        .social-icon:hover {
+            color: var(--primary-color);
+            background-color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .panels-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-around;
+            text-align: center;
+            z-index: 6;
+            pointer-events: all;
+            padding: 3rem 17% 2rem 12%;
+        }
+
+        .left-panel {
+            pointer-events: all;
+        }
+
+        .right-panel {
+            pointer-events: none;
+        }
+
+        .panel .content {
+            color: #fff;
+            transition: transform 0.9s ease-in-out;
+            transition-delay: 0.6s;
+        }
+
+        .panel h3 {
+            font-weight: 600;
+            line-height: 1;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .panel p {
+            font-size: 0.95rem;
+            padding: 0.7rem 0;
+            opacity: 0.9;
+        }
+
+        .image {
+            width: 100%;
+            max-width: 300px;
+            transition: transform 1.1s ease-in-out;
+            transition-delay: 0.4s;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+        }
+
+        .right-panel .content,
+        .right-panel .image {
+            transform: translateX(800px);
+        }
+
+        /* ANIMATION */
+        .container.sign-up-mode:before {
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(20px, 0);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .container.sign-up-mode .left-panel .image,
+        .container.sign-up-mode .left-panel .content {
+            transform: translateX(-800px);
+        }
+
+        .container.sign-up-mode .right-panel .content,
+        .container.sign-up-mode .right-panel .image {
+            transform: translateX(0px);
+        }
+
+        .container.sign-up-mode .left-panel {
+            pointer-events: none;
+        }
+
+        .container.sign-up-mode .right-panel {
+            pointer-events: all;
+        }
+
+        .container.sign-up-mode .signin-signup {
+            left: 25%;
+        }
+
+        .container.sign-up-mode form.sign-in-form {
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .container.sign-up-mode form.sign-up-form {
+            z-index: 2;
+            opacity: 1;
+        }
+
+        .container.sign-up-mode form.otp-form {
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .container.otp-mode form.sign-in-form,
+        .container.otp-mode form.sign-up-form {
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .container.otp-mode form.otp-form {
+            z-index: 2;
+            opacity: 1;
+        }
+
+        /* Message styles */
+        .message {
+            width: 100%;
+            max-width: 380px;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .message.info {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .message.success {
+            background-color: rgba(75, 181, 67, 0.2);
+            color: #fff;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .message.error {
+            background-color: rgba(255, 51, 51, 0.2);
+            color: #fff;
+            border-left: 4px solid var(--error-color);
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 870px) {
+            .container {
+                min-height: 800px;
+                height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .container::before {
+                display: none;
+            }
+
+            .signin-signup {
+                width: 100%;
+                left: 50%;
+                top: 95%;
+                transform: translate(-50%, -100%);
+                transition: 1s 0.8s ease-in-out;
+            }
+
+            .panels-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 2fr 1fr;
+            }
+
+            .panel {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                padding: 2.5rem 8%;
+            }
+
+            .panel .content {
+                padding-right: 15%;
+                transition: transform 0.9s ease-in-out;
+                transition-delay: 0.8s;
+            }
+
+            .panel h3 {
+                font-size: 1.2rem;
+            }
+
+            .panel p {
+                font-size: 0.7rem;
+                padding: 0.5rem 0;
+            }
+
+            .btn.transparent {
+                width: 110px;
+                height: 35px;
+                font-size: 0.7rem;
+            }
+
+            .image {
+                width: 200px;
+                transition: transform 0.9s ease-in-out;
+                transition-delay: 0.6s;
+            }
+
+            .left-panel {
+                grid-row: 1 / 2;
+            }
+
+            .right-panel {
+                grid-row: 3 / 4;
+            }
+
+            .right-panel .content,
+            .right-panel .image {
+                transform: translateY(300px);
+            }
+
+            .container.sign-up-mode .signin-signup {
+                top: 5%;
+                left: 50%;
+                transform: translate(-50%, 0);
+            }
+
+            .container.sign-up-mode .left-panel .image,
+            .container.sign-up-mode .left-panel .content {
+                transform: translateY(-300px);
+            }
+
+            .container.sign-up-mode .right-panel .content,
+            .container.sign-up-mode .right-panel .image {
+                transform: translateY(0px);
+            }
+        }
+
+        @media (max-width: 570px) {
+            form {
+                padding: 0 1.5rem;
+            }
+
+            .image {
+                display: none;
+            }
+
+            .panel .content {
+                padding: 0.5rem 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .container.sign-up-mode .signin-signup,
+            .container.sign-up-mode .signin-signup {
+                left: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles-js"></div>
+
+    <div class="container" id="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <form action="#" class="sign-in-form" id="signInForm">
+                    <h2 class="title">Welcome Back</h2>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" id="signInEmail" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" id="signInPassword" required />
+                    </div>
+                    <a href="#" class="forgot-password" style="color: rgba(255,255,255,0.7); font-size: 0.8rem; align-self: flex-end; margin-right: 60px; text-decoration: none;">Forgot password?</a>
+                    <input type="submit" value="Login" class="btn solid" />
+
+                    <p class="social-text">Or Sign in with social platforms</p>
+                    <div class="social-media">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-google"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                    <div id="signInMessage" class="message"></div>
+                </form>
+
+                <form action="#" class="sign-up-form" id="signUpForm">
+                    <h2 class="title">Create Account</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Username" id="signUpUsername" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" id="signUpEmail" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" id="signUpPassword" required />
+                    </div>
+                    <input type="submit" value="Sign Up" class="btn solid" />
+
+                    <p class="social-text">Or Sign up with social platforms</p>
+                    <div class="social-media">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-google"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                    <div id="signUpMessage" class="message"></div>
+                </form>
+
+                <form action="#" class="otp-form" id="otpVerificationForm" style="display: none;">
+                    <h2 class="title">Verify OTP</h2>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px; font-size: 0.9rem;">An OTP has been sent to <span id="otpEmailDisplay" style="font-weight: bold; color: #fff;"></span>. Please enter it below:</p>
+                    <div class="input-field">
+                        <i class="fas fa-key"></i>
+                        <input type="text" placeholder="Enter OTP" id="otpInput" required />
+                    </div>
+                    <input type="hidden" id="otpUserId" />
+                    <input type="submit" value="Verify" class="btn solid" />
+                    <div id="otpMessage" class="message"></div>
+                </form>
             </div>
-            <input type="hidden" id="otpUserId" />
-            <input type="submit" value="Verify" class="btn solid" />
-            <div id="otpMessage" class="message"></div>
-          </form>
         </div>
-      </div>
-      <div class="panels-container">
-        <div class="panel left-panel">
-          <div class="content">
-            <h3>New here?</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio minus natus est.</p>
-            <button class="btn transparent" id="sign-up-btn">Sign Up</button>
-            <button onclick="window.location.href='verifyaccount.html'" class="btn transparent" id="verify-account-btn">Verify Account</button>
-          </div>
-          <img src="./img/log.svg" class="image" alt="" />
-        </div>
 
-        <div class="panel right-panel">
-          <div class="content">
-            <h3>One of us?</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio minus natus est.</p>
-            <button class="btn transparent" id="sign-in-btn">Sign In</button>
-          
-          </div>
-          <img src="./img/register.svg" class="image" alt="" />
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>New to our platform?</h3>
+                    <p>Join our community today and unlock exclusive features and benefits!</p>
+                    <button class="btn transparent" id="sign-up-btn">Sign Up</button>
+                    <!-- <button onclick="window.location.href='verifyaccount.html'" class="btn transparent" id="verify-account-btn" style="margin-top: 10px;">Verify Account</button> -->
+                </div>
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" class="image" alt="Sign up graphic" />
+            </div>
+
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>Already a member?</h3>
+                    <p>Welcome back! We've missed you. Sign in to continue your journey.</p>
+                    <button class="btn transparent" id="sign-in-btn">Sign In</button>
+                </div>
+                <img src="https://cdn-icons-png.flaticon.com/512/3059/3059518.png" class="image" alt="Sign in graphic" />
+            </div>
         </div>
-      </div>
     </div>
 
     <script>
-      const BACKEND_URL = 'https://gameappbackend-i8zv.onrender.com';
+        const BACKEND_URL = 'https://gameappbackend-i8zv.onrender.com';
 
 
-      const signInForm = document.getElementById('signInForm');
-      const signUpForm = document.getElementById('signUpForm');
-      const otpVerificationForm = document.getElementById('otpVerificationForm');
-
-      const signInEmailInput = document.getElementById('signInEmail');
-      const signInPasswordInput = document.getElementById('signInPassword');
-      const signInMessage = document.getElementById('signInMessage');
-
-      const signUpUsernameInput = document.getElementById('signUpUsername');
-      const signUpEmailInput = document.getElementById('signUpEmail');
-      const signUpPasswordInput = document.getElementById('signUpPassword');
-      const signUpMessage = document.getElementById('signUpMessage');
-
-      const otpInput = document.getElementById('otpInput');
-      const otpUserIdInput = document.getElementById('otpUserId');
-      const otpEmailDisplay = document.getElementById('otpEmailDisplay');
-      const otpMessage = document.getElementById('otpMessage');
-
-      const container = document.querySelector('.container');
-      const signInBtn = document.getElementById('sign-in-btn');
-      const signUpBtn = document.getElementById('sign-up-btn');
-
-      signUpBtn.addEventListener('click', () => {
-        container.classList.add('sign-up-mode');
-        otpVerificationForm.style.display = 'none';
-        signInForm.style.display = 'block';
-        signUpForm.style.display = 'block';
-      });
-
-      signInBtn.addEventListener('click', () => {
-        container.classList.remove('sign-up-mode');
-        otpVerificationForm.style.display = 'none';
-        signInForm.style.display = 'block';
-        signUpForm.style.display = 'block';
-      });
-
-      function displayMessage(element, message, type = 'info') {
-        element.textContent = message;
-        element.className = `message ${type}`;
-      }
-
-     signUpForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = signUpUsernameInput.value;
-  const email = signUpEmailInput.value;
-  const password = signUpPasswordInput.value;
-
-  // Block specific emails
-  const blockedEmails = ['727823tucs252@skct.edu.in', 'askthi@gmail.com'];
-  if (blockedEmails.includes(email)) {
-    displayMessage(signUpMessage, 'This mail user is blocked by the website admin. Please contact admin.', 'error');
-    return;
-  }
-
-  displayMessage(signUpMessage, 'Registering...', 'info');
-
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, email, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-  displayMessage(signUpMessage, data.message, 'success');
-
-  // ✅ Redirect to verificateionemailpage.html after successful registration
-  setTimeout(() => {
-    window.location.href = 'verifyaccount.html';
-  }, 5000); // optional 1s delay to show success message
-
-} else {
-  displayMessage(signUpMessage, data.message || 'Registration failed.', 'error');
-}
-
-  } catch (error) {
-    console.error('Registration error:', error);
-    displayMessage(signUpMessage, 'Network error. Please try again.', 'error');
-  }
-});
 
 
-      otpVerificationForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const userId = otpUserIdInput.value;
-        const otp = otpInput.value;
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles-js');
+            const particleCount = window.innerWidth < 768 ? 30 : 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 5px
+                const size = Math.random() * 3 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration between 10s and 20s
+                const duration = Math.random() * 10 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
 
-        displayMessage(otpMessage, 'Verifying OTP...', 'info');
+        // Initialize particles when DOM is loaded
+        document.addEventListener('DOMContentLoaded', createParticles);
 
-        try {
-          const response = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId, otp }),
-          });
+        const signInForm = document.getElementById('signInForm');
+        const signUpForm = document.getElementById('signUpForm');
+        const otpVerificationForm = document.getElementById('otpVerificationForm');
+        const container = document.getElementById('container');
 
-          const data = await response.json();
+        const signInEmailInput = document.getElementById('signInEmail');
+        const signInPasswordInput = document.getElementById('signInPassword');
+        const signInMessage = document.getElementById('signInMessage');
 
-          if (response.ok) {
-            displayMessage(otpMessage, data.message, 'success');
-            alert('Account verified! You can now log in.');
+        const signUpUsernameInput = document.getElementById('signUpUsername');
+        const signUpEmailInput = document.getElementById('signUpEmail');
+        const signUpPasswordInput = document.getElementById('signUpPassword');
+        const signUpMessage = document.getElementById('signUpMessage');
+
+        const otpInput = document.getElementById('otpInput');
+        const otpUserIdInput = document.getElementById('otpUserId');
+        const otpEmailDisplay = document.getElementById('otpEmailDisplay');
+        const otpMessage = document.getElementById('otpMessage');
+
+        const signInBtn = document.getElementById('sign-in-btn');
+        const signUpBtn = document.getElementById('sign-up-btn');
+
+        signUpBtn.addEventListener('click', () => {
+            container.classList.add('sign-up-mode');
+            container.classList.remove('otp-mode');
+        });
+
+        signInBtn.addEventListener('click', () => {
             container.classList.remove('sign-up-mode');
-            signInForm.style.display = 'block';
-            signUpForm.style.display = 'block';
-            otpVerificationForm.style.display = 'none';
-            signInEmailInput.value = otpEmailDisplay.textContent;
-            otpInput.value = '';
-          } else {
-            displayMessage(otpMessage, data.message || 'OTP verification failed.', 'error');
-          }
-        } catch (error) {
-          console.error('OTP verification error:', error);
-          displayMessage(otpMessage, 'Network error. Please try again.', 'error');
+            container.classList.remove('otp-mode');
+        });
+
+        function displayMessage(element, message, type = 'info') {
+            element.textContent = message;
+            element.className = `message ${type}`;
+            
+            // Auto-hide message after 5 seconds
+            if (type !== 'info') {
+                setTimeout(() => {
+                    element.textContent = '';
+                    element.className = 'message';
+                }, 5000);
+            }
         }
-      });
 
-      signInForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = signInEmailInput.value;
-        const password = signInPasswordInput.value;
+        signUpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = signUpUsernameInput.value;
+            const email = signUpEmailInput.value;
+            const password = signUpPasswordInput.value;
 
-        displayMessage(signInMessage, 'Logging in...', 'info');
+            // Block specific emails
+            const blockedEmails = ['727823tucs252@skct.edu.in', 'askthi@gmail.com'];
+            if (blockedEmails.includes(email)) {
+                displayMessage(signUpMessage, 'This email is blocked. Please contact support.', 'error');
+                return;
+            }
 
- if (email === 'sakthivelv202222@gmail.com' && password === 'sakthivel@936') {
-  displayMessage(signInMessage, 'Admin login successful!', 'success');
+            displayMessage(signUpMessage, 'Registering your account...', 'info');
 
-  // Store in localStorage
-  localStorage.setItem('token', 'admin-token');
-  localStorage.setItem('user', JSON.stringify({ email, role: 'admin' }));
-  localStorage.setItem('isLoggedIn', 'true');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                });
 
-  // Store adminLoggedIn in sessionStorage
-  sessionStorage.setItem('adminLoggedIn', 'true');
+                const data = await response.json();
 
-  // Redirect to admin home page
-  window.location.href = 'admin/adminhomepage.html';
-  return;
-}
+                if (response.ok) {
+                    displayMessage(signUpMessage, data.message, 'success');
+                    
+                    // Redirect to verification page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'verifyaccount.html';
+                    }, 2000);
+                } else {
+                    displayMessage(signUpMessage, data.message || 'Registration failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                displayMessage(signUpMessage, 'Network error. Please check your connection.', 'error');
+            }
+        });
 
+        otpVerificationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = otpUserIdInput.value;
+            const otp = otpInput.value;
 
-        try {
-          const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-          });
+            displayMessage(otpMessage, 'Verifying OTP...', 'info');
 
-          const data = await response.json();
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId, otp }),
+                });
 
-          if (response.ok) {
-            displayMessage(signInMessage, data.message, 'success');
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('isLoggedIn', 'true');
-            window.location.href = 'Home.html';
-          } else {
-            displayMessage(signInMessage, data.message || 'Login failed.', 'error');
-          }
-        } catch (error) {
-          console.error('Login error:', error);
-          displayMessage(signInMessage, 'Network error. Please try again.', 'error');
-        }
-      });
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayMessage(otpMessage, data.message, 'success');
+                    
+                    // Show success message and redirect to login
+                    setTimeout(() => {
+                        container.classList.remove('otp-mode');
+                        signInEmailInput.value = otpEmailDisplay.textContent;
+                        otpInput.value = '';
+                    }, 2000);
+                } else {
+                    displayMessage(otpMessage, data.message || 'Invalid OTP. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('OTP verification error:', error);
+                displayMessage(otpMessage, 'Network error. Please try again.', 'error');
+            }
+        });
+
+        signInForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = signInEmailInput.value;
+            const password = signInPasswordInput.value;
+
+            displayMessage(signInMessage, 'Authenticating...', 'info');
+
+            // Admin login check
+            if (email === 'sakthivelv202222@gmail.com' && password === 'sakthivel@936') {
+                displayMessage(signInMessage, 'Admin login successful!', 'success');
+                
+                // Store admin session
+                localStorage.setItem('token', 'admin-token');
+                localStorage.setItem('user', JSON.stringify({ email, role: 'admin' }));
+                localStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                
+                // Redirect to admin dashboard
+                setTimeout(() => {
+                    window.location.href = 'admin/adminhomepage.html';
+                }, 1000);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayMessage(signInMessage, 'Login successful! Redirecting...', 'success');
+                    
+                    // Store user session
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    
+                    // Redirect to home page
+                    setTimeout(() => {
+                        window.location.href = 'Home.html';
+                    }, 1000);
+                } else {
+                    displayMessage(signInMessage, data.message || 'Invalid credentials. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                displayMessage(signInMessage, 'Network error. Please try again.', 'error');
+            }
+        });
+
+        // Add input field focus effects
+        document.querySelectorAll('.input-field input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.background = 'rgba(255,255,255,0.3)';
+                this.parentElement.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.background = 'rgba(255,255,255,0.2)';
+                this.parentElement.style.boxShadow = 'none';
+            });
+        });
     </script>
-  </body>
-</html>
+</body>
