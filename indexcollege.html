@@ -282,6 +282,12 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
+        position: relative;
+    }
+
+    .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
     }
 
     .btn-primary {
@@ -290,7 +296,7 @@
         box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(142, 68, 173, 0.6);
     }
@@ -360,6 +366,20 @@
         font-size: 60px;
         margin-bottom: 20px;
         color: #e74c3c;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
     /* Responsive Design */
@@ -515,7 +535,7 @@
                         <input type="text" id="regPhone" class="form-input" placeholder="Phone Number (10-digit)" required />
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="collegeRegisterBtn">
                         <i class="fas fa-user-plus"></i> Register College
                     </button>
                     
@@ -542,7 +562,7 @@
                         <input type="password" id="collegePassword" class="form-input" placeholder="Password" required />
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="collegeLoginBtn">
                         <i class="fas fa-sign-in-alt"></i> Login as College
                     </button>
                     
@@ -569,7 +589,7 @@
                         <input type="password" id="teacherPassword" class="form-input" placeholder="Password" required />
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="teacherLoginBtn">
                         <i class="fas fa-sign-in-alt"></i> Login as Teacher
                     </button>
                     
@@ -595,6 +615,11 @@
         const collegeRegisterMessage = document.getElementById('collegeRegisterMessage');
         const collegeLoginMessage = document.getElementById('collegeLoginMessage');
         const teacherLoginMessage = document.getElementById('teacherLoginMessage');
+
+        // Button elements
+        const collegeRegisterBtn = document.getElementById('collegeRegisterBtn');
+        const collegeLoginBtn = document.getElementById('collegeLoginBtn');
+        const teacherLoginBtn = document.getElementById('teacherLoginBtn');
 
         // ======================
         // SECURITY: BLOCK DEVELOPER TOOLS
@@ -626,6 +651,23 @@
             setTimeout(() => {
                 adminBlock.style.display = 'none';
             }, 3000);
+        }
+
+        // Function to set loading state for buttons
+        function setLoading(button, isLoading) {
+            if (isLoading) {
+                button.disabled = true;
+                button.innerHTML = '<div class="spinner"></div> Processing...';
+            } else {
+                button.disabled = false;
+                if (button.id === 'collegeRegisterBtn') {
+                    button.innerHTML = '<i class="fas fa-user-plus"></i> Register College';
+                } else if (button.id === 'collegeLoginBtn') {
+                    button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login as College';
+                } else if (button.id === 'teacherLoginBtn') {
+                    button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login as Teacher';
+                }
+            }
         }
 
         // Role Selection
@@ -681,6 +723,10 @@
         // ======================
         collegeRegisterForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Set loading state
+            setLoading(collegeRegisterBtn, true);
+            
             const data = {
                 name: document.getElementById('regName').value.trim(),
                 officialEmail: document.getElementById('regEmail').value.trim(),
@@ -694,14 +740,17 @@
             // Validation
             if(!/^\d{4}$/.test(data.tneaCode)) { 
                 displayMessage(collegeRegisterMessage, 'TNEA Code must be 4 digits', 'error');
+                setLoading(collegeRegisterBtn, false);
                 return; 
             }
             if(!/^\d{10}$/.test(data.phone)) { 
                 displayMessage(collegeRegisterMessage, 'Phone must be 10 digits', 'error');
+                setLoading(collegeRegisterBtn, false);
                 return; 
             }
             if(data.password.length < 8){ 
                 displayMessage(collegeRegisterMessage, 'Password must be at least 8 characters', 'error');
+                setLoading(collegeRegisterBtn, false);
                 return; 
             }
 
@@ -723,6 +772,9 @@
                 }
             } catch(err){ 
                 displayMessage(collegeRegisterMessage, 'Error: ' + err.message, 'error');
+            } finally {
+                // Reset loading state
+                setLoading(collegeRegisterBtn, false);
             }
         });
 
@@ -731,6 +783,10 @@
         // ======================
         collegeLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Set loading state
+            setLoading(collegeLoginBtn, true);
+            
             const data = {
                 officialEmail: document.getElementById('collegeEmail').value.trim(),
                 password: document.getElementById('collegePassword').value.trim()
@@ -754,6 +810,9 @@
                 }
             } catch(err){ 
                 displayMessage(collegeLoginMessage, 'Error: ' + err.message, 'error');
+            } finally {
+                // Reset loading state
+                setLoading(collegeLoginBtn, false);
             }
         });
 
@@ -762,6 +821,10 @@
         // ======================
         teacherLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Set loading state
+            setLoading(teacherLoginBtn, true);
+            
             const data = {
                 email: document.getElementById('teacherEmail').value.trim(),
                 password: document.getElementById('teacherPassword').value.trim()
@@ -785,6 +848,9 @@
                 }
             } catch(err){ 
                 displayMessage(teacherLoginMessage, 'Error: ' + err.message, 'error');
+            } finally {
+                // Reset loading state
+                setLoading(teacherLoginBtn, false);
             }
         });
 

@@ -399,10 +399,13 @@
             </div>
         </div>
     </main>
-
+    
     <script>
         const API_BASE = 'https://gameappbackend-i8zv.onrender.com'; // Ensure this matches your backend API URL
 
+
+
+      
         // --- Helper Functions ---
 
         /**
@@ -472,6 +475,12 @@
             if (s) {
                 try {
                     const u = JSON.parse(s);
+                       // 🔒 Check login and role
+            if (!u || u.role !== 'user') {
+                alert("session expired");
+                window.location.href = 'index.html';
+                return;
+            }
                     id = u._id || u.id || 'N/A'; // Prioritize _id if available (MongoDB default)
                     name = u.username || u.fullName || u.name || 'Unknown';
                     email = u.email || '';
@@ -494,6 +503,38 @@
             const offset = 5.5 * 60 * 60000; // IST = UTC+5:30
             return new Date(utc + offset);
         }
+        // ======================
+// SECURITY: BLOCK DEVELOPER TOOLS
+// ======================
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    showAdminBlock();
+    return false;
+});
+
+document.addEventListener('keydown', function(e) {
+    // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+Shift+C
+    if (
+        e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+        (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+        (e.ctrlKey && e.key === 'u') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'C')
+    ) {
+        e.preventDefault();
+        showAdminBlock();
+        return false;
+    }
+});
+
+// Function to show admin block message
+function showAdminBlock() {
+    const adminBlock = document.getElementById('adminBlock');
+    adminBlock.style.display = 'flex';
+    setTimeout(() => {
+        adminBlock.style.display = 'none';
+    }, 3000);
+}
 
         /**
          * Formats the time difference until a target date.

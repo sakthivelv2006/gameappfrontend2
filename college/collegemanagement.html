@@ -1318,11 +1318,11 @@ body::before {
               </div>
 
               <div class="form-group">
-                <label class="form-label">🏢 Department</label>
-                <input type="text" class="form-input" id="teacherDept" required placeholder="e.g., Computer Science">
-                <span class="form-error" id="deptError">Please enter a department (minimum 3 characters)</span>
-                <span class="form-success" id="deptSuccess">✓ Valid department</span>
-              </div>
+  <label class="form-label">🏢 Department</label>
+  <input type="text" class="form-input" id="teacherDept" required placeholder="e.g., Computer Science">
+  <span class="form-error" id="departmentError">Please enter a department (minimum 3 characters)</span>
+  <span class="form-success" id="departmentSuccess">✓ Valid department</span>
+</div>
             </div>
 
             <div class="form-actions">
@@ -1623,7 +1623,7 @@ function validateAllFields() {
     validateField('teacherEmail', 'email'),
     validateField('teacherPassword', 'password'),
     validateField('teacherPhone', 'phone'),
-    validateField('teacherDept', 'dept')
+    validateField('teacherDept', 'department')
   ];
   
   return validations.every(result => result === true);
@@ -1676,12 +1676,12 @@ function setupFieldValidation() {
   
   // Department validation
   document.getElementById('teacherDept').addEventListener('blur', () => {
-    validateField('teacherDept', 'dept');
+    validateField('teacherDept', 'department');
   });
   
   document.getElementById('teacherDept').addEventListener('input', () => {
     if (document.getElementById('teacherDept').value.trim() !== '') {
-      validateField('teacherDept', 'dept');
+      validateField('teacherDept', 'department');
     }
   });
 }
@@ -2297,7 +2297,7 @@ document.getElementById('teacherForm').addEventListener('submit', async (e) => {
         input.classList.remove('error', 'success');
       });
       
-      ['name', 'email', 'password', 'phone', 'dept'].forEach(key => {
+      ['name', 'email', 'password', 'phone', 'department'].forEach(key => {
         document.getElementById(`${key}Error`).classList.remove('show');
         document.getElementById(`${key}Success`).classList.remove('show');
       });
@@ -2504,7 +2504,7 @@ document.addEventListener('keydown', (e) => {
           input.classList.remove('error', 'success');
         });
         
-        ['name', 'email', 'password', 'phone', 'dept'].forEach(key => {
+        ['name', 'email', 'password', 'phone', 'department'].forEach(key => {
           document.getElementById(`${key}Error`).classList.remove('show');
           document.getElementById(`${key}Success`).classList.remove('show');
         });

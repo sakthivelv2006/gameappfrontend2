@@ -411,7 +411,7 @@
     }
   }
 
-  if (!token || !user || user.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     setTimeout(function() {
       alert('Access denied. Please login as admin first.');
       window.location.href = '../index.html';
