@@ -422,7 +422,7 @@
     }
 
     function instructionCountdown() {
-      let seconds = 90;
+      let seconds = 2;
       const countdownElem = document.getElementById('countdown');
 
       const interval = setInterval(() => {
@@ -809,7 +809,7 @@
       
       const key = e.key.toLowerCase();
       const illegalCombo =
-        (e.ctrlKey && ['c', 'v', 'u'].includes(key)) ||
+        (e.ctrlKey && ['c', 'v', 'u','w'].includes(key)) ||
         (e.ctrlKey && e.shiftKey && key === 'i') ||
         key === 'f12';
 
