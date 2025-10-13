@@ -112,6 +112,7 @@
         <li class="flex items-start"><span class="mr-2">•</span> Based on your result, the winning amount will be distributed by the site admin after the exam.</li>
         <li class="flex items-start"><span class="mr-2">•</span> Pressing Ctrl+C or Ctrl+V or Alt tab will trigger auto-submission of the exam.</li>
         <li class="flex items-start"><span class="mr-2">•</span> After submitting the exam, please proceed to the Dashboard or the Exam Results & Winnings page.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> Use of I AM NEO shortcut keys (Alt+Shift+Q, Alt+Shift+A, Alt+Shift+T, Alt+Shift+N, Alt+Shift+M, Alt+Shift+S, Ctrl+V, Alt+C) is strictly prohibited and will result in a 10-minute block.</li>
       </ul>
 
       <div class="flex flex-col md:flex-row items-center justify-between bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -224,6 +225,52 @@
       
       // Prevent refresh attempts
       setupRefreshPrevention();
+      
+      // Add shortcut key detection
+      setupShortcutDetection();
+    }
+
+    function setupShortcutDetection() {
+      document.addEventListener('keydown', function(e) {
+        if (submitted) return;
+        
+        // Check for I AM NEO shortcuts
+        if (isNeoShortcut(e)) {
+          e.preventDefault();
+          e.stopPropagation();
+          showBlockedScreen("I AM NEO shortcut keys are not working here. Please do the exam properly.", 600);
+          return false;
+        }
+      });
+    }
+
+    function isNeoShortcut(e) {
+      // I AM NEO shortcut keys to detect
+      const neoShortcuts = [
+        // Alt + Shift + Q - Solve Portal MCQs & Coding Problems
+        { alt: true, shift: true, key: 'q' },
+        // Alt + Shift + A - Solve Questions Using AI
+        { alt: true, shift: true, key: 'a' },
+        // Alt + Shift + T - Type Code Into Editor
+        { alt: true, shift: true, key: 't' },
+        // Alt + Shift + N - Solve NPTEL Quiz
+        { alt: true, shift: true, key: 'n' },
+        // Alt + Shift + M - Solve MCQs By Selecting
+        { alt: true, shift: true, key: 'm' },
+        // Alt + Shift + S - Search Answers Using AI
+        { alt: true, shift: true, key: 's' },
+        // Ctrl + V - Paste Content Even When Restricted
+        { ctrl: true, key: 'v' },
+        // Alt + C - Open AI Chatbot Assistant
+        { alt: true, key: 'c' }
+      ];
+
+      return neoShortcuts.some(shortcut => {
+        return (shortcut.alt === undefined || shortcut.alt === e.altKey) &&
+               (shortcut.shift === undefined || shortcut.shift === e.shiftKey) &&
+               (shortcut.ctrl === undefined || shortcut.ctrl === e.ctrlKey) &&
+               (shortcut.key.toLowerCase() === e.key.toLowerCase());
+      });
     }
 
     function setupRefreshPrevention() {
@@ -290,14 +337,14 @@
       }
     }
 
-    function showBlockedScreen(reason = "Tab switching is not allowed during the exam.") {
+    function showBlockedScreen(reason = "Tab switching is not allowed during the exam.", countdownSeconds = 300) {
       if (isBlocked || submitted) return;
       
       isBlocked = true;
       document.getElementById('blockedMessage').style.display = 'flex';
       document.getElementById('blockedReason').textContent = reason;
       
-      let countdown = 300;
+      let countdown = countdownSeconds;
       document.getElementById('blockedCountdown').textContent = countdown;
       
       blockedTimeout = setInterval(() => {

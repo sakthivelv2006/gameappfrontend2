@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MCQ Quiz</title>
+  <title>Secure MCQ Quiz</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -45,13 +45,20 @@
     .question-slide.active {
       display: block;
     }
-    /* Hide the warning message visually without removing the element */
-    #warningMessage {
-        display: none !important;
-    }
-    /* Ensure fullscreen modal is always hidden */
-    #fullscreenModal {
-        display: none !important;
+    #blockedMessage {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      color: white;
+      font-size: 2rem;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
   </style>
 </head>
@@ -60,10 +67,30 @@
     <!-- Header -->
     <div class="text-center mb-8">
       <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-2">MCQ Examination</h1>
-      <div class="w-full bg-white rounded-full h-2.5 mb-2">
+      <div class="flex justify-between items-center mb-2">
+        <div id="timer" class="text-lg font-medium text-gray-600 hidden">Time: <span class="text-blue-600">00:00</span></div>
+        <button id="submitBtn" class="hidden bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Submit Test
+        </button>
+      </div>
+      <div class="w-full bg-white rounded-full h-2.5">
         <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div>
       </div>
-      <div id="timer" class="text-lg font-medium text-gray-600 hidden">Time: <span class="text-blue-600">00:00</span></div>
+    </div>
+
+    <!-- Blocked Message -->
+    <div id="blockedMessage">
+      <div class="text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <h2 class="text-3xl font-bold mb-4">ACCESS BLOCKED BY ADMIN</h2>
+        <p class="text-xl mb-6" id="blockedReason">Tab switching is not allowed during the exam.</p>
+        <p class="text-lg">You can continue with the exam in <span id="blockedCountdown" class="font-bold text-red-500">5</span> seconds</p>
+      </div>
     </div>
 
     <!-- Instruction Box -->
@@ -75,31 +102,24 @@
         Instructions
       </h2>
       <ul class="list-disc pl-5 mb-6 space-y-2 text-gray-700">
+        <li class="flex items-start"><span class="mr-2">•</span> Marks from the first-time submission will be considered final and evaluated based on the winning amount. Distribution of the winning amount is subject to admin approval.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> Use only the mouse or a single finger for navigation. Using three fingers or multiple touch points will trigger automatic submission due to activity detection.</li>
         <li class="flex items-start"><span class="mr-2">•</span> Do not switch tabs or use keyboard shortcuts during the exam.</li>
         <li class="flex items-start"><span class="mr-2">•</span> The test will be automatically submitted if any suspicious activity is detected.</li>
-        <li class="flex items-start"><span class="mr-2">•</span> Answer all questions carefully within the given time.</li>
-        <li class="flex items-start"><span class="mr-2">•</span> Fullscreen mode is recommended for the exam experience, but not strictly required.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> Answer all questions carefully within the allotted time.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> Fullscreen mode is recommended for a better exam experience, but it is not mandatory.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> The exam will be automatically submitted after 30 minutes.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> Based on your result, the winning amount will be distributed by the site admin after the exam.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> Pressing Ctrl+C or Ctrl+V or Alt tab will trigger auto-submission of the exam.</li>
+        <li class="flex items-start"><span class="mr-2">•</span> After submitting the exam, please proceed to the Dashboard or the Exam Results & Winnings page.</li>
       </ul>
+
       <div class="flex flex-col md:flex-row items-center justify-between bg-blue-50 p-4 rounded-lg border border-blue-200">
         <div class="flex items-center mb-3 md:mb-0">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p class="text-gray-700">Test will start in <span id="countdown" class="font-bold text-blue-600 text-xl">10</span> seconds...</p>
-        </div>
-        <!-- The "Start Test" button is completely removed -->
-      </div>
-    </div>
-
-    <!-- Warning Message (HTML is kept but hidden via CSS for robustness) -->
-    <div id="warningMessage" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-md transform transition-all duration-300">
-      <div class="flex items-start">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        <div>
-          <p class="font-semibold">⚠️ Warning: Unauthorized Activity Detected</p>
-          <p class="text-sm mt-1">You have switched away from the test. Test will be automatically submitted.</p>
+          <p class="text-gray-700">Test will start in <span id="countdown" class="font-bold text-blue-600 text-xl">90</span> seconds...</p>
         </div>
       </div>
     </div>
@@ -152,49 +172,24 @@
         <!-- Dots will be added here -->
       </div>
     </div>
-
-    <!-- Submit Button -->
-    <div class="text-center mt-10 mb-10">
-      <button id="submitBtn" class="hidden bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        Submit Test
-      </button>
-    </div>
-
-    <!-- Fullscreen Reminder Modal (completely removed from JS, hidden via CSS) -->
-    <div id="fullscreenModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-      <div class="bg-white p-8 rounded-xl max-w-md mx-4">
-        <div class="text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-yellow-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <h3 class="text-2xl font-bold text-gray-800 mb-3">Fullscreen Recommended</h3>
-          <p class="text-gray-600 mb-6">For the best experience, consider entering fullscreen mode. The test will proceed even if you choose not to.</p>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Get user data from localStorage
-    const user = JSON.parse(localStorage.getItem('user'));
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get user data from localStorage
+      const user = JSON.parse(localStorage.getItem('user'));
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
 
-    // Check if user is not logged in
-    if (!user || isLoggedIn !== 'true') {
-      // Redirect to Home.html in the same folder
-      window.location.href = '../Home.html';
-      return;
-    }
-  });
-</script>
+      // Check if user is not logged in
+      if (!user || isLoggedIn !== 'true') {
+        // Redirect to Home.html in the same folder
+        window.location.href = '../Home.html';
+        return;
+      }
+    });
+  </script>
 
   <script>
-
-    
     const API_BASE = 'https://gameappbackend-i8zv.onrender.com';
     const SUBMIT_API = `${API_BASE}/api/testsubmissions/api/testsubmissions/api/submit/test`;
 
@@ -202,15 +197,20 @@
     const mcqTypeId = sessionStorage.getItem('mcqTypeId');
     const userId = sessionStorage.getItem('userId');
 
- // For 30-minute auto-submit
+    // For 30-minute auto-submit
+    const TEST_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
     let questions = [];
     let startTime = null;
     let submitted = false;
-    let warningTimeout; // This timeout is now for auto-submission, not warning display
+    let isBlocked = false;
+    let blockedTimeout;
     let isFullscreen = false; 
     let currentQuestionIndex = 0;
     let timerInterval;
     let questionStates = [];
+    let autoSubmitTimeout; // For the 30-minute auto-submit
+    let lastFocusTime = Date.now();
+    let focusCheckInterval;
 
     function initQuiz() {
       instructionCountdown();
@@ -219,11 +219,100 @@
       // Initialize question states (will be properly populated after questions load)
       questionStates = questions.map(() => ({ answered: false }));
       
-      // Ensure fullscreen modal is always hidden and never shown.
-      document.getElementById('fullscreenModal').classList.add('hidden');
+      // Set up focus checking
+      focusCheckInterval = setInterval(checkFocus, 1000);
+      
+      // Prevent refresh attempts
+      setupRefreshPrevention();
     }
 
-    // Fullscreen functions are now purely for attempt and status update, no prompts.
+    function setupRefreshPrevention() {
+      // Prevent F5, Ctrl+R, Ctrl+Shift+R, etc.
+      document.addEventListener('keydown', function(e) {
+        // Refresh prevention - F5, Ctrl+R, Ctrl+Shift+R
+        if ((e.key === 'F5' || 
+             (e.ctrlKey && e.key === 'r') || 
+             (e.ctrlKey && e.shiftKey && e.key === 'R') ||
+             (e.key === 'F11')) && !submitted) {
+          e.preventDefault();
+          e.stopPropagation();
+          showBlockedScreen("Page refresh is not allowed during the exam.");
+          return false;
+        }
+      });
+
+      // Prevent right-click context menu (which might have refresh option)
+      document.addEventListener('contextmenu', function(e) {
+        if (!submitted) {
+          e.preventDefault();
+          showBlockedScreen("Right-click is disabled during the exam.");
+          return false;
+        }
+      });
+
+      // Prevent browser's built-in refresh button
+      window.addEventListener('beforeunload', function(e) {
+        if (!submitted) {
+          // This will show a confirmation dialog in some browsers
+          e.preventDefault();
+          e.returnValue = 'Are you sure you want to leave? The exam will be submitted if you leave this page.';
+          return e.returnValue;
+        }
+      });
+
+      // Additional prevention for mobile refresh gestures
+      let touchStartY = 0;
+      document.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: false });
+
+      document.addEventListener('touchmove', function(e) {
+        // Detect pull-to-refresh gesture
+        const touchY = e.touches[0].clientY;
+        const diff = touchY - touchStartY;
+        
+        if (diff > 100 && window.scrollY <= 0 && !submitted) {
+          e.preventDefault();
+          showBlockedScreen("Pull-to-refresh is disabled during the exam.");
+          return false;
+        }
+      }, { passive: false });
+    }
+
+    function checkFocus() {
+      if (document.hasFocus()) {
+        lastFocusTime = Date.now();
+      } else {
+        // If the window doesn't have focus for more than 1 second, trigger blocked screen
+        if (Date.now() - lastFocusTime > 1000 && !isBlocked && !submitted) {
+          showBlockedScreen("Tab switching is not allowed during the exam.");
+        }
+      }
+    }
+
+    function showBlockedScreen(reason = "Tab switching is not allowed during the exam.") {
+      if (isBlocked || submitted) return;
+      
+      isBlocked = true;
+      document.getElementById('blockedMessage').style.display = 'flex';
+      document.getElementById('blockedReason').textContent = reason;
+      
+      let countdown = 300;
+      document.getElementById('blockedCountdown').textContent = countdown;
+      
+      blockedTimeout = setInterval(() => {
+        countdown--;
+        document.getElementById('blockedCountdown').textContent = countdown;
+        
+        if (countdown <= 0) {
+          clearInterval(blockedTimeout);
+          document.getElementById('blockedMessage').style.display = 'none';
+          isBlocked = false;
+          lastFocusTime = Date.now();
+        }
+      }, 1000);
+    }
+
     function requestFullscreen() {
       const elem = document.documentElement;
       if (document.fullscreenEnabled || document.webkitFullscreenEnabled || 
@@ -234,7 +323,7 @@
             updateFullscreenStatus();
           }).catch(err => {
             console.warn("Fullscreen request denied or failed:", err);
-            isFullscreen = false; // Ensure status is updated even on denial
+            isFullscreen = false;
             updateFullscreenStatus();
           });
         } else if (elem.webkitRequestFullscreen) {
@@ -255,8 +344,6 @@
         isFullscreen = false;
         updateFullscreenStatus();
       }
-      // Explicitly ensure the modal remains hidden
-      document.getElementById('fullscreenModal').classList.add('hidden'); 
     }
 
     function exitFullscreen() {
@@ -280,23 +367,15 @@
       }
     }
 
-    // handleVisibilityChange now directly submits on tab switch
+    // handleVisibilityChange now shows blocked screen instead of submitting
     function handleVisibilityChange() {
-      if (document.visibilityState !== 'visible' && !submitted) {
-        // Clear any pending timeout just in case
-        clearTimeout(warningTimeout); 
-        // Directly submit the test as illegal
-        submitTest(true); 
-      } else {
-        // When focus returns, we don't need to do anything specific if already submitted
-        // or if no warning was shown.
+      if (document.visibilityState !== 'visible' && !submitted && !isBlocked) {
+        showBlockedScreen("Tab switching is not allowed during the exam.");
       }
     }
 
-    // Removed showWarning and hideWarning functions as they are no longer needed.
-
     function instructionCountdown() {
-      let seconds = 10;
+      let seconds = 90;
       const countdownElem = document.getElementById('countdown');
 
       const interval = setInterval(() => {
@@ -332,7 +411,7 @@
         </div>
         <div class="bg-purple-50 p-4 rounded-lg">
           <p class="text-sm text-purple-800 font-medium">Fullscreen</p>
-          <p class="text-lg font-semibold text-gray-800">Inactive</p> <!-- Initial state, updated by requestFullscreen -->
+          <p class="text-lg font-semibold text-gray-800">Inactive</p>
         </div>
       `;
 
@@ -340,7 +419,14 @@
       startTimer();
       await loadQuestions();
       
-      // Attempt fullscreen, but don't block or show any modal if it fails
+      // Set up the 30-minute auto-submit
+      autoSubmitTimeout = setTimeout(() => {
+        if (!submitted) {
+          submitTest(false);
+        }
+      }, TEST_DURATION);
+      
+      // Attempt fullscreen
       requestFullscreen();
 
       if (screen.orientation && screen.orientation.lock) {
@@ -495,17 +581,16 @@
 
         // Highlight the current question's dot in blue
         if (i === currentQuestionIndex) {
-          dots[i].classList.remove('bg-gray-300', 'bg-green-500'); // Remove other colors
-          dots[i].classList.add('bg-blue-600'); // Add active color
+          dots[i].classList.remove('bg-gray-300', 'bg-green-500');
+          dots[i].classList.add('bg-blue-600');
         }
       }
     }
 
-
     function updateQuestionDot(index) {
       const dots = document.getElementById('questionDots').children;
       if (dots[index]) {
-        dots[index].classList.remove('bg-gray-300', 'bg-blue-600', 'bg-green-500'); // Remove all states
+        dots[index].classList.remove('bg-gray-300', 'bg-blue-600', 'bg-green-500');
         dots[index].classList.add(questionStates[index].answered ? 'bg-green-500' : 'bg-gray-300');
         
         // Re-apply blue if it's the current question
@@ -514,7 +599,6 @@
         }
       }
     }
-
 
     function updateProgressBar() {
       if (questionStates.length === 0) return;
@@ -528,6 +612,9 @@
       if (submitted) return;
       submitted = true;
       clearInterval(timerInterval);
+      clearInterval(focusCheckInterval);
+      clearTimeout(autoSubmitTimeout);
+      if (blockedTimeout) clearTimeout(blockedTimeout);
 
       let correct = 0, incorrect = 0, attempted = 0;
       const answers = [];
@@ -564,7 +651,7 @@
       const resultHtml = `
         <div class="bg-white p-6 rounded-xl shadow-lg max-w-md mx-auto mb-6">
           <h3 class="text-2xl font-bold text-center mb-4 ${illegal ? 'text-red-600' : 'text-green-600'}">
-            ${illegal ? '❗ Test Submitted Due to Violation' : '✅ Test Submitted Successfully'}
+            ${illegal ? '❗ Your test was submitted because of detected illegal activity or not following the instructions correctly' : '✅ Test submitted successfully. Please wait while you are automatically redirected to the previous page.'}
           </h3>
           
           <div class="grid grid-cols-2 gap-4 mb-4">
@@ -622,7 +709,7 @@
             percentage,
             durationInSeconds,
             status: 'completed',
-            activityStatus, // This will be 'illegal' if auto-submitted due to violation
+            activityStatus,
             answers
           })
         });
@@ -638,7 +725,7 @@
 
       setTimeout(() => {
         window.location.href = 'technicalmcqs.html';
-      }, 10000); // Give user 10 seconds to review results
+      }, 10000);
     }
 
     // Event Listeners
@@ -647,7 +734,7 @@
       submitTest(false);
     });
 
-    // Fullscreen event listeners are modified to not block or show modal
+    // Fullscreen event listeners
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', handleFullscreenChange);
@@ -657,18 +744,17 @@
       isFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || 
                      !!document.mozFullScreenElement || !!document.msFullscreenElement;
       updateFullscreenStatus();
-      // Ensure the modal remains hidden; no change needed here as per CSS
     }
 
-    // Illegal activity detection now directly submits the test
+    // Illegal activity detection
     window.addEventListener('blur', () => {
-      if (!submitted) {
-        submitTest(true); // Directly submit as illegal
+      if (!submitted && !isBlocked) {
+        showBlockedScreen("Tab switching is not allowed during the exam.");
       }
     });
 
     window.addEventListener('focus', () => {
-      // No action needed on focus if warning messages are removed
+      // No action needed on focus
     });
 
     window.addEventListener('keydown', (e) => {
