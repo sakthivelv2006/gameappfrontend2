@@ -1,43 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeMarket - Premium Source Codes</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
   <style>
     :root {
-      --primary: #6C63FF;
-      --secondary: #FF6584;
-      --dark: #2A2A3C;
-      --light: #F8F9FC;
+      --primary: #6c63ff;
+      --secondary: #ff6584;
+      --dark: #2a2a3c;
+      --light: #f8f9fc;
       --success: #28a745;
       --gray: #6c757d;
       --light-gray: #e9ecef;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       color: var(--dark);
       line-height: 1.6;
       min-height: 100vh;
-      padding: 0;
     }
-    
+
     .container {
       max-width: 1200px;
-      margin: 0 auto;
+      margin: auto;
       padding: 20px;
     }
-    
-    /* Header Styles */
+
     header {
       background: white;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -45,13 +44,15 @@
       margin-bottom: 30px;
       padding: 20px;
     }
-    
+
     .header-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    
+
     .logo {
       display: flex;
       align-items: center;
@@ -60,78 +61,50 @@
       font-weight: 700;
       color: var(--primary);
     }
-    
-    .logo i {
-      font-size: 28px;
-    }
-    
-    /* User Info Styles */
+
     .user-info {
       display: flex;
       align-items: center;
       gap: 15px;
       background: var(--light);
-      padding: 15px;
+      padding: 10px 15px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
     }
-    
+
     .user-avatar {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary) 0%, #4a44c9 100%);
+      background: var(--primary);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 20px;
-    }
-    
-    .user-details {
-      line-height: 1.4;
-    }
-    
-    .user-name {
-      font-weight: 600;
       font-size: 18px;
     }
-    
-    .user-email {
-      color: var(--gray);
-      font-size: 14px;
-    }
-    
-    /* Filter Section */
+
     .filters {
       display: flex;
       gap: 15px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       flex-wrap: wrap;
     }
-    
+
     .search-box {
       flex: 1;
       min-width: 250px;
       position: relative;
     }
-    
+
     .search-box input {
       width: 100%;
       padding: 12px 20px 12px 45px;
       border: 2px solid var(--light-gray);
       border-radius: 10px;
       font-size: 16px;
-      transition: all 0.3s;
     }
-    
-    .search-box input:focus {
-      border-color: var(--primary);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
-    }
-    
+
     .search-box i {
       position: absolute;
       left: 15px;
@@ -139,480 +112,284 @@
       transform: translateY(-50%);
       color: var(--gray);
     }
-    
+
     .filter-select {
       padding: 12px 15px;
       border: 2px solid var(--light-gray);
       border-radius: 10px;
       background: white;
-      color: var(--dark);
       font-size: 16px;
-      min-width: 180px;
     }
-    
-    /* Courses Grid */
+
     .courses-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 25px;
-      margin-bottom: 40px;
     }
-    
+
     .course-card {
       background: white;
       border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+      transition: 0.3s;
     }
-    
+
     .course-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
     }
-    
+
     .course-image {
       height: 160px;
-      background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
       display: flex;
       align-items: center;
       justify-content: center;
+      background: linear-gradient(120deg, #84fab0, #8fd3f4);
       color: white;
-      font-size: 50px;
+      font-size: 40px;
     }
-    
+
     .course-content {
       padding: 20px;
     }
-    
+
     .course-title {
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 10px;
-      color: var(--dark);
     }
-    
+
     .course-description {
       color: var(--gray);
-      margin-bottom: 15px;
       font-size: 14px;
-      display: -webkit-box;
+      margin-bottom: 10px;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      display: -webkit-box;
       overflow: hidden;
     }
-    
+
     .course-meta {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-    
+
     .course-language {
       background: var(--light);
-      padding: 5px 12px;
+      padding: 5px 10px;
       border-radius: 20px;
       font-size: 13px;
-      font-weight: 500;
     }
-    
+
     .course-price {
-      font-weight: 700;
-      font-size: 22px;
+      font-weight: bold;
       color: var(--primary);
     }
-    
-    .btn-buy {
+
+    .btn-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .format-select {
       width: 100%;
-      padding: 12px;
-      background: var(--primary);
-      color: white;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    .btn-buy,
+    .btn-download,
+    .btn-copy {
+      width: 100%;
+      padding: 10px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      font-weight: 600;
+      color: white;
     }
-    
-    .btn-buy:hover {
-      background: #554fd8;
+
+    .btn-buy {
+      background: var(--primary);
     }
-    
+
     .btn-buy.free {
       background: var(--success);
     }
-    
-    .btn-buy.free:hover {
-      background: #218838;
+
+    .btn-download {
+      background: #4b47d4;
     }
-    
-    /* No Courses Message */
+
+    .btn-copy {
+      background: var(--secondary);
+    }
+
+    .btn-buy:hover,
+    .btn-download:hover,
+    .btn-copy:hover {
+      opacity: 0.9;
+    }
+
     .no-courses {
       text-align: center;
+      grid-column: 1 / -1;
       padding: 40px;
       background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-      grid-column: 1 / -1;
+      border-radius: 10px;
     }
-    
-    .no-courses i {
-      font-size: 60px;
-      color: var(--light-gray);
-      margin-bottom: 20px;
-    }
-    
-    .no-courses h3 {
-      font-size: 24px;
-      margin-bottom: 10px;
-      color: var(--dark);
-    }
-    
-    .no-courses p {
-      color: var(--gray);
-    }
-    
-    /* Footer */
+
     footer {
       text-align: center;
-      padding: 20px;
+      margin-top: 30px;
       color: var(--gray);
-      font-size: 14px;
-      margin-top: 40px;
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-      }
-      
-      .filters {
-        flex-direction: column;
-      }
-      
-      .filter-select {
-        width: 100%;
-      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header>
       <div class="header-content">
-        <div class="logo">
-          <i class="fas fa-code"></i>
-          <span>CodeMarket</span>
-        </div>
+        <div class="logo"><i class="fas fa-code"></i> CodeMarket</div>
         <div class="user-info">
           <div id="user-avatar" class="user-avatar">U</div>
           <div class="user-details">
-            <div id="user-name" class="user-name">Unknown</div>
-            <div id="user-email" class="user-email"></div>
+            <div id="user-name">Guest</div>
+            <div id="user-email"></div>
           </div>
         </div>
       </div>
     </header>
 
-    <h1 style="margin-bottom: 20px; font-size: 28px;">Available Source Codes</h1>
-    
+    <h1 style="margin-bottom: 20px;">Available Source Codes</h1>
+
     <div class="filters">
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="search-input" placeholder="Search source codes...">
+        <input type="text" id="search-input" placeholder="Search source codes..." />
       </div>
-      <select id="category-filter" class="filter-select">
-        <option value="">All Categories</option>
-        <option value="web">Web Development</option>
-        <option value="mobile">Mobile Apps</option>
-        <option value="game">Game Development</option>
-      </select>
-      <select id="level-filter" class="filter-select">
-        <option value="">All Levels</option>
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-      </select>
     </div>
-    
+
     <div id="courses-container" class="courses-grid">
-      <!-- Courses will be loaded here -->
       <div class="no-courses">
-        <i class="fas fa-code"></i>
+        <i class="fas fa-spinner fa-spin"></i>
         <h3>Loading Source Codes...</h3>
         <p>Please wait while we load our collection</p>
       </div>
     </div>
-    
+
     <footer>
-      <p>© 2023 CodeMarket - Premium Source Code Marketplace</p>
+      <p>© 2025 CodeMarket - Premium Source Code Marketplace</p>
     </footer>
   </div>
 
   <script>
-
-    
-    // ======================
-// SECURITY: BLOCK DEVELOPER TOOLS
-// ======================
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    showAdminBlock();
-    return false;
-});
-
-document.addEventListener('keydown', function(e) {
-    // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+Shift+C
-    if (
-        e.key === 'F12' || 
-        (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-        (e.ctrlKey && e.shiftKey && e.key === 'J') || 
-        (e.ctrlKey && e.key === 'u') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'C')
-    ) {
-        e.preventDefault();
-        showAdminBlock();
-        return false;
-    }
-});
-
-// Function to show admin block message
-function showAdminBlock() {
-    const adminBlock = document.getElementById('adminBlock');
-    adminBlock.style.display = 'flex';
-    setTimeout(() => {
-        adminBlock.style.display = 'none';
-    }, 3000);
-
-}
     const API_BASE = "https://gameappbackend-i8zv.onrender.com";
     let allCourses = [];
 
-    function showMessage(msg, type) {
-      // Create a custom notification instead of alert
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: 500;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        background: ${type === 'error' ? '#FF6584' : '#28a745'};
-        transition: all 0.3s;
+    function showMessage(msg, type = "success") {
+      const el = document.createElement("div");
+      el.textContent = msg;
+      el.style.cssText = `
+        position:fixed;top:20px;right:20px;
+        background:${type === "error" ? "#ff4d4d" : "#28a745"};
+        color:white;padding:10px 20px;border-radius:8px;
+        z-index:9999;font-weight:bold;
       `;
-      notification.textContent = msg;
-      document.body.appendChild(notification);
-      
-      // Remove notification after 3 seconds
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
-    }
-
-    function getLoggedInUserInfo() {
-      const s = localStorage.getItem('user');
-      let id = 'N/A', name = 'Guest', email = '', initial = 'G';
-      if (s) {
-        try {
-          const u = JSON.parse(s);
-          id = u._id || u.id || 'N/A';
-          name = u.username || u.fullName || u.name || 'Unknown';
-          email = u.email || '';
-          initial = name.charAt(0).toUpperCase() || 'U';
-        } catch (e) {
-          id = 'Error'; name = 'Error'; initial = 'E';
-        }
-      }
-      document.getElementById('user-avatar').textContent = initial;
-      document.getElementById('user-name').textContent = name;
-      if (email) {
-        document.getElementById('user-email').textContent = email;
-      }
-      return { id, name, email, initial };
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
     }
 
     async function fetchCourses() {
+      const container = document.getElementById("courses-container");
       try {
-        // Show loading state
-        document.getElementById('courses-container').innerHTML = `
-          <div class="no-courses">
-            <i class="fas fa-spinner fa-spin"></i>
-            <h3>Loading Source Codes...</h3>
-            <p>Please wait while we load our collection</p>
-          </div>
-        `;
-        
         const res = await fetch(`${API_BASE}/api/sourcecodes`);
+        if (!res.ok) throw new Error("Failed to load data");
         allCourses = await res.json();
         renderCourses(allCourses);
       } catch (err) {
-        console.error(err);
-        document.getElementById('courses-container').innerHTML = `
-          <div class="no-courses">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Failed to Load Courses</h3>
-            <p>Please check your connection and try again</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="no-courses"><h3>Failed to load source codes</h3></div>`;
       }
     }
 
     function renderCourses(courses) {
       const container = document.getElementById("courses-container");
-      
       if (courses.length === 0) {
-        container.innerHTML = `
-          <div class="no-courses">
-            <i class="fas fa-exclamation-circle"></i>
-            <h3>No Source Codes Found</h3>
-            <p>Try adjusting your search or filters</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="no-courses"><h3>No Source Codes Found</h3></div>`;
         return;
       }
-      
-      container.innerHTML = "";
-      courses.forEach(course => {
-        const languageIcon = getLanguageIcon(course.language);
-        container.innerHTML += createCourseCard(course, languageIcon);
-      });
-    }
-
-    function getLanguageIcon(language) {
-      const icons = {
-        'javascript': 'fab fa-js-square',
-        'python': 'fab fa-python',
-        'java': 'fab fa-java',
-        'html': 'fab fa-html5',
-        'css': 'fab fa-css3-alt',
-        'php': 'fab fa-php',
-        'c++': 'fas fa-code',
-        'c#': 'fas fa-code',
-        'swift': 'fab fa-swift',
-        'kotlin': 'fas fa-code',
-        'default': 'fas fa-file-code'
-      };
-      
-      const langKey = language.toLowerCase();
-      return icons[langKey] || icons.default;
-    }
-
-    function createCourseCard(course, languageIcon) {
-      const isFree = course.price === 0;
-      
-      return `
+      container.innerHTML = courses
+        .map(
+          (c) => `
         <div class="course-card">
-          <div class="course-image">
-            <i class="fas fa-code"></i>
-          </div>
+          <div class="course-image"><i class="fas fa-code"></i></div>
           <div class="course-content">
-            <h3 class="course-title">${course.name}</h3>
-            <p class="course-description">${course.description}</p>
+            <div class="course-title">${c.name}</div>
+            <div class="course-description">${c.description}</div>
             <div class="course-meta">
-              <div class="course-language">
-                <i class="${languageIcon}"></i> ${course.language}
-              </div>
-              <div class="course-price">${isFree ? 'FREE' : '₹' + course.price}</div>
+              <div class="course-language"><i class="fas fa-code"></i> ${c.language}</div>
+              <div class="course-price">${c.price === 0 ? "FREE" : "₹" + c.price}</div>
             </div>
-            <button class="btn-buy ${isFree ? 'free' : ''}" onclick="purchaseAndStart('${encodeURIComponent(JSON.stringify(course))}')">
-              <i class="fas ${isFree ? 'fa-download' : 'fa-shopping-cart'}"></i>
-              ${isFree ? 'Download Now' : 'Buy Source Code'}
-            </button>
+            <div class="btn-section">
+              <select id="format-${c._id}" class="format-select">
+                <option value="txt">.txt</option>
+                <option value="zip">.zip</option>
+                <option value="js">.js</option>
+                <option value="py">.py</option>
+                <option value="html">.html</option>
+              </select>
+              <button class="btn-download" onclick="downloadSource('${encodeURIComponent(
+              JSON.stringify(c)
+            )}')"><i class="fas fa-download"></i> Download</button>
+              <button class="btn-copy" onclick="copyCode('${encodeURIComponent(
+              JSON.stringify(c)
+            )}')"><i class="fas fa-copy"></i> Copy Code</button>
+            </div>
           </div>
-        </div>
-      `;
+        </div>`
+        )
+        .join("");
     }
 
-    async function purchaseAndStart(course) {
-      try {
-        course = JSON.parse(decodeURIComponent(course));
-        const user = getLoggedInUserInfo();
-        if (!user || user.id === 'N/A' || user.id === 'Error') {
-          return showMessage('Please login to buy source codes.', 'error');
-        }
-        if (course.price > 0) {
-          const confirmPay = confirm(`Do you want to pay ₹${course.price} for "${course.name}"?`);
-          if (!confirmPay) return;
-        }
-        if (course.price > 0) {
-          const paymentId = 'PAY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-          const orderId = 'ORD-' + Date.now();
-          const payload = {
-            userId: user.id,
-            mcqTypeId: course._id,
-            mcqTypeName: course.name,
-            amount: course.price,
-            paymentId: paymentId,
-            orderId: orderId
-          };
-          const resp = await fetch(`${API_BASE}/api/purchase`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const data = await resp.json();
-          if (!resp.ok) {
-            showMessage(`Payment failed: ${data.message || 'Unknown error'}`, 'error');
-            return;
-          }
-          showMessage("Payment successful! Redirecting to download...", 'success');
-          setTimeout(() => {
-            window.location = `srccodedownload.html?userId=${encodeURIComponent(user.id)}&sourceCodeId=${encodeURIComponent(course._id)}`;
-          }, 1500);
-        }
-      } catch (error) {
-        console.error('Error in purchaseAndStart:', error);
-        showMessage('An unexpected error occurred. Please try again.', 'error');
-      }
+    // 🟢 Download source in selected format
+    function downloadSource(course) {
+      const c = JSON.parse(decodeURIComponent(course));
+      const format = document.getElementById(`format-${c._id}`).value;
+      const blob = new Blob([c.srcCode], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${c.name}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showMessage(`Downloaded ${c.name}.${format}`);
     }
 
-    // Add search and filter functionality
-    function setupFilters() {
-      const searchInput = document.getElementById('search-input');
-      const categoryFilter = document.getElementById('category-filter');
-      const levelFilter = document.getElementById('level-filter');
-      
-      const filterCourses = () => {
-        const searchText = searchInput.value.toLowerCase();
-        const category = categoryFilter.value;
-        const level = levelFilter.value;
-        
-        const filteredCourses = allCourses.filter(course => {
-          const matchesSearch = course.name.toLowerCase().includes(searchText) || 
-                               course.description.toLowerCase().includes(searchText);
-          // For demo purposes, we'll use random categories and levels
-          const matchesCategory = !category || true; // In real app, would check course.category
-          const matchesLevel = !level || true; // In real app, would check course.level
-          
-          return matchesSearch && matchesCategory && matchesLevel;
-        });
-        
-        renderCourses(filteredCourses);
-      };
-      
-      searchInput.addEventListener('input', filterCourses);
-      categoryFilter.addEventListener('change', filterCourses);
-      levelFilter.addEventListener('change', filterCourses);
+    // 🟢 Copy code to clipboard
+    function copyCode(course) {
+      const c = JSON.parse(decodeURIComponent(course));
+      navigator.clipboard.writeText(c.srcCode);
+      showMessage("Code copied to clipboard!");
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      getLoggedInUserInfo();
-      fetchCourses();
-      setTimeout(setupFilters, 1000); // Setup filters after courses are loaded
+    // 🟢 Search Filter
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase();
+      renderCourses(
+        allCourses.filter(
+          (c) =>
+            c.name.toLowerCase().includes(q) ||
+            c.description.toLowerCase().includes(q)
+        )
+      );
     });
+
+    document.addEventListener("DOMContentLoaded", fetchCourses);
   </script>
 </body>
 </html>
