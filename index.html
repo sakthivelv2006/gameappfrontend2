@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn From Sakthi - E-Learning Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    
+       <style>
         * {
             margin: 0;
             padding: 0;
@@ -860,84 +861,6 @@
             margin-bottom: 0.5rem;
         }
 
-        @media (max-width: 768px) {
-            .nav-menu {
-                position: fixed;
-                left: -100%;
-                top: 70px;
-                flex-direction: column;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                width: 100%;
-                text-align: center;
-                transition: 0.3s;
-                box-shadow: 0 10px 27px rgba(0,0,0,0.3);
-                padding: 2rem 0;
-            }
-
-            .nav-menu.active {
-                left: 0;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .hero-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-buttons {
-                justify-content: center;
-            }
-
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .courses-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .integration-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
-
-            .app-download-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 1024px) and (min-width: 769px) {
-            .courses-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .testimonials-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         .scroll-to-top {
             position: fixed;
             bottom: 2rem;
@@ -964,6 +887,316 @@
 
         .scroll-to-top:hover {
             transform: translateY(-5px);
+        }
+
+        /* Responsive Design */
+        /* Large screens (1200px and above) */
+        @media (min-width: 1200px) {
+            .hero-content h1 {
+                font-size: 4rem;
+            }
+            
+            .section-header h2 {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Medium screens (1024px - 1199px) */
+        @media (max-width: 1199px) and (min-width: 1024px) {
+            .courses-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Tablets (768px - 1023px) */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .hero-container {
+                gap: 3rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .courses-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .integration-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile (below 768px) */
+        @media (max-width: 767px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0,0,0,0.3);
+                padding: 2rem 0;
+                gap: 1.5rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+
+            .hero-section {
+                padding: 3rem 1rem;
+            }
+            
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .explore-btn, .watch-btn {
+                padding: 0.9rem 2rem;
+                font-size: 1rem;
+            }
+
+            .stats-section {
+                padding: 3rem 1rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .features-section {
+                padding: 3rem 1rem;
+            }
+            
+            .section-header {
+                margin-bottom: 2.5rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2.5rem;
+            }
+            
+            .section-header p {
+                font-size: 1.1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .feature-card {
+                padding: 2rem;
+            }
+
+            .courses-section {
+                padding: 3rem 1rem;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .integration-section {
+                padding: 3rem 1rem;
+            }
+            
+            .integration-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .integration-card {
+                padding: 2rem;
+            }
+            
+            .integration-card h3 {
+                font-size: 1.7rem;
+            }
+
+            .testimonials-section {
+                padding: 3rem 1rem;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+            
+            .testimonial-card {
+                padding: 2rem;
+            }
+
+            .contact-section {
+                padding: 3rem 1rem;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .contact-info-section h2 {
+                font-size: 2rem;
+            }
+            
+            .contact-form-section h3 {
+                font-size: 1.7rem;
+            }
+
+            .app-download-section {
+                padding: 3rem 1rem;
+            }
+            
+            .app-download-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+            
+            .app-info h2 {
+                font-size: 2.5rem;
+            }
+            
+            .download-buttons {
+                justify-content: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+
+            .scroll-to-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Small mobile (below 480px) */
+        @media (max-width: 479px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .explore-btn, .watch-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .section-header p {
+                font-size: 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+            
+            .feature-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.3rem;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+            
+            .contact-item {
+                padding: 1rem;
+            }
+            
+            .whatsapp-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
