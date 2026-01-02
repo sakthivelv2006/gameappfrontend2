@@ -379,7 +379,7 @@
         const data = await response.json();
 
         if (response.ok) {
-          message.textContent = data.message || "Verification link sent successfully! Please check your email.";
+          message.textContent = data.message || "Verification sent successfully! Please check your email.";
           message.className += ' success-message animate__animated animate__fadeIn';
           
           // Show success checkmark
