@@ -764,7 +764,7 @@
         const data = await res.json();
         if (res.ok) {
           switchForm(signUpForm, signInForm);
-          // displayMessage(otpMessage, 'Verification code sent to your email', 'success');
+          displayMessage(otpMessage, 'Verification code sent to your email', 'success');
           displayMessage(otpMessage, 'Verification code sent to your email', 'success');
         } else {
           displayMessage(signUpMessage, data.message || 'Registration failed. Please try again.', 'error');

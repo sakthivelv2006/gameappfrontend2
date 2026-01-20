@@ -213,22 +213,73 @@
     let lastFocusTime = Date.now();
     let focusCheckInterval;
 
-    function initQuiz() {
-      instructionCountdown();
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-      
-      // Initialize question states (will be properly populated after questions load)
-      questionStates = questions.map(() => ({ answered: false }));
-      
-      // Set up focus checking
-      focusCheckInterval = setInterval(checkFocus, 1000);
-      
-      // Prevent refresh attempts
-      setupRefreshPrevention();
-      
-      // Add shortcut key detection
-      setupShortcutDetection();
+    // --- UPDATED SECURITY PRE-CHECK: DATE, OS & SUCCESS FEEDBACK ---
+async function performSecurityPreCheck() {
+    const platform = window.navigator.platform.toLowerCase();
+    const isWindows = platform.includes('win');
+    
+    // Date/Time Check: Validating against January 20, 2026
+    const currentDateTime = new Date();
+    const expiryDate = new Date('2026-02-01T23:59:59'); 
+    const isTimeValid = currentDateTime < expiryDate;
+
+    if (!isWindows || !isTimeValid) {
+        document.body.innerHTML = `
+            <div class="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
+                <div class="max-w-md w-full bg-gray-800 p-8 rounded-2xl shadow-2xl border-2 border-red-500 text-center">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-6xl mb-6"></i>
+                    <h1 class="text-2xl font-bold mb-4">SYSTEM INCOMPATIBLE</h1>
+                    <div class="text-left space-y-4 text-gray-300">
+                        ${!isWindows ? `
+                            <p class="flex items-center text-red-400">
+                                <i class="fas fa-times-circle mr-2"></i> 
+                                <strong>OS Error:</strong> This exam can only be taken on Windows. (Detected: ${navigator.platform})
+                            </p>` : ''}
+                        ${!isTimeValid ? `
+                            <p class="flex items-center text-red-400">
+                                <i class="fas fa-times-circle mr-2"></i> 
+                                <strong>Time Error:</strong> Session expired or system time mismatch.
+                            </p>` : ''}
+                    </div>
+                    <button onclick="window.location.href='technicalmcqs.html'" class="mt-8 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all">
+                        Return to Dashboard
+                    </button>
+                </div>
+            </div>`;
+        return false;
     }
+
+    // If Windows is verified, show the success indicator
+    showVerificationToast();
+    return true;
+}
+
+function showVerificationToast() {
+    const toast = document.createElement('div');
+    toast.className = "fixed top-5 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-2xl z-[10001] flex items-center gap-3 animate-bounce";
+    toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>OS Verified Successfully: Windows Detected</span>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+}
+
+// Update initQuiz to ensure these run first
+function initQuiz() {
+    performSecurityPreCheck().then(passed => {
+        if (!passed) return;
+
+        instructionCountdown();
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        questionStates = questions.map(() => ({ answered: false }));
+        focusCheckInterval = setInterval(checkFocus, 1000);
+        setupRefreshPrevention();
+        setupShortcutDetection();
+    });
+}
 
     function setupShortcutDetection() {
       document.addEventListener('keydown', function(e) {
