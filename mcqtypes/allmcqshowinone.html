@@ -269,8 +269,6 @@ function showVerificationToast() {
 
 // Update initQuiz to ensure these run first
 function initQuiz() {
-    performSecurityPreCheck().then(passed => {
-        if (!passed) return;
 
         instructionCountdown();
         document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -278,7 +276,7 @@ function initQuiz() {
         focusCheckInterval = setInterval(checkFocus, 1000);
         setupRefreshPrevention();
         setupShortcutDetection();
-    });
+ 
 }
 
     function setupShortcutDetection() {
